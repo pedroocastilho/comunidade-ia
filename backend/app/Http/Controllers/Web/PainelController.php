@@ -14,10 +14,20 @@ use Inertia\Inertia;
 
 class PainelController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
         $destaque = Curso::where('status', 'publicado')->where('destaque', true)
             ->with('instrutor')->first();
+
+        // Continue de onde parou: cursos com aula em progresso nao concluida.
+        $aulaIds = ProgressoAula::where('user_id', $request->user()->id)
+            ->where('concluida', false)->where('posicao_segundos', '>', 0)
+            ->latest('updated_at')->pluck('aula_id');
+        $cursoIds = Aula::whereIn('aulas.id', $aulaIds)
+            ->join('modulos', 'aulas.modulo_id', '=', 'modulos.id')
+            ->pluck('modulos.curso_id')->unique()->values();
+        $continuar = Curso::whereIn('id', $cursoIds)
+            ->get(['id', 'titulo', 'slug', 'capa_url', 'banner_url']);
 
         $trilhas = Categoria::orderBy('ordem')->get()->map(fn ($cat) => [
             'nome' => $cat->nome,
@@ -29,7 +39,7 @@ class PainelController extends Controller
         $avisos = Aviso::whereNotNull('publicado_em')->where('publicado_em', '<=', now())
             ->latest('publicado_em')->limit(5)->get(['id', 'titulo', 'corpo', 'publicado_em']);
 
-        return Inertia::render('App/Home', compact('destaque', 'trilhas', 'avisos'));
+        return Inertia::render('App/Home', compact('destaque', 'continuar', 'trilhas', 'avisos'));
     }
 
     public function cursos(Request $request)
@@ -82,9 +92,24 @@ class PainelController extends Controller
 
     public function aula(Request $request, Aula $aula, BunnyService $bunny)
     {
-        $aula->load('modulo.curso');
+        $aula->load('modulo.curso.modulos.aulas');
+        $curso = $aula->modulo->curso;
+
         $progresso = ProgressoAula::where('user_id', $request->user()->id)
             ->where('aula_id', $aula->id)->first();
+
+        // Progresso do usuario em todas as aulas do curso (para a playlist).
+        $todasAulas = $curso->modulos->flatMap->aulas;
+        $concluidas = ProgressoAula::where('user_id', $request->user()->id)
+            ->where('concluida', true)
+            ->whereIn('aula_id', $todasAulas->pluck('id'))
+            ->pluck('aula_id')->all();
+
+        // Sequencia linear para anterior/proxima.
+        $sequencia = $todasAulas->pluck('id')->values();
+        $pos = $sequencia->search($aula->id);
+        $anterior = $pos > 0 ? $sequencia[$pos - 1] : null;
+        $proxima = $pos < $sequencia->count() - 1 ? $sequencia[$pos + 1] : null;
 
         return Inertia::render('App/Player', [
             'aula' => [
@@ -94,10 +119,21 @@ class PainelController extends Controller
                 'material_url' => $aula->material_url,
                 'concluida' => (bool) ($progresso->concluida ?? false),
                 'video_embed_url' => $aula->bunny_video_id ? $bunny->embedUrl($aula->bunny_video_id) : null,
+                'anterior_id' => $anterior,
+                'proxima_id' => $proxima,
             ],
             'curso' => [
-                'titulo' => $aula->modulo->curso->titulo,
-                'slug' => $aula->modulo->curso->slug,
+                'titulo' => $curso->titulo,
+                'slug' => $curso->slug,
+                'instrutor' => $curso->instrutor?->nome,
+                'modulos' => $curso->modulos->map(fn ($m) => [
+                    'titulo' => $m->titulo,
+                    'aulas' => $m->aulas->map(fn ($a) => [
+                        'id' => $a->id,
+                        'titulo' => $a->titulo,
+                        'concluida' => in_array($a->id, $concluidas, true),
+                    ]),
+                ]),
             ],
         ]);
     }

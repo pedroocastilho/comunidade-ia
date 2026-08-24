@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import PainelLayout from '@/Layouts/PainelLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
@@ -14,66 +14,59 @@ const busca = ref(props.filtros.busca ?? '');
 function filtrar() {
     router.get(route('cursos'), { busca: busca.value }, { preserveState: true });
 }
-
-function porCategoria(slug) {
-    router.get(route('cursos'), { categoria: slug }, { preserveState: true });
-}
 </script>
 
 <template>
     <Head title="Cursos" />
 
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-900">Cursos</h2>
-        </template>
-
-        <div class="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-            <div class="flex flex-wrap items-center gap-3">
-                <form class="flex-1" @submit.prevent="filtrar">
+    <PainelLayout>
+        <div class="mx-auto max-w-7xl px-5 py-8 lg:px-10 lg:py-12">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <h1 class="font-display text-4xl font-extrabold tracking-tight text-gray-900">Cursos</h1>
+                <form class="w-full sm:w-72" @submit.prevent="filtrar">
                     <input
                         v-model="busca"
                         type="search"
                         placeholder="Buscar cursos..."
-                        class="w-full rounded-full border-gray-300 focus:border-emerald-500 focus:ring-emerald-500"
+                        class="w-full rounded-full border-gray-200 bg-white focus:border-emerald-500 focus:ring-emerald-500"
                     />
                 </form>
             </div>
 
-            <div class="flex flex-wrap gap-2">
+            <div class="mt-6 flex flex-wrap gap-2">
                 <Link
                     :href="route('cursos')"
-                    class="rounded-full border border-gray-300 px-4 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                    class="rounded-full px-4 py-1.5 text-sm font-semibold transition"
+                    :class="!filtros.categoria ? 'bg-gray-900 text-white' : 'border border-gray-300 text-gray-600 hover:bg-white'"
                 >
                     Todos
                 </Link>
-                <button
+                <Link
                     v-for="cat in categorias"
                     :key="cat.slug"
-                    class="rounded-full border border-gray-300 px-4 py-1 text-sm text-gray-700 hover:bg-gray-100"
-                    @click="porCategoria(cat.slug)"
+                    :href="route('cursos', { categoria: cat.slug })"
+                    class="rounded-full px-4 py-1.5 text-sm font-semibold transition"
+                    :class="filtros.categoria === cat.slug ? 'bg-gray-900 text-white' : 'border border-gray-300 text-gray-600 hover:bg-white'"
                 >
                     {{ cat.nome }}
-                </button>
+                </Link>
             </div>
 
-            <div v-if="cursos.length" class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            <div v-if="cursos.length" class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
                 <Link
                     v-for="curso in cursos"
                     :key="curso.id"
                     :href="route('curso', curso.slug)"
-                    class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
+                    class="group block"
                 >
-                    <div class="aspect-video bg-emerald-50">
-                        <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover" />
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold text-gray-900 group-hover:text-emerald-700">{{ curso.titulo }}</h3>
-                        <p class="mt-1 line-clamp-2 text-sm text-gray-500">{{ curso.descricao }}</p>
+                    <div class="relative aspect-[3/4] overflow-hidden rounded-2xl bg-emerald-700 shadow-sm transition group-hover:shadow-lg">
+                        <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
+                        <h3 class="absolute inset-x-0 bottom-0 p-3 font-display text-base font-bold leading-tight text-white">{{ curso.titulo }}</h3>
                     </div>
                 </Link>
             </div>
-            <p v-else class="text-gray-500">Nenhum curso encontrado.</p>
+            <p v-else class="mt-10 text-gray-500">Nenhum curso encontrado.</p>
         </div>
-    </AuthenticatedLayout>
+    </PainelLayout>
 </template>
