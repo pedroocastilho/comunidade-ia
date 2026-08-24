@@ -815,6 +815,19 @@ git commit -m "Adiciona middleware de controle de acesso ao conteudo"
 
 Sem placeholders. Convenção de teste única (Pest-style `.php`; se PHPUnit, converter conforme nota da Task 2). Assinaturas consistentes entre tasks.
 
+## Notas de execução (2026-08-24 — CONCLUÍDO)
+
+Plano 1 implementado e no repositório. 17 testes verdes.
+
+Desvios em relação ao spec, por causa do ambiente da máquina:
+- **PHP 8.3.30** (o 8.4 do spec não está instalado; 8.5.7 existe mas é muito recente). Totalmente suportado pelo Laravel.
+- **Laravel 13.26.1** (o `composer create-project` trouxe o stable atual; o spec citava 12). Compatível com o que foi construído.
+- **SQLite** no ambiente de dev/testes (não há MySQL na máquina). **MySQL/MariaDB continua o alvo de produção** — as migrations são portáveis.
+- Laravel 13 usa atributos (`#[Fillable(...)]`) no model User em vez de `$fillable`; o código foi adaptado.
+- Campos de acesso adicionados ao `users` via **nova migration** (não editando a existente), conforme regra do projeto.
+- Testes escritos em **PHPUnit** (framework padrão do projeto), não Pest.
+- Comando: PHP e Composer chamados por caminho absoluto (`/c/php83/php.exe`, `/c/composer/composer.phar`), pois não estão no PATH deste shell.
+
 ## Próximos planos
 
 - **Plano 2:** API de conteúdo + comunidade (endpoints §6 restantes + integração Bunny + download).
