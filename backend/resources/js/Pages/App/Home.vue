@@ -1,7 +1,10 @@
 <script setup>
 import AppIcon from '@/Components/AppIcon.vue';
 import PainelLayout from '@/Layouts/PainelLayout.vue';
+import { useI18n } from '@/useI18n';
 import { Head, Link } from '@inertiajs/vue3';
+
+const { t } = useI18n();
 
 defineProps({
     destaque: Object,
@@ -12,7 +15,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Início" />
+    <Head :title="t('nav.inicio')" />
 
     <PainelLayout>
         <!-- Aviso -->
@@ -29,20 +32,20 @@ defineProps({
                         {{ destaque.titulo }}
                     </h1>
                     <p v-if="destaque.instrutor" class="mt-5 text-sm font-semibold text-gray-500">
-                        Com {{ destaque.instrutor.nome }}
+                        {{ t('common.com') }} {{ destaque.instrutor.nome }}
                     </p>
                     <div class="mt-8 flex flex-wrap gap-3">
                         <Link
                             :href="route('curso', destaque.slug)"
                             class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-7 py-3 font-semibold text-white transition hover:bg-emerald-700"
                         >
-                            <AppIcon name="play" class="h-4 w-4" /> Iniciar
+                            <AppIcon name="play" class="h-4 w-4" /> {{ t('common.iniciar') }}
                         </Link>
                         <Link
                             :href="route('curso', destaque.slug)"
                             class="inline-flex items-center rounded-full border border-gray-300 px-7 py-3 font-semibold text-gray-800 transition hover:border-gray-400 hover:bg-white"
                         >
-                            Detalhes
+                            {{ t('common.detalhes') }}
                         </Link>
                     </div>
                 </div>
@@ -57,7 +60,7 @@ defineProps({
 
             <!-- Continue de onde parou -->
             <section v-if="continuar.length" class="mt-14">
-                <h2 class="font-display text-xl font-bold tracking-tight text-gray-900">Continue de onde parou</h2>
+                <h2 class="font-display text-xl font-bold tracking-tight text-gray-900">{{ t('home.continue') }}</h2>
                 <div class="mt-4 flex gap-4 overflow-x-auto pb-2">
                     <Link
                         v-for="curso in continuar"

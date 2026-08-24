@@ -1,9 +1,12 @@
 <script setup>
 import AppIcon from '@/Components/AppIcon.vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
+import { useI18n } from '@/useI18n';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 
+const { t } = useI18n();
 const page = usePage();
 
 const categorias = computed(() => page.props.categorias ?? []);
@@ -21,9 +24,9 @@ const iniciais = computed(() => {
 });
 
 const nav = [
-    { label: 'Início', icon: 'home', rota: 'home', ativos: ['home'] },
-    { label: 'Cursos', icon: 'grid', rota: 'cursos', ativos: ['cursos', 'curso', 'aula'] },
-    { label: 'Config', icon: 'settings', rota: 'profile.edit', ativos: ['profile.edit'] },
+    { key: 'nav.inicio', icon: 'home', rota: 'home', ativos: ['home'] },
+    { key: 'nav.cursos', icon: 'grid', rota: 'cursos', ativos: ['cursos', 'curso', 'aula'] },
+    { key: 'nav.config', icon: 'settings', rota: 'profile.edit', ativos: ['profile.edit'] },
 ];
 
 function ativo(item) {
@@ -49,13 +52,13 @@ function buscar() {
                 <nav class="flex flex-col items-center gap-2">
                     <Link
                         v-for="item in nav"
-                        :key="item.label"
+                        :key="item.key"
                         :href="route(item.rota)"
                         class="flex w-16 flex-col items-center gap-1 rounded-2xl py-2.5 transition"
                         :class="ativo(item) ? 'bg-emerald-50 text-emerald-700' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-700'"
                     >
                         <AppIcon :name="item.icon" class="h-6 w-6" />
-                        <span class="text-[10px] font-semibold uppercase tracking-wide">{{ item.label }}</span>
+                        <span class="text-[10px] font-semibold uppercase tracking-wide">{{ t(item.key) }}</span>
                     </Link>
                 </nav>
             </div>
@@ -67,7 +70,7 @@ function buscar() {
                 class="flex w-16 flex-col items-center gap-1 rounded-2xl py-2.5 text-gray-400 transition hover:bg-gray-50 hover:text-gray-700"
             >
                 <AppIcon name="logout" class="h-6 w-6" />
-                <span class="text-[10px] font-semibold uppercase tracking-wide">Sair</span>
+                <span class="text-[10px] font-semibold uppercase tracking-wide">{{ t('nav.sair') }}</span>
             </Link>
         </aside>
 
@@ -86,16 +89,17 @@ function buscar() {
                     </Link>
                 </nav>
 
-                <div class="flex flex-1 items-center justify-end gap-4">
+                <div class="flex flex-1 items-center justify-end gap-3">
                     <form class="relative hidden sm:block" @submit.prevent="buscar">
                         <AppIcon name="search" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         <input
                             v-model="busca"
                             type="search"
-                            placeholder="Buscar"
-                            class="w-44 rounded-full border-gray-200 bg-white py-2 pl-10 pr-4 text-sm focus:border-emerald-500 focus:ring-emerald-500 lg:w-60"
+                            :placeholder="t('nav.buscar')"
+                            class="w-40 rounded-full border-gray-200 bg-white py-2 pl-10 pr-4 text-sm focus:border-emerald-500 focus:ring-emerald-500 lg:w-56"
                         />
                     </form>
+                    <LanguageSwitcher />
                     <Link
                         :href="route('profile.edit')"
                         class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-sm font-bold text-white"
@@ -114,13 +118,13 @@ function buscar() {
         <nav class="fixed inset-x-0 bottom-0 z-20 flex items-center justify-around border-t border-gray-200 bg-white py-2 md:hidden">
             <Link
                 v-for="item in nav"
-                :key="item.label"
+                :key="item.key"
                 :href="route(item.rota)"
                 class="flex flex-col items-center gap-0.5 px-4 py-1"
                 :class="ativo(item) ? 'text-emerald-700' : 'text-gray-400'"
             >
                 <AppIcon :name="item.icon" class="h-6 w-6" />
-                <span class="text-[10px] font-semibold">{{ item.label }}</span>
+                <span class="text-[10px] font-semibold">{{ t(item.key) }}</span>
             </Link>
         </nav>
     </div>

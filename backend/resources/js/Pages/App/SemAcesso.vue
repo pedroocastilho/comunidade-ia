@@ -1,19 +1,21 @@
 <script setup>
 import PainelLayout from '@/Layouts/PainelLayout.vue';
+import { useI18n } from '@/useI18n';
 import { Head } from '@inertiajs/vue3';
+
+const { t } = useI18n();
 </script>
 
 <template>
-    <Head title="Acesso inativo" />
+    <Head :title="t('semAcesso.titulo')" />
 
     <PainelLayout>
         <div class="mx-auto flex max-w-2xl flex-col items-center px-5 py-24 text-center lg:px-10">
             <h1 class="font-display text-4xl font-extrabold tracking-tight text-gray-900">
-                Sua assinatura ainda não está ativa
+                {{ t('semAcesso.titulo') }}
             </h1>
             <p class="mt-5 max-w-md text-gray-600">
-                Assim que sua assinatura for confirmada, todo o conteúdo é liberado
-                automaticamente aqui. Já assinou e continua vendo esta tela? Fale com o suporte.
+                {{ t('semAcesso.texto') }}
             </p>
         </div>
     </PainelLayout>

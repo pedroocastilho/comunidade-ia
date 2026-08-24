@@ -1,8 +1,11 @@
 <script setup>
 import AppIcon from '@/Components/AppIcon.vue';
 import PainelLayout from '@/Layouts/PainelLayout.vue';
+import { useI18n } from '@/useI18n';
 import { Head, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     curso: Object,
@@ -29,7 +32,7 @@ function formatarDuracao(segundos) {
             <!-- Hero fixo -->
             <aside class="bg-gray-900 px-6 py-10 text-white lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:px-10 lg:py-14">
                 <Link :href="route('cursos')" class="inline-flex items-center gap-2 text-sm font-semibold text-gray-400 transition hover:text-white">
-                    <AppIcon name="arrow-left" class="h-4 w-4" /> Voltar
+                    <AppIcon name="arrow-left" class="h-4 w-4" /> {{ t('common.voltar') }}
                 </Link>
 
                 <h1 class="mt-8 font-display text-4xl font-extrabold leading-[0.95] tracking-tight lg:text-6xl">
@@ -38,9 +41,9 @@ function formatarDuracao(segundos) {
                 <p class="mt-5 max-w-md text-gray-300">{{ curso.descricao }}</p>
 
                 <div class="mt-6 flex items-center gap-4 text-sm text-gray-400">
-                    <span v-if="curso.instrutor">Com {{ curso.instrutor.nome }}</span>
+                    <span v-if="curso.instrutor">{{ t('common.com') }} {{ curso.instrutor.nome }}</span>
                     <span class="h-1 w-1 rounded-full bg-gray-600"></span>
-                    <span>{{ total }} aulas</span>
+                    <span>{{ total }} {{ t('common.aulas') }}</span>
                 </div>
 
                 <Link
@@ -49,14 +52,14 @@ function formatarDuracao(segundos) {
                     class="mt-8 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-7 py-3 font-semibold text-gray-900 transition hover:bg-emerald-400"
                 >
                     <AppIcon name="play" class="h-4 w-4" />
-                    {{ concluidas > 0 ? 'Continuar' : 'Iniciar' }}
+                    {{ concluidas > 0 ? t('common.continuar') : t('common.iniciar') }}
                 </Link>
             </aside>
 
             <!-- Aulas -->
             <div class="px-6 py-10 lg:px-10 lg:py-14">
                 <div class="flex items-center justify-between">
-                    <span class="text-sm font-semibold text-gray-500">Seu progresso</span>
+                    <span class="text-sm font-semibold text-gray-500">{{ t('curso.progresso') }}</span>
                     <span class="text-sm font-bold text-emerald-700">{{ percentual }}%</span>
                 </div>
                 <div class="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">

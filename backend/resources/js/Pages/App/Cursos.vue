@@ -1,7 +1,10 @@
 <script setup>
 import PainelLayout from '@/Layouts/PainelLayout.vue';
+import { useI18n } from '@/useI18n';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     cursos: Array,
@@ -17,17 +20,17 @@ function filtrar() {
 </script>
 
 <template>
-    <Head title="Cursos" />
+    <Head :title="t('cursos.titulo')" />
 
     <PainelLayout>
         <div class="mx-auto max-w-7xl px-5 py-8 lg:px-10 lg:py-12">
             <div class="flex flex-wrap items-end justify-between gap-4">
-                <h1 class="font-display text-4xl font-extrabold tracking-tight text-gray-900">Cursos</h1>
+                <h1 class="font-display text-4xl font-extrabold tracking-tight text-gray-900">{{ t('cursos.titulo') }}</h1>
                 <form class="w-full sm:w-72" @submit.prevent="filtrar">
                     <input
                         v-model="busca"
                         type="search"
-                        placeholder="Buscar cursos..."
+                        :placeholder="t('cursos.buscar')"
                         class="w-full rounded-full border-gray-200 bg-white focus:border-emerald-500 focus:ring-emerald-500"
                     />
                 </form>
@@ -39,7 +42,7 @@ function filtrar() {
                     class="rounded-full px-4 py-1.5 text-sm font-semibold transition"
                     :class="!filtros.categoria ? 'bg-gray-900 text-white' : 'border border-gray-300 text-gray-600 hover:bg-white'"
                 >
-                    Todos
+                    {{ t('cursos.todos') }}
                 </Link>
                 <Link
                     v-for="cat in categorias"
@@ -66,7 +69,7 @@ function filtrar() {
                     </div>
                 </Link>
             </div>
-            <p v-else class="mt-10 text-gray-500">Nenhum curso encontrado.</p>
+            <p v-else class="mt-10 text-gray-500">{{ t('cursos.vazio') }}</p>
         </div>
     </PainelLayout>
 </template>

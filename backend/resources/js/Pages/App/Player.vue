@@ -1,7 +1,10 @@
 <script setup>
 import AppIcon from '@/Components/AppIcon.vue';
 import PainelLayout from '@/Layouts/PainelLayout.vue';
+import { useI18n } from '@/useI18n';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+
+const { t } = useI18n();
 
 const props = defineProps({
     aula: Object,
@@ -36,7 +39,7 @@ function concluir() {
                             allowfullscreen
                         ></iframe>
                         <div v-else class="flex h-full items-center justify-center text-gray-500">
-                            Vídeo indisponível
+                            {{ t('player.indisponivel') }}
                         </div>
                     </div>
                 </div>
@@ -53,7 +56,7 @@ function concluir() {
                         @click="concluir"
                     >
                         <AppIcon name="check" class="h-4 w-4" />
-                        {{ aula.concluida ? 'Concluída' : 'Marcar como concluída' }}
+                        {{ aula.concluida ? t('player.concluida') : t('player.concluir') }}
                     </button>
                 </div>
 
@@ -63,7 +66,7 @@ function concluir() {
                         :href="route('aula', aula.anterior_id)"
                         class="text-sm font-semibold text-gray-600 transition hover:text-emerald-700"
                     >
-                        ← Aula anterior
+                        ← {{ t('player.anterior') }}
                     </Link>
                     <span v-else></span>
                     <Link
@@ -71,7 +74,7 @@ function concluir() {
                         :href="route('aula', aula.proxima_id)"
                         class="text-sm font-semibold text-gray-600 transition hover:text-emerald-700"
                     >
-                        Próxima aula →
+                        {{ t('player.proxima') }} →
                     </Link>
                 </div>
 
@@ -81,7 +84,7 @@ function concluir() {
                     target="_blank"
                     class="mt-4 inline-flex font-medium text-emerald-700 hover:underline"
                 >
-                    Baixar material da aula
+                    {{ t('player.material') }}
                 </a>
             </div>
 
@@ -89,7 +92,7 @@ function concluir() {
             <aside class="border-t border-gray-200 bg-white lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:overflow-y-auto lg:border-l lg:border-t-0">
                 <div class="border-b border-gray-100 p-5">
                     <h2 class="font-display font-bold text-gray-900">{{ curso.titulo }}</h2>
-                    <p v-if="curso.instrutor" class="mt-1 text-sm text-gray-500">Com {{ curso.instrutor }}</p>
+                    <p v-if="curso.instrutor" class="mt-1 text-sm text-gray-500">{{ t('common.com') }} {{ curso.instrutor }}</p>
                 </div>
 
                 <div v-for="(modulo, mi) in curso.modulos" :key="mi" class="border-b border-gray-100 py-3">

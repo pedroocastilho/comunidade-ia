@@ -11,6 +11,16 @@ Route::get('/', function () {
         : redirect()->route('login');
 });
 
+// Troca de idioma (pt | es), guardada na sessao.
+Route::post('/idioma', function () {
+    $locale = request('locale');
+    if (in_array($locale, ['pt', 'es'], true)) {
+        session(['locale' => $locale]);
+    }
+
+    return back();
+})->name('idioma');
+
 Route::get('/sem-acesso', fn () => Inertia::render('App/SemAcesso'))
     ->middleware('auth')->name('sem-acesso');
 
