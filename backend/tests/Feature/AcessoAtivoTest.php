@@ -46,4 +46,11 @@ class AcessoAtivoTest extends TestCase
 
         $this->actingAs($user)->getJson('/api/v1/categorias')->assertForbidden();
     }
+
+    public function test_nao_autenticado_em_api_retorna_401_mesmo_sem_accept_json(): void
+    {
+        // Requisicao sem cabecalho Accept: application/json nao pode virar
+        // redirect para "login" (500); deve ser 401.
+        $this->get('/api/v1/home')->assertUnauthorized();
+    }
 }
