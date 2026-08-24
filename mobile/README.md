@@ -2,9 +2,12 @@
 
 App nativo (iOS/Android) da Comunidade IA. Consome a API Laravel em `/backend`.
 
-> ⚠️ **Status: código-base NÃO compilado.** Foi escrito sem o Flutter SDK
-> instalado na máquina de desenvolvimento, então **ainda não foi buildado nem
-> testado**. Pode precisar de ajustes ao rodar `flutter pub get` / `flutter run`.
+> ✅ **Status: compila.** `flutter analyze` sem erros, widget test passando e
+> `flutter build web` concluído (Flutter 3.47.1 / Dart 3.13.1). Fluxo principal
+> (login → cursos → curso → player) implementado.
+> ⚠️ Para gerar APK/IPA falta instalar o **Android SDK** (Android Studio) e/ou o
+> toolchain iOS — não presentes nesta máquina. O `webview_flutter` do player só
+> funciona em Android/iOS (no web ele não renderiza; use um emulador/aparelho).
 
 ## Estrutura
 
