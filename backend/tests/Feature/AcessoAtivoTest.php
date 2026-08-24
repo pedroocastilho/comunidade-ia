@@ -14,7 +14,7 @@ class AcessoAtivoTest extends TestCase
     {
         $user = User::factory()->create(['tem_acesso' => false]);
 
-        $this->actingAs($user)->getJson('/api/v1/ping-conteudo')->assertForbidden();
+        $this->actingAs($user)->getJson('/api/v1/categorias')->assertForbidden();
     }
 
     public function test_com_acesso_ativo_entra_na_rota_protegida(): void
@@ -24,7 +24,7 @@ class AcessoAtivoTest extends TestCase
             'acesso_expira_em' => now()->addYear(),
         ]);
 
-        $this->actingAs($user)->getJson('/api/v1/ping-conteudo')->assertOk();
+        $this->actingAs($user)->getJson('/api/v1/categorias')->assertOk();
     }
 
     public function test_acesso_sem_data_de_expiracao_e_permitido(): void
@@ -34,7 +34,7 @@ class AcessoAtivoTest extends TestCase
             'acesso_expira_em' => null,
         ]);
 
-        $this->actingAs($user)->getJson('/api/v1/ping-conteudo')->assertOk();
+        $this->actingAs($user)->getJson('/api/v1/categorias')->assertOk();
     }
 
     public function test_acesso_expirado_recebe_403(): void
@@ -44,6 +44,6 @@ class AcessoAtivoTest extends TestCase
             'acesso_expira_em' => now()->subDay(),
         ]);
 
-        $this->actingAs($user)->getJson('/api/v1/ping-conteudo')->assertForbidden();
+        $this->actingAs($user)->getJson('/api/v1/categorias')->assertForbidden();
     }
 }
