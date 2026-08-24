@@ -25,7 +25,7 @@ function porCategoria(slug) {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Cursos</h2>
+            <h2 class="text-xl font-semibold leading-tight text-gray-900">Cursos</h2>
         </template>
 
         <div class="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
@@ -35,7 +35,7 @@ function porCategoria(slug) {
                         v-model="busca"
                         type="search"
                         placeholder="Buscar cursos..."
-                        class="w-full rounded-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                        class="w-full rounded-full border-gray-300 focus:border-emerald-500 focus:ring-emerald-500"
                     />
                 </form>
             </div>
@@ -43,14 +43,14 @@ function porCategoria(slug) {
             <div class="flex flex-wrap gap-2">
                 <Link
                     :href="route('cursos')"
-                    class="rounded-full border border-gray-300 px-4 py-1 text-sm hover:bg-gray-100"
+                    class="rounded-full border border-gray-300 px-4 py-1 text-sm text-gray-700 hover:bg-gray-100"
                 >
                     Todos
                 </Link>
                 <button
                     v-for="cat in categorias"
                     :key="cat.slug"
-                    class="rounded-full border border-gray-300 px-4 py-1 text-sm hover:bg-gray-100"
+                    class="rounded-full border border-gray-300 px-4 py-1 text-sm text-gray-700 hover:bg-gray-100"
                     @click="porCategoria(cat.slug)"
                 >
                     {{ cat.nome }}
@@ -64,11 +64,11 @@ function porCategoria(slug) {
                     :href="route('curso', curso.slug)"
                     class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
                 >
-                    <div class="aspect-video bg-gradient-to-br from-indigo-100 to-violet-100">
+                    <div class="aspect-video bg-emerald-50">
                         <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover" />
                     </div>
                     <div class="p-3">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-indigo-700">{{ curso.titulo }}</h3>
+                        <h3 class="font-semibold text-gray-900 group-hover:text-emerald-700">{{ curso.titulo }}</h3>
                         <p class="mt-1 line-clamp-2 text-sm text-gray-500">{{ curso.descricao }}</p>
                     </div>
                 </Link>

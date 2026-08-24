@@ -17,7 +17,7 @@ class ComunidadeIaApp extends StatelessWidget {
       title: 'Comunidade IA',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorSchemeSeed: const Color(0xFF4F46E5),
+        colorSchemeSeed: const Color(0xFF059669),
         useMaterial3: true,
       ),
       home: const _Gate(),

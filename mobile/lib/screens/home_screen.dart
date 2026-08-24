@@ -130,7 +130,7 @@ class _CursoCard extends StatelessWidget {
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: Colors.indigo.shade50,
+          color: Colors.green.shade50,
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -139,7 +139,7 @@ class _CursoCard extends StatelessWidget {
             Expanded(
               child: curso['capa_url'] != null
                   ? Image.network(curso['capa_url'], fit: BoxFit.cover)
-                  : Container(color: Colors.indigo.shade100),
+                  : Container(color: Colors.green.shade100),
             ),
             Padding(
               padding: const EdgeInsets.all(8),

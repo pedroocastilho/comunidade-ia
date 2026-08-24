@@ -19,13 +19,13 @@ function concluir() {
 
     <AuthenticatedLayout>
         <template #header>
-            <Link :href="route('curso', curso.slug)" class="text-sm text-indigo-600 hover:underline">
+            <Link :href="route('curso', curso.slug)" class="text-sm font-medium text-emerald-700 hover:underline">
                 ← {{ curso.titulo }}
             </Link>
         </template>
 
         <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-            <div class="overflow-hidden rounded-2xl bg-black shadow-lg">
+            <div class="overflow-hidden rounded-2xl bg-gray-900 shadow-sm">
                 <div class="aspect-video">
                     <iframe
                         v-if="aula.video_embed_url"
@@ -42,14 +42,14 @@ function concluir() {
 
             <div class="mt-6 flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-800">{{ aula.titulo }}</h1>
+                    <h1 class="text-2xl font-bold text-gray-900">{{ aula.titulo }}</h1>
                     <p class="mt-2 max-w-2xl text-gray-600">{{ aula.descricao }}</p>
                 </div>
                 <button
                     class="rounded-full px-6 py-2 font-semibold transition"
                     :class="aula.concluida
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : 'bg-indigo-600 text-white hover:bg-indigo-700'"
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-emerald-600 text-white hover:bg-emerald-700'"
                     :disabled="form.processing"
                     @click="concluir"
                 >
@@ -61,7 +61,7 @@ function concluir() {
                 v-if="aula.material_url"
                 :href="aula.material_url"
                 target="_blank"
-                class="mt-4 inline-flex text-indigo-600 hover:underline"
+                class="mt-4 inline-flex font-medium text-emerald-700 hover:underline"
             >
                 Baixar material da aula
             </a>

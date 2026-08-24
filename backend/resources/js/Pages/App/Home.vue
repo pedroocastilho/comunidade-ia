@@ -14,30 +14,30 @@ defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Início</h2>
+            <h2 class="text-xl font-semibold leading-tight text-gray-900">Início</h2>
         </template>
 
         <div class="mx-auto max-w-7xl space-y-10 px-4 py-8 sm:px-6 lg:px-8">
-            <!-- Avisos -->
+            <!-- Avisos (acento ambar) -->
             <section v-if="avisos.length" class="space-y-3">
                 <div
                     v-for="aviso in avisos"
                     :key="aviso.id"
-                    class="rounded-xl border border-indigo-100 bg-indigo-50 p-4"
+                    class="rounded-xl border border-amber-200 bg-amber-50 p-4"
                 >
-                    <h3 class="font-semibold text-indigo-900">{{ aviso.titulo }}</h3>
-                    <p class="text-sm text-indigo-800">{{ aviso.corpo }}</p>
+                    <h3 class="font-semibold text-amber-900">{{ aviso.titulo }}</h3>
+                    <p class="text-sm text-amber-800">{{ aviso.corpo }}</p>
                 </div>
             </section>
 
-            <!-- Destaque -->
-            <section v-if="destaque" class="overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 p-8 text-white shadow-lg">
-                <p class="text-sm uppercase tracking-wide text-indigo-200">Em destaque</p>
+            <!-- Destaque (esmeralda chapado) -->
+            <section v-if="destaque" class="overflow-hidden rounded-2xl bg-emerald-600 p-8 text-white shadow-sm">
+                <p class="text-sm font-medium uppercase tracking-wide text-emerald-100">Em destaque</p>
                 <h1 class="mt-2 text-3xl font-bold">{{ destaque.titulo }}</h1>
-                <p class="mt-3 max-w-2xl text-indigo-100">{{ destaque.descricao }}</p>
+                <p class="mt-3 max-w-2xl text-emerald-50">{{ destaque.descricao }}</p>
                 <Link
                     :href="route('curso', destaque.slug)"
-                    class="mt-6 inline-flex rounded-full bg-white px-6 py-2 font-semibold text-indigo-700 hover:bg-indigo-50"
+                    class="mt-6 inline-flex rounded-full bg-white px-6 py-2 font-semibold text-emerald-700 hover:bg-emerald-50"
                 >
                     Começar
                 </Link>
@@ -45,7 +45,7 @@ defineProps({
 
             <!-- Trilhas por categoria -->
             <section v-for="trilha in trilhas" :key="trilha.slug" class="space-y-4">
-                <h2 class="text-lg font-semibold text-gray-800">{{ trilha.nome }}</h2>
+                <h2 class="text-lg font-semibold text-gray-900">{{ trilha.nome }}</h2>
                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                     <Link
                         v-for="curso in trilha.cursos"
@@ -53,11 +53,11 @@ defineProps({
                         :href="route('curso', curso.slug)"
                         class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
                     >
-                        <div class="aspect-video bg-gradient-to-br from-indigo-100 to-violet-100">
+                        <div class="aspect-video bg-emerald-50">
                             <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover" />
                         </div>
                         <div class="p-3">
-                            <h3 class="font-semibold text-gray-800 group-hover:text-indigo-700">{{ curso.titulo }}</h3>
+                            <h3 class="font-semibold text-gray-900 group-hover:text-emerald-700">{{ curso.titulo }}</h3>
                         </div>
                     </Link>
                 </div>
