@@ -1,31 +1,20 @@
-# Dependências
-/vendor/
-/node_modules/
-.pnp
-.pnp.js
+# Backend (Laravel)
+/backend/vendor/
+/backend/node_modules/
+/backend/public/build/
+/backend/public/hot
+/backend/storage/*.key
+/backend/.env
+/backend/.env.*
+!/backend/.env.example
+/backend/database/*.sqlite
+/backend/database/*.sqlite-journal
 
-# Ambiente
-.env
-.env.*
-!.env.example
-
-# Build / cache
-/public/build/
-/public/hot
-/storage/*.key
-/dist/
-/.next/
-*.log
-
-# Flutter
-app/.dart_tool/
-app/.flutter-plugins
-app/.flutter-plugins-dependencies
-app/build/
-app/.packages
-app/ios/Pods/
-app/android/.gradle/
-app/*.iml
+# Mobile (Flutter) - futuro
+/mobile/.dart_tool/
+/mobile/build/
+/mobile/ios/Pods/
+/mobile/android/.gradle/
 
 # Sistema
 .DS_Store
