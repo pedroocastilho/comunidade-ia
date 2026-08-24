@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'bunny' => [
+        'library_id' => env('BUNNY_STREAM_LIBRARY_ID'),
+        'token_key' => env('BUNNY_STREAM_TOKEN_KEY'),
+        'cdn_hostname' => env('BUNNY_STREAM_CDN_HOSTNAME'),
+        'url_ttl' => (int) env('BUNNY_URL_TTL', 14400),
+    ],
+
 ];
