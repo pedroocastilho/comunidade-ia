@@ -97,7 +97,8 @@ Tabelas principais (nomes de colunas em PT-BR, padrão do projeto).
 - **Autenticação:** Sanctum (token para o app; sessão/cookie para a web Inertia).
 - **Autorização de conteúdo:** middleware `acesso.ativo` verifica `users.tem_acesso == true` e (se houver) `acesso_expira_em >= hoje`. Endpoints de conteúdo e download exigem esse middleware.
 - **MVP:** acesso liberado manualmente pela Diamond no admin (Filament) ao confirmar a venda.
-- **Evolução:** endpoint `POST /webhooks/venda` (fase seguinte) recebe a confirmação do gateway (Kiwify/Hubla/Guru/etc.) e liga `tem_acesso` automaticamente. Método de pagamento definido depois; **sem** compra dentro das lojas no MVP (evita a taxa de 15–30% da Apple/Google).
+- **Venda é exclusivamente pela WEB.** Os apps nativos (iOS/Android) **nunca** exibem compra, preço ou checkout — apenas login/cadastro e validação de acesso. Isso mantém o app fora das regras de in-app purchase da Apple/Google e evita a taxa de 15–30%. (Cuidado de review de loja: o app não deve nem linkar para a página de compra.)
+- **Evolução:** endpoint `POST /webhooks/venda` (fase seguinte) recebe a confirmação do gateway e liga `tem_acesso` automaticamente. **Gateway a definir** entre **Kiwify, Hotmart ou Stripe** — a integração de webhook será adaptada ao escolhido.
 - **Papéis:** `admin` acessa o Filament; `aluno` acessa app/web.
 
 ---
@@ -205,6 +206,6 @@ CRUD e operações para a equipe Diamond:
 ## 13. Riscos e decisões em aberto
 
 - **Nome/identidade** ainda não definidos (§11).
-- **Gateway de pagamento** a decidir (Kiwify/Hubla/Guru/Stripe) — não bloqueia o MVP (acesso manual no início).
+- **Gateway de pagamento** a decidir entre **Kiwify / Hotmart / Stripe** — não bloqueia o MVP (acesso manual no início). Venda apenas na web; apps nativos nunca vendem.
 - **Custo Bunny** proporcional a armazenamento/streaming — dimensionar conforme catálogo.
 - Download offline exige cuidado com proteção do conteúdo (arquivo cifrado + expiração de acesso).
