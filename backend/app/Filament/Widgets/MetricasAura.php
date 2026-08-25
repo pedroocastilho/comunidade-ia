@@ -14,6 +14,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
  */
 class MetricasAura extends StatsOverviewWidget
 {
+    protected static bool $isLazy = false;
+
     protected function getStats(): array
     {
         $ativosHoje = EventoAnalytics::where('nome', 'daily_plan_opened')
