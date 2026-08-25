@@ -132,7 +132,10 @@ class JornadaService
             return false;
         }
 
-        $atividadesCompletas = $dia->ritual_concluido && $dia->aula_concluida && $dia->acao_concluida;
+        // Atividade que o dia nao tem conta como concluida (nem todo dia tem as 3).
+        $atividadesCompletas = ($dia->ritual_audio_id === null || $dia->ritual_concluido)
+            && ($dia->aula_id === null || $dia->aula_concluida)
+            && ($dia->acao_texto === null || $dia->acao_concluida);
         $checkinHoje = $jornada->user->checkins()
             ->where('jornada_dia_id', $dia->id)
             ->whereDate('created_at', today())

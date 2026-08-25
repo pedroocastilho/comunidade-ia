@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\IaConfiguracaos\Pages;
 
 use App\Filament\Resources\IaConfiguracaos\IaConfiguracaoResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListIaConfiguracaos extends ListRecords
@@ -13,7 +12,6 @@ class ListIaConfiguracaos extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
         ];
     }
 }

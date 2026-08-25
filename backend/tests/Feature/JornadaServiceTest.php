@@ -111,6 +111,23 @@ class JornadaServiceTest extends TestCase
         $this->assertNotNull($dia->fresh()->concluido_em);
     }
 
+    public function test_dia_sem_aula_avanca_ao_concluir_as_atividades_existentes(): void
+    {
+        // template() cria dias com ritual + acao, sem aula: concluir os dois deve bastar
+        $this->template('prosperidade', 3);
+        $user = User::factory()->create(['objetivo_principal' => 'prosperidade']);
+        $jornada = $this->service->criarParaUsuario($user);
+
+        $dia = $this->service->diaAtual($jornada);
+        $this->assertNull($dia->aula_id);
+
+        $this->service->concluirAtividade($dia, 'ritual');
+        $this->service->concluirAtividade($dia->fresh(), 'acao');
+
+        $this->assertTrue($this->service->avancarSeCompleto($jornada->fresh()));
+        $this->assertSame(2, $jornada->fresh()->dia_atual);
+    }
+
     public function test_avanca_pelo_checkin_mesmo_sem_atividades(): void
     {
         $this->template('prosperidade', 3);
