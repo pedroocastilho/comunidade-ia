@@ -1,4 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <circle cx="32" cy="32" r="30" fill="#16120C" stroke="#C9A24B" stroke-width="3"/>
-  <text x="32" y="44" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="600" fill="#C9A24B">A</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="ouro" x1="12" y1="52" x2="52" y2="12" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C9A24B"/>
+      <stop offset="1" stop-color="#E8CE8F"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#16120C"/>
+  <circle cx="32" cy="32" r="26" stroke="#C9A24B" stroke-opacity="0.22" stroke-width="1.4"/>
+  <path d="M 42.2 14.3 A 20.4 20.4 0 1 0 49.1 23.4" stroke="url(#ouro)" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="32" cy="32" r="13" stroke="#C9A24B" stroke-opacity="0.4" stroke-width="1.1"/>
+  <path d="M 47.7 11.8 L 49.2 16.3 L 53.7 17.8 L 49.2 19.3 L 47.7 23.8 L 46.2 19.3 L 41.7 17.8 L 46.2 16.3 Z" fill="url(#ouro)"/>
 </svg>

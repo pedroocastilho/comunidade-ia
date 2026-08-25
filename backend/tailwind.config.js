@@ -14,7 +14,10 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['"Instrument Sans"', 'Figtree', ...defaultTheme.fontFamily.sans],
-                display: ['"Cormorant Garamond"', 'Sora', ...defaultTheme.fontFamily.serif],
+                // Titulos de interface: grotesk com personalidade (estrutura MeuFluxo, identidade propria)
+                display: ['"Bricolage Grotesque"', 'Sora', ...defaultTheme.fontFamily.sans],
+                // Acento de marca: wordmark, numero do Aura Score, momentos "rituais"
+                brand: ['Fraunces', ...defaultTheme.fontFamily.serif],
             },
             // Identidade Circulo Aura: dark quente + dourado (PRD secao 1).
             // Nao e preto absoluto: base espresso com subtom ambar, para nao pesar.

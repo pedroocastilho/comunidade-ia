@@ -15,6 +15,9 @@ const props = defineProps({
     checkin_hoje: Object,
     progresso_semana: Array,
     apelido: String,
+    continuar: Array,
+    em_alta: Array,
+    audios_destaque: Array,
 });
 
 function iniciarJornada(objetivo) {
@@ -62,7 +65,8 @@ function enviarCheckin() {
     <Head :title="t('nav.inicio')" />
 
     <PainelLayout>
-        <div class="mx-auto max-w-3xl px-5 py-8 lg:py-12">
+        <div class="mx-auto max-w-6xl px-5 py-8 lg:py-12">
+            <div class="mx-auto max-w-3xl">
             <!-- Saudacao -->
             <p class="text-sm uppercase tracking-widest text-aura-muted">{{ saudacao }},</p>
             <div class="mt-1 flex flex-wrap items-baseline justify-between gap-3">
@@ -229,6 +233,73 @@ function enviarCheckin() {
                     </div>
                 </section>
             </template>
+            </div>
+
+            <!-- Vitrine de conteudo (estrutura MeuFluxo) -->
+            <section v-if="continuar?.length" class="mt-14">
+                <h2 class="font-display text-2xl font-semibold text-aura-text">{{ t('home.continue') }}</h2>
+                <div class="mt-4 flex gap-4 overflow-x-auto pb-3">
+                    <Link
+                        v-for="curso in continuar"
+                        :key="curso.id"
+                        :href="route('curso', curso.slug)"
+                        class="group w-56 shrink-0"
+                    >
+                        <div class="relative aspect-video overflow-hidden rounded-xl border border-aura-line bg-aura-surface transition group-hover:border-aura-gold/60">
+                            <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+                            <span class="absolute bottom-2 left-3 right-3 truncate font-display text-sm font-semibold text-aura-text">{{ curso.titulo }}</span>
+                            <span class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-aura-gold">
+                                <AppIcon name="play" class="h-4 w-4" />
+                            </span>
+                        </div>
+                    </Link>
+                </div>
+            </section>
+
+            <section v-if="em_alta?.length" class="mt-12">
+                <h2 class="font-display text-2xl font-semibold text-aura-text">{{ t('home.emAlta') }}</h2>
+                <div class="mt-4 flex gap-5 overflow-x-auto pb-3">
+                    <Link
+                        v-for="curso in em_alta"
+                        :key="curso.id"
+                        :href="route('curso', curso.slug)"
+                        class="group w-72 shrink-0 overflow-hidden rounded-2xl border border-aura-line bg-aura-surface transition hover:border-aura-gold/60"
+                    >
+                        <div class="relative aspect-video bg-gradient-to-br from-aura-raised to-aura-deep">
+                            <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent"></div>
+                            <div class="absolute bottom-3 left-4 right-4">
+                                <p class="font-display text-lg font-semibold leading-tight text-aura-text">{{ curso.titulo }}</p>
+                                <p v-if="curso.instrutor" class="mt-0.5 text-xs text-aura-muted">{{ t('common.com') }} {{ curso.instrutor }}</p>
+                            </div>
+                        </div>
+                        <p v-if="curso.descricao" class="p-4 text-sm leading-relaxed text-aura-muted line-clamp-3">{{ curso.descricao }}</p>
+                    </Link>
+                </div>
+            </section>
+
+            <section v-if="audios_destaque?.length" class="mt-12">
+                <div class="flex items-baseline justify-between">
+                    <h2 class="font-display text-2xl font-semibold text-aura-text">{{ t('home.audiosDestaque') }}</h2>
+                    <Link :href="route('audios')" class="text-sm font-semibold text-aura-gold hover:underline">{{ t('home.verTodos') }}</Link>
+                </div>
+                <div class="mt-4 flex gap-4 overflow-x-auto pb-3">
+                    <Link
+                        v-for="audio in audios_destaque"
+                        :key="audio.id"
+                        :href="route('audio', audio.id)"
+                        class="group w-44 shrink-0"
+                    >
+                        <div class="relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-aura-line bg-gradient-to-br from-aura-raised to-aura-deep transition group-hover:border-aura-gold/60">
+                            <img v-if="audio.capa_url" :src="audio.capa_url" :alt="audio.titulo" class="absolute inset-0 h-full w-full object-cover" />
+                            <AppIcon v-else name="headphones" class="h-9 w-9 text-aura-gold/60 transition group-hover:text-aura-gold" />
+                        </div>
+                        <p class="mt-2 truncate text-sm font-semibold text-aura-text">{{ audio.titulo }}</p>
+                        <p class="text-xs text-aura-muted">{{ t(`audios.${audio.tipo}`) }} · {{ minutos(audio.duracao) }} {{ t('dia.min') }}</p>
+                    </Link>
+                </div>
+            </section>
         </div>
     </PainelLayout>
 </template>

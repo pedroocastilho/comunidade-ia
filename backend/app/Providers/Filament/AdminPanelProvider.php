@@ -32,13 +32,16 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandName('Círculo Aura')
             ->brandLogo(fn () => new HtmlString(
-                '<span style="font-family: \'Cormorant Garamond\', serif; font-size: 1.35rem; font-weight: 600; letter-spacing: 0.22em; color: #C9A24B;">CÍRCULO AURA</span>'
+                '<span style="display: inline-flex; align-items: center; gap: 0.6rem;">'
+                .'<img src="/favicon.svg" alt="" style="height: 1.9rem; width: 1.9rem; border-radius: 0.45rem;">'
+                .'<span style="font-family: Fraunces, serif; font-size: 1.25rem; font-weight: 600; letter-spacing: 0.22em; color: #C9A24B;">CÍRCULO AURA</span>'
+                .'</span>'
             ))
             ->defaultThemeMode(ThemeMode::Dark)
             ->font('Instrument Sans')
-            // Fonte display do wordmark (mesma identidade da web)
+            // Fonte do wordmark (mesma identidade da web)
             ->renderHook(PanelsRenderHook::HEAD_END, fn () => new HtmlString(
-                '<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&display=swap" rel="stylesheet">'
+                '<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">'
             ))
             ->colors([
                 // Identidade Circulo Aura: dourado + cinza quente (PRD secao 1)

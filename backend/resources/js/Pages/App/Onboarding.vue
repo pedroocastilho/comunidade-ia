@@ -89,7 +89,7 @@ function enviar() {
         </div>
 
         <header class="flex items-center justify-between px-6 py-5">
-            <span class="font-display text-lg font-semibold tracking-widest text-aura-gold">
+            <span class="font-brand text-lg font-semibold tracking-[0.24em] text-aura-gold">
                 {{ t('onboarding.titulo').toUpperCase() }}
             </span>
             <span class="text-sm text-aura-muted">

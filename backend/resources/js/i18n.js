@@ -25,6 +25,9 @@ export const messages = {
         },
         home: {
             continue: 'Continue de onde parou',
+            emAlta: 'Em alta no Círculo',
+            audiosDestaque: 'Áudios para elevar sua frequência',
+            verTodos: 'Ver todos',
         },
         cursos: {
             titulo: 'Cursos',
@@ -213,6 +216,9 @@ export const messages = {
         },
         home: {
             continue: 'Continúa donde lo dejaste',
+            emAlta: 'En alza en el Círculo',
+            audiosDestaque: 'Audios para elevar tu frecuencia',
+            verTodos: 'Ver todos',
         },
         cursos: {
             titulo: 'Cursos',

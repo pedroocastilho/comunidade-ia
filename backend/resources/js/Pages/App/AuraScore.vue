@@ -53,7 +53,7 @@ const barras = computed(() =>
             <div class="mt-8 flex justify-center">
                 <div class="relative flex h-52 w-52 items-center justify-center rounded-full border border-aura-gold/40 bg-gradient-to-b from-aura-surface to-aura-black shadow-[0_0_80px_-20px_rgba(201,162,75,0.45)]">
                     <div class="text-center">
-                        <div class="font-display text-6xl font-semibold text-aura-gold-light">{{ exibido }}</div>
+                        <div class="font-brand text-6xl font-semibold text-aura-gold-light">{{ exibido }}</div>
                         <div class="mt-1 text-xs uppercase tracking-widest text-aura-muted">{{ t('score.titulo') }}</div>
                     </div>
                 </div>

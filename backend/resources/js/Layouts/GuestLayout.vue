@@ -1,5 +1,6 @@
 <script setup>
 import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
+import LogoAura from '@/Components/LogoAura.vue';
 import { Link } from '@inertiajs/vue3';
 </script>
 
@@ -9,11 +10,9 @@ import { Link } from '@inertiajs/vue3';
             <LanguageSwitcher />
         </div>
 
-        <Link href="/" class="flex flex-col items-center gap-3">
-            <span class="flex h-14 w-14 items-center justify-center rounded-full border border-aura-gold/60 text-aura-gold">
-                <span class="font-display text-3xl font-semibold">A</span>
-            </span>
-            <span class="font-display text-2xl font-semibold tracking-[0.25em] text-aura-gold">
+        <Link href="/" class="flex flex-col items-center gap-4">
+            <LogoAura tamanho="h-16 w-16" />
+            <span class="font-brand text-2xl font-semibold tracking-[0.24em] text-aura-gold">
                 CÍRCULO AURA
             </span>
         </Link>

@@ -1,6 +1,7 @@
 <script setup>
 import AppIcon from '@/Components/AppIcon.vue';
 import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
+import LogoAura from '@/Components/LogoAura.vue';
 import { useI18n } from '@/useI18n';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
@@ -9,6 +10,7 @@ const { t } = useI18n();
 const page = usePage();
 
 const usuario = computed(() => page.props.auth?.user);
+const categorias = computed(() => page.props.categorias ?? []);
 
 const iniciais = computed(() => {
     const nome = usuario.value?.name ?? '';
@@ -46,8 +48,8 @@ function buscar() {
         <!-- Rail lateral (desktop) -->
         <aside class="sticky top-0 hidden h-screen w-20 shrink-0 flex-col items-center justify-between border-r border-aura-line bg-aura-deep py-6 md:flex">
             <div class="flex flex-col items-center gap-8">
-                <Link :href="route('home')" aria-label="Círculo Aura" class="flex h-10 w-10 items-center justify-center rounded-full border border-aura-gold/60 text-aura-gold">
-                    <span class="font-display text-xl font-semibold">A</span>
+                <Link :href="route('home')" aria-label="Círculo Aura">
+                    <LogoAura tamanho="h-11 w-11" />
                 </Link>
                 <nav class="flex flex-col items-center gap-2">
                     <template v-for="item in nav" :key="item.key">
@@ -87,7 +89,19 @@ function buscar() {
         <div class="flex min-w-0 flex-1 flex-col">
             <!-- Top bar -->
             <header class="sticky top-0 z-10 flex h-16 items-center justify-between gap-4 border-b border-aura-line bg-aura-black/90 px-5 backdrop-blur lg:px-10">
-                <span class="font-display text-lg font-semibold tracking-[0.25em] text-aura-gold">CÍRCULO AURA</span>
+                <div class="flex items-center gap-8">
+                    <span class="font-brand text-lg font-semibold tracking-[0.25em] text-aura-gold">CÍRCULO AURA</span>
+                    <nav class="hidden items-center gap-6 lg:flex">
+                        <Link
+                            v-for="cat in categorias"
+                            :key="cat.slug"
+                            :href="route('cursos', { categoria: cat.slug })"
+                            class="text-sm font-semibold text-aura-muted transition hover:text-aura-gold"
+                        >
+                            {{ cat.nome }}
+                        </Link>
+                    </nav>
+                </div>
 
                 <div class="flex flex-1 items-center justify-end gap-3">
                     <form class="relative hidden sm:block" @submit.prevent="buscar">

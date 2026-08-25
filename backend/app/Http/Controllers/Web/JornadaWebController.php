@@ -43,6 +43,35 @@ class JornadaWebController extends Controller
             ->map(fn ($c) => $c->created_at->dayOfWeekIso)
             ->unique();
 
+        // Vitrine de conteudo (estrutura MeuFluxo): continue de onde parou + em alta + audios.
+        $aulaIds = \App\Models\ProgressoAula::where('user_id', $user->id)
+            ->where('concluida', false)->where('posicao_segundos', '>', 0)
+            ->latest('updated_at')->pluck('aula_id');
+        $cursoIds = \App\Models\Aula::whereIn('aulas.id', $aulaIds)
+            ->join('modulos', 'aulas.modulo_id', '=', 'modulos.id')
+            ->pluck('modulos.curso_id')->unique()->values();
+        $continuar = \App\Models\Curso::whereIn('id', $cursoIds)
+            ->where('status', 'publicado')
+            ->limit(8)->get(['id', 'titulo', 'slug', 'capa_url', 'banner_url']);
+
+        $emAlta = \App\Models\Curso::where('status', 'publicado')
+            ->with('instrutor:id,nome')
+            ->orderByDesc('destaque')->orderByDesc('views')->orderBy('ordem')
+            ->limit(8)
+            ->get(['id', 'titulo', 'slug', 'descricao', 'capa_url', 'banner_url', 'instrutor_id'])
+            ->map(fn ($c) => [
+                'id' => $c->id,
+                'titulo' => $c->titulo,
+                'slug' => $c->slug,
+                'descricao' => $c->descricao,
+                'capa_url' => $c->banner_url ?? $c->capa_url,
+                'instrutor' => $c->instrutor?->nome,
+            ]);
+
+        $audiosDestaque = \App\Models\Audio::where('status', 'publicado')
+            ->orderBy('ordem')->latest('id')->limit(8)
+            ->get(['id', 'tipo', 'titulo', 'capa_url', 'duracao']);
+
         return Inertia::render('App/Home', [
             // Sem jornada ativa: oferece a escolha da proxima (celebrando se concluiu uma)
             'jornada_concluida' => ! $jornada && $user->jornadas()->where('status', 'concluida')->exists(),
@@ -74,6 +103,9 @@ class JornadaWebController extends Controller
             'checkin_hoje' => $user->checkins()->whereDate('created_at', today())->first()?->only(['humor', 'texto']),
             'progresso_semana' => collect(range(1, 7))->map(fn ($d) => $checkinsSemana->contains($d))->all(),
             'apelido' => $user->apelido ?? $user->name,
+            'continuar' => $continuar,
+            'em_alta' => $emAlta,
+            'audios_destaque' => $audiosDestaque,
         ]);
     }
 
