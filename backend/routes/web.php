@@ -25,8 +25,11 @@ Route::post('/idioma', function () {
     return back();
 })->name('idioma');
 
-Route::get('/sem-acesso', fn () => Inertia::render('App/SemAcesso'))
-    ->middleware('auth')->name('sem-acesso');
+Route::get('/sem-acesso', function () {
+    app(\App\Services\AnalyticsService::class)->registrar('subscription_blocked_view', auth()->user());
+
+    return Inertia::render('App/SemAcesso');
+})->middleware('auth')->name('sem-acesso');
 
 // Compatibilidade: Breeze referencia a rota "dashboard"; mandamos para a home.
 Route::get('/dashboard', fn () => redirect()->route('home'))

@@ -92,8 +92,10 @@ class PainelController extends Controller
         ]);
     }
 
-    public function aula(Request $request, Aula $aula, BunnyService $bunny)
+    public function aula(Request $request, Aula $aula, BunnyService $bunny, AnalyticsService $analytics)
     {
+        $analytics->registrar('lesson_started', $request->user(), ['tipo' => 'video', 'id' => $aula->id]);
+
         $aula->load('modulo.curso.modulos.aulas');
         $curso = $aula->modulo->curso;
 
