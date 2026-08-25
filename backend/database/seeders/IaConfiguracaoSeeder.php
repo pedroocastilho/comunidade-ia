@@ -17,7 +17,7 @@ class IaConfiguracaoSeeder extends Seeder
             'modelo' => 'claude-haiku-4-5-20251001',
             'temperatura' => '0.8',
             'max_tokens' => '1024',
-            'teto_diario_tokens' => '50000',
+            'teto_diario_tokens' => '250000', // ~40-60 mensagens/dia (dias de desabafo cabem)
             'system_prompt' => <<<'PROMPT'
 # QUEM VOCÊ É
 
