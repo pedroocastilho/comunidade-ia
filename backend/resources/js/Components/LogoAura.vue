@@ -1,6 +1,6 @@
 <script setup>
-// Marca do Circulo Aura: anel com aura externa e estrela de 4 pontas.
-// variante "marca" = so o simbolo; "completa" = simbolo + wordmark.
+// Marca do Circulo Aura: um unico anel dourado com abertura centrada no topo,
+// onde assenta uma estrela de 4 pontas. Simetria total no eixo vertical.
 defineProps({
     variante: { type: String, default: 'marca' }, // marca | completa
     tamanho: { type: String, default: 'h-10 w-10' },
@@ -16,20 +16,20 @@ defineProps({
                     <stop offset="1" stop-color="#E8CE8F" />
                 </linearGradient>
             </defs>
-            <!-- aura externa -->
-            <circle cx="32" cy="32" r="29" stroke="#C9A24B" stroke-opacity="0.22" stroke-width="1.4" />
-            <!-- anel principal, aberto no topo-direito (onde nasce a estrela) -->
-            <path
-                d="M 43.3 12.4 A 22.6 22.6 0 1 0 51 22.5"
+            <!-- anel unico com abertura simetrica no topo (pathLength 100: 88 de traco, 12 de vao) -->
+            <circle
+                cx="32" cy="34" r="21"
                 stroke="url(#ouro-aura)"
-                stroke-width="2.6"
+                stroke-width="2.75"
                 stroke-linecap="round"
+                pathLength="100"
+                stroke-dasharray="88 12"
+                stroke-dashoffset="-6"
+                transform="rotate(-90 32 34)"
             />
-            <!-- eco interno -->
-            <circle cx="32" cy="32" r="14.5" stroke="#C9A24B" stroke-opacity="0.4" stroke-width="1.1" />
-            <!-- estrela de 4 pontas na abertura do anel -->
+            <!-- estrela de 4 pontas assentada na abertura, no eixo central -->
             <path
-                d="M 49.4 9.6 L 51 14.6 L 56 16.2 L 51 17.8 L 49.4 22.8 L 47.8 17.8 L 42.8 16.2 L 47.8 14.6 Z"
+                d="M 32 5.5 L 33.8 11.2 L 39.5 13 L 33.8 14.8 L 32 20.5 L 30.2 14.8 L 24.5 13 L 30.2 11.2 Z"
                 fill="url(#ouro-aura)"
             />
         </svg>
