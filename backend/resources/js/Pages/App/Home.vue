@@ -140,15 +140,19 @@ function enviarCheckin() {
                     </div>
                 </section>
 
-                <!-- Falar com Aura (habilita na Fase 4) -->
+                <!-- Falar com Aura -->
                 <section class="mt-8">
-                    <div class="flex items-center gap-4 rounded-2xl border border-aura-gold/30 bg-gradient-to-r from-aura-surface to-aura-raised p-5" :title="t('nav.emBreve')">
+                    <Link
+                        :href="route('aura')"
+                        class="flex items-center gap-4 rounded-2xl border border-aura-gold/30 bg-gradient-to-r from-aura-surface to-aura-raised p-5 transition hover:border-aura-gold/60"
+                    >
                         <AppIcon name="sparkles" class="h-7 w-7 text-aura-gold" />
                         <div class="flex-1">
                             <p class="font-semibold text-aura-text">{{ t('dia.falarComAura') }}</p>
-                            <p class="text-sm text-aura-muted">{{ t('dia.auraEmBreve') }}</p>
+                            <p class="text-sm text-aura-muted">{{ t('dia.auraSubtitulo') }}</p>
                         </div>
-                    </div>
+                        <span class="text-aura-gold">→</span>
+                    </Link>
                 </section>
 
                 <!-- Progresso semanal + check-in -->

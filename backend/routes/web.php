@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\AudioWebController;
+use App\Http\Controllers\Web\AuraChatController;
 use App\Http\Controllers\Web\JornadaWebController;
 use App\Http\Controllers\Web\OnboardingController;
 use App\Http\Controllers\Web\PainelController;
@@ -45,6 +46,9 @@ Route::middleware(['auth', 'acesso.web', 'onboarding.completo'])->group(function
     Route::get('/jornada', [JornadaWebController::class, 'jornada'])->name('jornada');
     Route::post('/jornada/atividade', [JornadaWebController::class, 'concluirAtividade'])->name('jornada.atividade');
     Route::post('/checkin', [JornadaWebController::class, 'checkin'])->name('checkin');
+    Route::get('/aura', [AuraChatController::class, 'index'])->name('aura');
+    Route::post('/aura/mensagem', [AuraChatController::class, 'mensagem'])
+        ->middleware('throttle:30,10')->name('aura.mensagem');
     Route::get('/audios', [AudioWebController::class, 'index'])->name('audios');
     Route::get('/audios/{audio}', [AudioWebController::class, 'player'])->name('audio');
     Route::post('/audios/{audio}/progresso', [AudioWebController::class, 'progresso'])->name('audio.progresso');

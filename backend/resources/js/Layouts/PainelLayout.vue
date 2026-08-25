@@ -25,7 +25,7 @@ const nav = [
     { key: 'nav.inicio', icon: 'home', rota: 'home', ativos: ['home'] },
     { key: 'nav.jornada', icon: 'map', rota: 'jornada', ativos: ['jornada'] },
     { key: 'nav.biblioteca', icon: 'grid', rota: 'cursos', ativos: ['cursos', 'curso', 'aula', 'audios', 'audio'] },
-    { key: 'nav.aura', icon: 'sparkles', rota: null, ativos: [] }, // habilita na Fase 4
+    { key: 'nav.aura', icon: 'sparkles', rota: 'aura', ativos: ['aura'] },
     { key: 'nav.config', icon: 'settings', rota: 'profile.edit', ativos: ['profile.edit'] },
 ];
 
