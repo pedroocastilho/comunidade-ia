@@ -48,6 +48,8 @@ Route::middleware(['auth', 'acesso.web', 'onboarding.completo'])->group(function
     Route::get('/inicio', [JornadaWebController::class, 'home'])->name('home');
     Route::get('/jornada', [JornadaWebController::class, 'jornada'])->name('jornada');
     Route::post('/jornada/nova', [JornadaWebController::class, 'novaJornada'])->name('jornada.nova');
+    Route::get('/reavaliacao', [\App\Http\Controllers\Web\ReavaliacaoController::class, 'formulario'])->name('reavaliacao');
+    Route::post('/reavaliacao', [\App\Http\Controllers\Web\ReavaliacaoController::class, 'salvar'])->name('reavaliacao.salvar');
     Route::post('/jornada/atividade', [JornadaWebController::class, 'concluirAtividade'])->name('jornada.atividade');
     Route::post('/checkin', [JornadaWebController::class, 'checkin'])->name('checkin');
     Route::get('/aura', [AuraChatController::class, 'index'])->name('aura');

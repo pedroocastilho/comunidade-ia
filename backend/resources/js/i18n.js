@@ -112,6 +112,9 @@ export const messages = {
             prioridade: 'Seu foco agora',
             atencao: 'Ponto de atenção',
             comecar: 'Começar minha jornada',
+            evoluiu: 'desde a última medição',
+            estavel: 'Estável desde a última medição',
+            recuou: 'desde a última medição — sem julgamento: é um retrato, não uma nota',
             voltar: 'Voltar ao início',
             dimensoes: {
                 'prosperidade': 'Prosperidade',
@@ -127,6 +130,11 @@ export const messages = {
                 pronto_para_acelerar: 'Você está em um bom momento para acelerar.',
                 base_solida: 'Você tem uma base estável para construir.',
             },
+        },
+        reavaliacao: {
+            titulo: 'Remedir Aura Score',
+            subtitulo: 'Trinta dias depois: onde você está agora?',
+            calculando: 'Recalculando seu Aura Score...',
         },
         dia: {
             bomDia: 'Bom dia',
@@ -157,6 +165,7 @@ export const messages = {
             semJornadaTexto: 'Enquanto isso, explore a biblioteca de aulas e áudios.',
             irBiblioteca: 'Ir para a biblioteca',
             jornadaConcluida: 'Você completou sua jornada! ✦',
+            remedirScore: 'Remedir meu Aura Score',
             proximaJornadaTexto: 'Qual área da sua vida você quer transformar agora?',
             escolhaObjetivoTexto: 'Escolha o objetivo da sua primeira jornada de 30 dias.',
         },
@@ -306,6 +315,9 @@ export const messages = {
             prioridade: 'Tu foco ahora',
             atencao: 'Punto de atención',
             comecar: 'Comenzar mi camino',
+            evoluiu: 'desde la última medición',
+            estavel: 'Estable desde la última medición',
+            recuou: 'desde la última medición — sin juicio: es un retrato, no una nota',
             voltar: 'Volver al inicio',
             dimensoes: {
                 'prosperidade': 'Prosperidad',
@@ -321,6 +333,11 @@ export const messages = {
                 pronto_para_acelerar: 'Estás en un buen momento para acelerar.',
                 base_solida: 'Tienes una base estable para construir.',
             },
+        },
+        reavaliacao: {
+            titulo: 'Volver a medir Aura Score',
+            subtitulo: 'Treinta días después: ¿dónde estás ahora?',
+            calculando: 'Recalculando tu Aura Score...',
         },
         dia: {
             bomDia: 'Buenos días',
@@ -351,6 +368,7 @@ export const messages = {
             semJornadaTexto: 'Mientras tanto, explora la biblioteca de clases y audios.',
             irBiblioteca: 'Ir a la biblioteca',
             jornadaConcluida: '¡Completaste tu camino! ✦',
+            remedirScore: 'Volver a medir mi Aura Score',
             proximaJornadaTexto: '¿Qué área de tu vida quieres transformar ahora?',
             escolhaObjetivoTexto: 'Elige el objetivo de tu primer camino de 30 días.',
         },

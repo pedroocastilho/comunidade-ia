@@ -10,7 +10,10 @@ const props = defineProps({
     dimensoes: Array,
     apelido: String,
     tem_jornada: Boolean,
+    score_anterior: Number,
 });
+
+const delta = props.score_anterior !== null ? props.score.score_global - props.score_anterior : null;
 
 // Animacao de contagem do score global.
 const exibido = ref(0);
@@ -59,6 +62,13 @@ const barras = computed(() =>
                     </div>
                 </div>
             </div>
+
+            <!-- Evolucao desde a ultima medicao -->
+            <p v-if="delta !== null" class="mt-5 text-center text-lg">
+                <span v-if="delta > 0" class="font-semibold text-aura-gold">▲ +{{ delta }} {{ t('score.evoluiu') }}</span>
+                <span v-else-if="delta === 0" class="text-aura-muted">{{ t('score.estavel') }}</span>
+                <span v-else class="text-aura-muted">▼ {{ delta }} {{ t('score.recuou') }}</span>
+            </p>
 
             <!-- Mapa de Manifestacao -->
             <h2 class="mt-14 font-display text-2xl font-semibold">{{ t('score.mapa') }}</h2>

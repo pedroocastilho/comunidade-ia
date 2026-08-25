@@ -130,7 +130,8 @@ class OnboardingController extends Controller
 
     public function score(Request $request)
     {
-        $score = $request->user()->auraScores()->latest('calculado_em')->first();
+        $historico = $request->user()->auraScores()->orderByDesc('calculado_em')->limit(2)->get();
+        $score = $historico->first();
 
         if (! $score) {
             return redirect()->route('onboarding');
@@ -147,6 +148,7 @@ class OnboardingController extends Controller
             'dimensoes' => Dimensao::orderBy('ordem')->get(['nome', 'slug']),
             'apelido' => $request->user()->apelido ?? $request->user()->name,
             'tem_jornada' => $request->user()->jornadaAtiva !== null,
+            'score_anterior' => $historico->count() > 1 ? $historico[1]->score_global : null,
         ]);
     }
 

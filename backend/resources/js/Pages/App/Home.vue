@@ -130,7 +130,15 @@ function enviarCheckin() {
             <div v-if="!jornada" class="mt-10 rounded-2xl border border-aura-line bg-aura-surface p-8">
                 <template v-if="jornada_concluida">
                     <p class="text-center font-display text-3xl text-aura-gold">{{ t('dia.jornadaConcluida') }}</p>
-                    <p class="mt-2 text-center text-aura-muted">{{ t('dia.proximaJornadaTexto') }}</p>
+                    <div class="mt-4 text-center">
+                        <Link
+                            :href="route('reavaliacao')"
+                            class="inline-block rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-7 py-3 font-semibold text-aura-black transition hover:opacity-90"
+                        >
+                            {{ t('dia.remedirScore') }}
+                        </Link>
+                    </div>
+                    <p class="mt-6 text-center text-aura-muted">{{ t('dia.proximaJornadaTexto') }}</p>
                 </template>
                 <template v-else>
                     <h2 class="text-center font-display text-2xl text-aura-text">{{ t('dia.semJornadaTitulo') }}</h2>
