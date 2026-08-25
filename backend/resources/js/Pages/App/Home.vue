@@ -69,9 +69,9 @@ function enviarCheckin() {
 
     <PainelLayout>
         <!-- Hero em tela cheia (layout MeuFluxo): video/cena cosmica de fundo -->
-        <HeroAura :video="hero_video" class="h-[66vh] min-h-[480px] max-h-[780px] w-full">
+        <HeroAura :video="hero_video" class="-mt-16 h-[72vh] min-h-[520px] max-h-[820px] w-full">
             <div class="flex h-full flex-col justify-between">
-                <div class="mx-auto flex w-full max-w-6xl items-start justify-between gap-4 px-5 pt-8 lg:px-8">
+                <div class="mx-auto flex w-full max-w-6xl items-start justify-between gap-4 px-5 pt-24 lg:px-8">
                     <p class="text-sm uppercase tracking-widest text-aura-text/90">
                         {{ saudacao }}, <span class="font-semibold text-aura-text">{{ apelido }}</span>
                     </p>

@@ -11,6 +11,7 @@ const page = usePage();
 
 const usuario = computed(() => page.props.auth?.user);
 const categorias = computed(() => page.props.categorias ?? []);
+const avisoTopo = computed(() => page.props.aviso_topo);
 
 const iniciais = computed(() => {
     const nome = usuario.value?.name ?? '';
@@ -87,45 +88,52 @@ function buscar() {
 
         <!-- Coluna principal -->
         <div class="flex min-w-0 flex-1 flex-col">
-            <!-- Top bar -->
-            <header class="sticky top-0 z-10 flex h-16 items-center justify-between gap-4 border-b border-aura-line bg-aura-black/90 px-5 backdrop-blur lg:px-10">
-                <div class="flex items-center gap-8">
-                    <span class="font-brand text-lg font-semibold tracking-[0.25em] text-aura-gold">CÍRCULO AURA</span>
-                    <nav class="hidden items-center gap-6 lg:flex">
+            <!-- Barrinha de aviso no topo (unico elemento fixo, estilo MeuFluxo) -->
+            <div v-if="avisoTopo" class="flex items-center justify-center gap-2 bg-aura-gold px-4 py-1.5 text-center text-sm font-semibold text-aura-black">
+                {{ avisoTopo }}
+            </div>
+
+            <div class="relative flex-1">
+                <!-- Barra transparente flutuando por cima do conteudo/hero -->
+                <header class="absolute inset-x-0 top-0 z-20 flex h-16 items-center justify-between gap-4 px-5 lg:px-10">
+                    <div class="flex items-center gap-8">
+                        <span class="font-brand text-lg font-semibold tracking-[0.25em] text-aura-gold drop-shadow">CÍRCULO AURA</span>
+                        <nav class="hidden items-center gap-6 lg:flex">
+                            <Link
+                                v-for="cat in categorias"
+                                :key="cat.slug"
+                                :href="route('cursos', { categoria: cat.slug })"
+                                class="text-sm font-semibold text-aura-text/80 drop-shadow transition hover:text-aura-gold"
+                            >
+                                {{ cat.nome }}
+                            </Link>
+                        </nav>
+                    </div>
+
+                    <div class="flex flex-1 items-center justify-end gap-3">
+                        <form class="relative hidden sm:block" @submit.prevent="buscar">
+                            <AppIcon name="search" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-aura-muted" />
+                            <input
+                                v-model="busca"
+                                type="search"
+                                :placeholder="t('nav.buscar')"
+                                class="w-40 rounded-full border-aura-line/60 bg-aura-black/40 py-2 pl-10 pr-4 text-sm text-aura-text placeholder-aura-faint backdrop-blur focus:border-aura-gold focus:ring-aura-gold lg:w-56"
+                            />
+                        </form>
+                        <LanguageSwitcher />
                         <Link
-                            v-for="cat in categorias"
-                            :key="cat.slug"
-                            :href="route('cursos', { categoria: cat.slug })"
-                            class="text-sm font-semibold text-aura-muted transition hover:text-aura-gold"
+                            :href="route('profile.edit')"
+                            class="flex h-10 w-10 items-center justify-center rounded-full border border-aura-gold/50 bg-aura-black/40 text-sm font-bold text-aura-gold backdrop-blur"
                         >
-                            {{ cat.nome }}
+                            {{ iniciais }}
                         </Link>
-                    </nav>
-                </div>
+                    </div>
+                </header>
 
-                <div class="flex flex-1 items-center justify-end gap-3">
-                    <form class="relative hidden sm:block" @submit.prevent="buscar">
-                        <AppIcon name="search" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-aura-muted" />
-                        <input
-                            v-model="busca"
-                            type="search"
-                            :placeholder="t('nav.buscar')"
-                            class="w-40 rounded-full border-aura-line bg-aura-surface py-2 pl-10 pr-4 text-sm text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold lg:w-56"
-                        />
-                    </form>
-                    <LanguageSwitcher />
-                    <Link
-                        :href="route('profile.edit')"
-                        class="flex h-10 w-10 items-center justify-center rounded-full border border-aura-gold/50 bg-aura-surface text-sm font-bold text-aura-gold"
-                    >
-                        {{ iniciais }}
-                    </Link>
-                </div>
-            </header>
-
-            <main class="flex-1 pb-24 md:pb-0">
-                <slot />
-            </main>
+                <main class="min-h-full pb-24 pt-16 md:pb-0">
+                    <slot />
+                </main>
+            </div>
         </div>
 
         <!-- Nav inferior (mobile) -->

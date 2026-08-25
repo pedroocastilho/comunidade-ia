@@ -39,6 +39,13 @@ class HandleInertiaRequests extends Middleware
             'categorias' => fn () => $request->user()
                 ? Categoria::orderBy('ordem')->get(['nome', 'slug'])
                 : [],
+            // Barrinha de aviso no topo (estilo MeuFluxo): ultimo aviso publicado
+            'aviso_topo' => fn () => $request->user()
+                ? \App\Models\Aviso::whereNotNull('publicado_em')
+                    ->where('publicado_em', '<=', now())
+                    ->latest('publicado_em')
+                    ->value('titulo')
+                : null,
         ];
     }
 }
