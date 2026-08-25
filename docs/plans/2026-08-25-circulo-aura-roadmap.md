@@ -5,7 +5,7 @@
 
 | Fase | Plano | Entrega | Status |
 |------|-------|---------|--------|
-| 1 | `2026-08-25-fase1-fundacao-dados-score.md` | Migrations, models, seeds, fórmula do Aura Score, motor de jornada (services + testes). Backend puro. | — |
+| 1 | `2026-08-25-fase1-fundacao-dados-score.md` | Migrations, models, seeds, fórmula do Aura Score, motor de jornada (services + testes). Backend puro. | ✅ concluída (2026-08-25) |
 | 2 | fase2-onboarding-web | Questionário (12 perguntas), tela Score + Mapa de Manifestação, criação da jornada, redirect de onboarding. | — |
 | 3 | fase3-home-biblioteca-rebrand | Home diária (ritual/aula/ação/check-in), biblioteca com áudios de frequência, player de áudio, rebrand preto/dourado. | — |
 | 4 | fase4-agente-aura | Chat com Claude Haiku 4.5 (streaming), memória, ferramentas com guardrails, protocolo de crise, jobs de extração/classificação. | — |
