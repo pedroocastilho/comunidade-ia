@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'acesso.ativo' => \App\Http\Middleware\AcessoAtivo::class,
             'acesso.web' => \App\Http\Middleware\AcessoAtivoWeb::class,
+            'onboarding.completo' => \App\Http\Middleware\OnboardingCompleto::class,
         ]);
 
         // Em rotas de API nao ha redirect para "login" (que nao existe):
