@@ -18,7 +18,15 @@ class JornadaTemplateResource extends Resource
 {
     protected static ?string $model = JornadaTemplate::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMap;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Jornada';
+
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $modelLabel = 'template de jornada';
+
+    protected static ?string $pluralModelLabel = 'Templates de Jornada';
 
     public static function form(Schema $schema): Schema
     {

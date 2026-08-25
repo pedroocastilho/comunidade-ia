@@ -20,6 +20,14 @@ class CursoResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static string | \UnitEnum | null $navigationGroup = 'Conteúdo';
+
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $modelLabel = 'curso';
+
+    protected static ?string $pluralModelLabel = 'Cursos';
+
     public static function form(Schema $schema): Schema
     {
         return CursoForm::configure($schema);

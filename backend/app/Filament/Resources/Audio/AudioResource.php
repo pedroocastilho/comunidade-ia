@@ -18,7 +18,15 @@ class AudioResource extends Resource
 {
     protected static ?string $model = Audio::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMusicalNote;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Conteúdo';
+
+    protected static ?int $navigationSort = 4;
+
+    protected static ?string $modelLabel = 'áudio';
+
+    protected static ?string $pluralModelLabel = 'Áudios';
 
     public static function form(Schema $schema): Schema
     {

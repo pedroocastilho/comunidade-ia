@@ -4,7 +4,8 @@ import { messages } from './i18n';
 
 export function useI18n() {
     const page = usePage();
-    const locale = computed(() => page.props.locale ?? 'pt');
+    // Normaliza variantes regionais (pt_BR -> pt) para casar com as chaves do dicionario.
+    const locale = computed(() => (page.props.locale ?? 'pt').split('_')[0]);
 
     // t('secao.chave') -> texto no idioma atual (com fallback pra PT e pra chave).
     const t = (chave) => {

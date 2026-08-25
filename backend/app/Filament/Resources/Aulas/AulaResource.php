@@ -18,7 +18,15 @@ class AulaResource extends Resource
 {
     protected static ?string $model = Aula::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPlayCircle;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Conteúdo';
+
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $modelLabel = 'aula';
+
+    protected static ?string $pluralModelLabel = 'Aulas';
 
     public static function form(Schema $schema): Schema
     {

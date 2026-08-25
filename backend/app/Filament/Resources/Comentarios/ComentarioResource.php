@@ -18,7 +18,15 @@ class ComentarioResource extends Resource
 {
     protected static ?string $model = Comentario::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeft;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Comunidade';
+
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $modelLabel = 'comentário';
+
+    protected static ?string $pluralModelLabel = 'Comentários';
 
     public static function form(Schema $schema): Schema
     {

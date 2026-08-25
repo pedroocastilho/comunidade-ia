@@ -11,9 +11,11 @@ class SetLocale
     {
         $locale = session('locale', config('app.locale'));
 
-        if (in_array($locale, ['pt', 'es'], true)) {
-            app()->setLocale($locale);
-        }
+        // Backend usa pt_BR (traducoes do Filament); o front normaliza para 'pt'.
+        // Locale desconhecido (ex.: APP_LOCALE=en) cai no padrao do produto: pt_BR.
+        $mapa = ['pt' => 'pt_BR', 'pt_BR' => 'pt_BR', 'es' => 'es'];
+
+        app()->setLocale($mapa[$locale] ?? 'pt_BR');
 
         return $next($request);
     }

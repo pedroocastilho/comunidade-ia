@@ -18,7 +18,15 @@ class InstrutorResource extends Resource
 {
     protected static ?string $model = Instrutor::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Conteúdo';
+
+    protected static ?int $navigationSort = 6;
+
+    protected static ?string $modelLabel = 'instrutor';
+
+    protected static ?string $pluralModelLabel = 'Instrutores';
 
     public static function form(Schema $schema): Schema
     {
