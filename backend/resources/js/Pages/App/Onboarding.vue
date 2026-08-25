@@ -79,33 +79,33 @@ function enviar() {
 <template>
     <Head :title="t('onboarding.titulo')" />
 
-    <div class="flex min-h-screen flex-col bg-[#0A0A0A] text-[#F5F0E8]">
+    <div class="flex min-h-screen flex-col bg-aura-black text-aura-text">
         <!-- Barra de progresso -->
-        <div class="h-1 w-full bg-[#1A1A1A]">
+        <div class="h-1 w-full bg-aura-raised">
             <div
-                class="h-1 bg-gradient-to-r from-[#C9A24B] to-[#E5C878] transition-all duration-500"
+                class="h-1 bg-gradient-to-r from-aura-gold to-aura-gold-light transition-all duration-500"
                 :style="{ width: progresso + '%' }"
             />
         </div>
 
         <header class="flex items-center justify-between px-6 py-5">
-            <span class="font-display text-lg font-semibold tracking-widest text-[#C9A24B]">
+            <span class="font-display text-lg font-semibold tracking-widest text-aura-gold">
                 {{ t('onboarding.titulo').toUpperCase() }}
             </span>
-            <span class="text-sm text-[#9C948A]">
+            <span class="text-sm text-aura-muted">
                 {{ t('onboarding.passo') }} {{ indice + 1 }} {{ t('onboarding.de') }} {{ perguntas.length }}
             </span>
         </header>
 
         <main class="flex flex-1 items-center justify-center px-6 pb-16">
             <div v-if="enviando" class="text-center">
-                <div class="mx-auto mb-6 h-16 w-16 animate-pulse rounded-full border border-[#C9A24B] bg-[#C9A24B]/10" />
-                <p class="text-lg text-[#9C948A]">{{ t('onboarding.enviando') }}</p>
+                <div class="mx-auto mb-6 h-16 w-16 animate-pulse rounded-full border border-aura-gold bg-aura-gold/10" />
+                <p class="text-lg text-aura-muted">{{ t('onboarding.enviando') }}</p>
             </div>
 
             <Transition v-else name="pergunta" mode="out-in">
                 <div :key="atual.id" class="w-full max-w-xl">
-                    <p v-if="indice === 0" class="mb-3 text-sm uppercase tracking-widest text-[#9C948A]">
+                    <p v-if="indice === 0" class="mb-3 text-sm uppercase tracking-widest text-aura-muted">
                         {{ t('onboarding.subtitulo') }}
                     </p>
                     <h1 class="font-display text-3xl font-semibold leading-tight lg:text-4xl">
@@ -119,14 +119,14 @@ function enviar() {
                             v-model="respostas[atual.id]"
                             rows="4"
                             :placeholder="t('onboarding.placeholderTexto')"
-                            class="w-full rounded-xl border border-[#2A2A2A] bg-[#141414] p-4 text-[#F5F0E8] placeholder-[#5C564E] focus:border-[#C9A24B] focus:ring-[#C9A24B]"
+                            class="w-full rounded-xl border border-aura-line bg-aura-surface p-4 text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold"
                         />
                         <input
                             v-else
                             v-model="respostas[atual.id]"
                             type="text"
                             :placeholder="t('onboarding.placeholderTexto')"
-                            class="w-full rounded-xl border border-[#2A2A2A] bg-[#141414] p-4 text-lg text-[#F5F0E8] placeholder-[#5C564E] focus:border-[#C9A24B] focus:ring-[#C9A24B]"
+                            class="w-full rounded-xl border border-aura-line bg-aura-surface p-4 text-lg text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold"
                             @keyup.enter="avancar"
                         />
                     </div>
@@ -139,8 +139,8 @@ function enviar() {
                             type="button"
                             class="rounded-lg border py-3 text-lg font-semibold transition"
                             :class="respostas[atual.id] === n - 1
-                                ? 'border-[#C9A24B] bg-[#C9A24B] text-[#0A0A0A]'
-                                : 'border-[#2A2A2A] bg-[#141414] text-[#F5F0E8] hover:border-[#C9A24B]/60'"
+                                ? 'border-aura-gold bg-aura-gold text-aura-black'
+                                : 'border-aura-line bg-aura-surface text-aura-text hover:border-aura-gold/60'"
                             @click="responder(n - 1)"
                         >
                             {{ n - 1 }}
@@ -155,8 +155,8 @@ function enviar() {
                             type="button"
                             class="w-full rounded-xl border p-4 text-left text-lg transition"
                             :class="respostas[atual.id] === opcao.valor
-                                ? 'border-[#C9A24B] bg-[#C9A24B]/10 text-[#E5C878]'
-                                : 'border-[#2A2A2A] bg-[#141414] hover:border-[#C9A24B]/60'"
+                                ? 'border-aura-gold bg-aura-gold/10 text-aura-gold-light'
+                                : 'border-aura-line bg-aura-surface hover:border-aura-gold/60'"
                             @click="responder(opcao.valor)"
                         >
                             {{ opcao.rotulo }}
@@ -168,7 +168,7 @@ function enviar() {
                     <div class="mt-10 flex items-center justify-between">
                         <button
                             type="button"
-                            class="text-sm text-[#9C948A] transition hover:text-[#F5F0E8] disabled:invisible"
+                            class="text-sm text-aura-muted transition hover:text-aura-text disabled:invisible"
                             :disabled="indice === 0"
                             @click="voltar"
                         >
@@ -179,14 +179,14 @@ function enviar() {
                             <button
                                 v-if="!atual.obrigatoria"
                                 type="button"
-                                class="text-sm text-[#9C948A] underline-offset-4 transition hover:text-[#F5F0E8] hover:underline"
+                                class="text-sm text-aura-muted underline-offset-4 transition hover:text-aura-text hover:underline"
                                 @click="pular"
                             >
                                 {{ t('onboarding.pular') }}
                             </button>
                             <button
                                 type="button"
-                                class="rounded-full bg-gradient-to-r from-[#C9A24B] to-[#E5C878] px-8 py-3 font-semibold text-[#0A0A0A] transition hover:opacity-90"
+                                class="rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-8 py-3 font-semibold text-aura-black transition hover:opacity-90"
                                 @click="avancar"
                             >
                                 {{ ultima ? t('onboarding.finalizar') : t('onboarding.avancar') }}
