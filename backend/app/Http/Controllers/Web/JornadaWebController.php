@@ -72,6 +72,10 @@ class JornadaWebController extends Controller
             ->orderBy('ordem')->latest('id')->limit(8)
             ->get(['id', 'tipo', 'titulo', 'capa_url', 'duracao']);
 
+        // Curso em destaque para o hero (banner grande, estilo MeuFluxo)
+        $destaque = \App\Models\Curso::where('status', 'publicado')->where('destaque', true)
+            ->with('instrutor:id,nome')->first();
+
         return Inertia::render('App/Home', [
             // Sem jornada ativa: oferece a escolha da proxima (celebrando se concluiu uma)
             'jornada_concluida' => ! $jornada && $user->jornadas()->where('status', 'concluida')->exists(),
@@ -106,6 +110,13 @@ class JornadaWebController extends Controller
             'continuar' => $continuar,
             'em_alta' => $emAlta,
             'audios_destaque' => $audiosDestaque,
+            'destaque' => $destaque ? [
+                'titulo' => $destaque->titulo,
+                'slug' => $destaque->slug,
+                'descricao' => \Illuminate\Support\Str::limit($destaque->descricao, 140),
+                'banner_url' => $destaque->banner_url ?? $destaque->capa_url,
+                'instrutor' => $destaque->instrutor?->nome,
+            ] : null,
         ]);
     }
 

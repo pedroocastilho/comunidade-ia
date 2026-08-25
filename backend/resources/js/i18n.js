@@ -26,6 +26,8 @@ export const messages = {
         home: {
             continue: 'Continue de onde parou',
             emAlta: 'Em alta no Círculo',
+            destaque: 'Em destaque',
+            heroFrase: 'Um dia de cada vez. O que você pratica hoje constrói a vida que você manifesta amanhã.',
             audiosDestaque: 'Áudios para elevar sua frequência',
             verTodos: 'Ver todos',
         },
@@ -217,6 +219,8 @@ export const messages = {
         home: {
             continue: 'Continúa donde lo dejaste',
             emAlta: 'En alza en el Círculo',
+            destaque: 'Destacado',
+            heroFrase: 'Un día a la vez. Lo que practicas hoy construye la vida que manifiestas mañana.',
             audiosDestaque: 'Audios para elevar tu frecuencia',
             verTodos: 'Ver todos',
         },

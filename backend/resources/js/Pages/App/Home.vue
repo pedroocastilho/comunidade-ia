@@ -1,5 +1,6 @@
 <script setup>
 import AppIcon from '@/Components/AppIcon.vue';
+import HeroAura from '@/Components/HeroAura.vue';
 import PainelLayout from '@/Layouts/PainelLayout.vue';
 import { useI18n } from '@/useI18n';
 import { Head, Link, router } from '@inertiajs/vue3';
@@ -18,6 +19,7 @@ const props = defineProps({
     continuar: Array,
     em_alta: Array,
     audios_destaque: Array,
+    destaque: Object,
 });
 
 function iniciarJornada(objetivo) {
@@ -65,18 +67,46 @@ function enviarCheckin() {
     <Head :title="t('nav.inicio')" />
 
     <PainelLayout>
-        <div class="mx-auto max-w-6xl px-5 py-8 lg:py-12">
-            <div class="mx-auto max-w-3xl">
-            <!-- Saudacao -->
-            <p class="text-sm uppercase tracking-widest text-aura-muted">{{ saudacao }},</p>
-            <div class="mt-1 flex flex-wrap items-baseline justify-between gap-3">
-                <h1 class="font-display text-4xl font-semibold text-aura-text lg:text-5xl">{{ apelido }}</h1>
-                <div v-if="jornada" class="flex items-center gap-2 rounded-full border border-aura-gold/40 bg-aura-surface px-4 py-1.5">
-                    <AppIcon name="flame" class="h-4 w-4 text-aura-gold" />
-                    <span class="text-sm font-semibold text-aura-gold">{{ t('dia.diaN') }} {{ jornada.dia }}</span>
-                    <span class="text-xs text-aura-muted">· {{ jornada.etapa }}</span>
+        <div class="mx-auto max-w-6xl px-5 py-8 lg:py-10">
+            <!-- Hero vivo: aura respirando + particulas + banner do destaque -->
+            <HeroAura :imagem="destaque?.banner_url">
+                <div class="flex min-h-64 flex-col justify-between gap-6 p-7 lg:min-h-72 lg:p-10">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="text-sm uppercase tracking-widest text-aura-muted">{{ saudacao }},</p>
+                            <h1 class="mt-1 font-display text-4xl font-semibold text-aura-text lg:text-5xl">{{ apelido }}</h1>
+                        </div>
+                        <div v-if="jornada" class="flex shrink-0 items-center gap-2 rounded-full border border-aura-gold/40 bg-aura-black/50 px-4 py-1.5 backdrop-blur">
+                            <AppIcon name="flame" class="h-4 w-4 text-aura-gold" />
+                            <span class="text-sm font-semibold text-aura-gold">{{ t('dia.diaN') }} {{ jornada.dia }}</span>
+                            <span class="text-xs text-aura-muted">· {{ jornada.etapa }}</span>
+                        </div>
+                    </div>
+
+                    <div v-if="destaque">
+                        <p class="text-xs font-semibold uppercase tracking-widest text-aura-gold">{{ t('home.destaque') }}</p>
+                        <p class="mt-1 max-w-xl font-display text-2xl font-semibold leading-tight text-aura-text lg:text-3xl">{{ destaque.titulo }}</p>
+                        <p v-if="destaque.descricao" class="mt-2 hidden max-w-lg text-sm leading-relaxed text-aura-muted sm:block">{{ destaque.descricao }}</p>
+                        <div class="mt-4 flex flex-wrap items-center gap-3">
+                            <Link
+                                :href="route('curso', destaque.slug)"
+                                class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-6 py-2.5 font-semibold text-aura-black transition hover:opacity-90"
+                            >
+                                <AppIcon name="play" class="h-4 w-4" /> {{ t('common.iniciar') }}
+                            </Link>
+                            <Link
+                                :href="route('curso', destaque.slug)"
+                                class="rounded-full border border-aura-gold/50 px-6 py-2.5 font-semibold text-aura-gold transition hover:bg-aura-gold/10"
+                            >
+                                {{ t('common.detalhes') }}
+                            </Link>
+                        </div>
+                    </div>
+                    <p v-else class="max-w-md text-aura-muted">{{ t('home.heroFrase') }}</p>
                 </div>
-            </div>
+            </HeroAura>
+
+            <div class="mx-auto mt-4 max-w-3xl">
 
             <!-- Sem jornada ativa: celebrar (se concluiu) e escolher a proxima -->
             <div v-if="!jornada" class="mt-10 rounded-2xl border border-aura-line bg-aura-surface p-8">
