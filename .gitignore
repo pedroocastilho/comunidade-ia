@@ -21,3 +21,7 @@
 Thumbs.db
 .idea/
 .vscode/
+
+# Video de preview do hero (local, nao versionar)
+/-e-x-t-e-r-n-a-l_-i-m-a-g-e_-t-o_-v-i-d-e-o-*.mp4
+backend/public/hero-aura.mp4

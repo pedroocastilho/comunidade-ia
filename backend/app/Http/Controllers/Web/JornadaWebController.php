@@ -110,6 +110,8 @@ class JornadaWebController extends Controller
             'continuar' => $continuar,
             'em_alta' => $emAlta,
             'audios_destaque' => $audiosDestaque,
+            // Video do hero (se existir em public/); senao o front usa a cena em canvas
+            'hero_video' => file_exists(public_path('hero-aura.mp4')) ? '/hero-aura.mp4' : null,
             'destaque' => $destaque ? [
                 'titulo' => $destaque->titulo,
                 'slug' => $destaque->slug,

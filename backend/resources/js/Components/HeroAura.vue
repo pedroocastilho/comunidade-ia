@@ -5,11 +5,37 @@
 // Pausa em aba oculta; prefers-reduced-motion => 1 frame estatico.
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
+const props = defineProps({
+    // Caminho de um video de fundo (mp4). Sem video, roda a cena em canvas.
+    video: { type: String, default: null },
+});
+
 const canvas = ref(null);
+const vid = ref(null);
+const videoFalhou = ref(false);
 let animacao = null;
 
 onMounted(() => {
+    // Modo video: loop continuo com guardas (nunca fica parado)
+    if (props.video) {
+        const v = vid.value;
+        if (!v) return;
+        v.muted = true; // garante autoplay em todos os browsers
+        const tocar = () => v.play().catch(() => {});
+        const retomar = () => { if (!document.hidden) tocar(); };
+        v.addEventListener('pause', retomar);
+        v.addEventListener('ended', () => { v.currentTime = 0; tocar(); }); // reforco do loop
+        v.addEventListener('stalled', tocar);
+        v.addEventListener('error', () => { videoFalhou.value = true; });
+        document.addEventListener('visibilitychange', retomar);
+        tocar();
+
+        onBeforeUnmount(() => document.removeEventListener('visibilitychange', retomar));
+        return;
+    }
+
     const el = canvas.value;
+    if (!el) return;
     const ctx = el.getContext('2d');
     const reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let L, A, cx, cy, R;
@@ -227,15 +253,28 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="relative overflow-hidden rounded-3xl border border-aura-line bg-aura-deep">
-        <!-- cena cosmica -->
-        <canvas ref="canvas" class="absolute inset-0 h-full w-full"></canvas>
+    <div class="relative overflow-hidden bg-aura-deep">
+        <!-- video de fundo em loop continuo -->
+        <video
+            v-if="video && !videoFalhou"
+            ref="vid"
+            :src="video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+            class="absolute inset-0 h-full w-full object-cover"
+        ></video>
 
-        <!-- escurecimento para leitura do texto (esquerda/base) -->
-        <div class="absolute inset-0 bg-gradient-to-r from-aura-black/80 via-aura-black/30 to-transparent"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-aura-black/60 via-transparent to-transparent"></div>
+        <!-- cena cosmica em canvas (padrao / fallback) -->
+        <canvas v-else ref="canvas" class="absolute inset-0 h-full w-full"></canvas>
 
-        <div class="relative">
+        <!-- escurecimento para leitura do texto e fusao com a pagina -->
+        <div class="absolute inset-0 bg-gradient-to-r from-aura-black/80 via-aura-black/25 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-aura-black via-aura-black/20 to-transparent"></div>
+
+        <div class="relative h-full">
             <slot />
         </div>
     </div>
