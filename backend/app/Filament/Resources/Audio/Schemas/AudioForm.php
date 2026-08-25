@@ -45,7 +45,11 @@ class AudioForm
                     ->required()
                     ->default('rascunho'),
                 Toggle::make('premium'),
-                TextInput::make('produto_externo_id'),
+                TextInput::make('produto_externo_id')
+                    ->label('ID do produto no checkout'),
+                TextInput::make('checkout_url')
+                    ->label('URL do checkout')
+                    ->url(),
             ]);
     }
 }

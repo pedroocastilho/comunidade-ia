@@ -29,10 +29,15 @@ class AudioWebController extends Controller
 
         $concluidos = $request->user()->progressoAudios()
             ->where('concluido', true)->pluck('audio_id')->all();
+        $user = $request->user();
 
         return Inertia::render('App/Audios', [
-            'audios' => $q->get(['id', 'tipo', 'titulo', 'descricao', 'capa_url', 'duracao'])
-                ->map(fn ($a) => [...$a->toArray(), 'concluido' => in_array($a->id, $concluidos, true)]),
+            'audios' => $q->get(['id', 'tipo', 'titulo', 'descricao', 'capa_url', 'duracao', 'premium', 'produto_externo_id'])
+                ->map(fn ($a) => [
+                    ...collect($a->toArray())->except(['premium', 'produto_externo_id']),
+                    'concluido' => in_array($a->id, $concluidos, true),
+                    'bloqueado' => $a->premium && ! $user->comprou($a->produto_externo_id),
+                ]),
             'filtros' => $request->only(['tipo', 'busca']),
         ]);
     }
@@ -43,9 +48,14 @@ class AudioWebController extends Controller
 
         $progresso = $request->user()->progressoAudios()->where('audio_id', $audio->id)->first();
 
-        $analytics->registrar('lesson_started', $request->user(), ['tipo' => 'audio', 'id' => $audio->id]);
+        // Premium avulso sem compra: pagina vira oferta, sem urls de midia
+        $bloqueado = $audio->premium && ! $request->user()->comprou($audio->produto_externo_id);
+
+        $analytics->registrar($bloqueado ? 'premium_viewed' : 'lesson_started', $request->user(), ['tipo' => 'audio', 'id' => $audio->id]);
 
         return Inertia::render('App/AudioPlayer', [
+            'premium_bloqueado' => $bloqueado,
+            'checkout_url' => $bloqueado ? $audio->checkout_url : null,
             'audio' => [
                 'id' => $audio->id,
                 'tipo' => $audio->tipo,
@@ -53,8 +63,8 @@ class AudioWebController extends Controller
                 'descricao' => $audio->descricao,
                 'capa_url' => $audio->capa_url,
                 'duracao' => $audio->duracao,
-                'arquivo_url' => $audio->arquivo_url,
-                'embed_url' => $audio->bunny_video_id ? $bunny->embedUrl($audio->bunny_video_id) : null,
+                'arquivo_url' => $bloqueado ? null : $audio->arquivo_url,
+                'embed_url' => (! $bloqueado && $audio->bunny_video_id) ? $bunny->embedUrl($audio->bunny_video_id) : null,
                 'posicao_segundos' => $progresso->posicao_segundos ?? 0,
                 'concluido' => (bool) ($progresso->concluido ?? false),
             ],

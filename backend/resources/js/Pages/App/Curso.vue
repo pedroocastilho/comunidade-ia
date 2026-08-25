@@ -9,6 +9,8 @@ const { t } = useI18n();
 
 const props = defineProps({
     curso: Object,
+    premium_bloqueado: Boolean,
+    checkout_url: String,
 });
 
 const aulas = computed(() => props.curso.modulos.flatMap((m) => m.aulas));
@@ -46,8 +48,24 @@ function formatarDuracao(segundos) {
                     <span>{{ total }} {{ t('common.aulas') }}</span>
                 </div>
 
+                <!-- Premium sem compra: oferta no lugar do CTA -->
+                <div v-if="premium_bloqueado" class="mt-8 max-w-md rounded-2xl border border-aura-gold/40 bg-aura-gold/5 p-6">
+                    <p class="text-xs font-semibold uppercase tracking-[0.28em] text-aura-gold">🔒 {{ t('premium.selo') }}</p>
+                    <p class="mt-2 text-sm leading-relaxed text-aura-muted">{{ t('premium.bloqueadoTexto') }}</p>
+                    <a
+                        v-if="checkout_url"
+                        :href="checkout_url"
+                        target="_blank"
+                        rel="noopener"
+                        class="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-7 py-3 font-semibold text-aura-black transition hover:opacity-90"
+                    >
+                        {{ t('premium.cta') }}
+                    </a>
+                    <p v-else class="mt-4 text-sm font-semibold text-aura-gold">{{ t('premium.indisponivel') }}</p>
+                </div>
+
                 <Link
-                    v-if="primeira"
+                    v-else-if="primeira"
                     :href="route('aula', primeira.id)"
                     class="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-7 py-3 font-semibold text-aura-black transition hover:opacity-90"
                 >
@@ -71,19 +89,22 @@ function formatarDuracao(segundos) {
                         <h2 class="font-display text-lg font-bold tracking-tight text-aura-text">{{ modulo.titulo }}</h2>
                         <ul class="mt-3 divide-y divide-aura-line overflow-hidden rounded-2xl border border-aura-line bg-aura-surface">
                             <li v-for="aula in modulo.aulas" :key="aula.id">
-                                <Link
-                                    :href="route('aula', aula.id)"
-                                    class="flex items-center gap-4 px-5 py-4 transition hover:bg-aura-raised"
+                                <component
+                                    :is="premium_bloqueado ? 'div' : Link"
+                                    :href="premium_bloqueado ? undefined : route('aula', aula.id)"
+                                    class="flex items-center gap-4 px-5 py-4 transition"
+                                    :class="premium_bloqueado ? 'cursor-default opacity-60' : 'hover:bg-aura-raised'"
                                 >
                                     <span
                                         class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
                                         :class="aula.concluida ? 'bg-aura-gold text-aura-black' : 'bg-aura-gold/10 text-aura-gold'"
                                     >
-                                        <AppIcon :name="aula.concluida ? 'check' : 'play'" class="h-4 w-4" />
+                                        <span v-if="premium_bloqueado" class="text-xs">🔒</span>
+                                        <AppIcon v-else :name="aula.concluida ? 'check' : 'play'" class="h-4 w-4" />
                                     </span>
                                     <span class="flex-1 font-medium text-aura-text">{{ aula.titulo }}</span>
                                     <span class="text-sm text-aura-faint">{{ formatarDuracao(aula.duracao) }}</span>
-                                </Link>
+                                </component>
                             </li>
                         </ul>
                     </div>

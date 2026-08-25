@@ -94,6 +94,12 @@ const minutos = (segundos) => Math.max(1, Math.round((segundos ?? 0) / 60));
                         <span v-if="audio.concluido" class="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-aura-gold text-aura-black">
                             <AppIcon name="check" class="h-4 w-4" />
                         </span>
+                        <span
+                            v-else-if="audio.bloqueado"
+                            class="absolute right-2.5 top-2.5 rounded-full border border-aura-gold/50 bg-aura-black/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-aura-gold backdrop-blur"
+                        >
+                            🔒 {{ t('premium.selo') }}
+                        </span>
                     </div>
                     <div class="p-4">
                         <p class="text-xs font-semibold uppercase tracking-widest text-aura-gold">{{ t(`audios.${audio.tipo}`) }}</p>

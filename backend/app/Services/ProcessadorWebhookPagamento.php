@@ -19,6 +19,7 @@ class ProcessadorWebhookPagamento
         'assinatura_cancelada',
         'pagamento_atrasado',
         'pagamento_regularizado',
+        'compra_aprovada', // conteudo premium avulso (PRD secao 9)
     ];
 
     /**
@@ -57,6 +58,8 @@ class ProcessadorWebhookPagamento
                 'evento' => $payload['evento'] ?? null,
                 'email' => $payload['email'] ?? null,
                 'nome' => $payload['nome'] ?? null,
+                'produto_externo_id' => $payload['produto_externo_id'] ?? null,
+                'payload' => $payload,
             ],
         };
     }
@@ -91,10 +94,41 @@ class ProcessadorWebhookPagamento
             throw new \RuntimeException("Usuario nao encontrado: {$email}");
         }
 
+        if ($evento === 'compra_aprovada') {
+            $this->liberarCompra($user, $dados);
+
+            return;
+        }
+
         match ($evento) {
             'assinatura_cancelada' => $user->update(['tem_acesso' => false, 'assinatura_status' => 'cancelada']),
             'pagamento_atrasado' => $user->update(['assinatura_status' => 'atrasada']), // carencia: mantem acesso
             'pagamento_regularizado' => $user->update(['tem_acesso' => true, 'assinatura_status' => 'ativa']),
         };
+    }
+
+    /**
+     * Libera um conteudo premium avulso comprado no checkout externo.
+     */
+    private function liberarCompra(User $user, array $dados): void
+    {
+        $produtoId = $dados['produto_externo_id'] ?? null;
+        if (! $produtoId) {
+            throw new \InvalidArgumentException('Compra sem produto_externo_id.');
+        }
+
+        $curso = \App\Models\Curso::where('produto_externo_id', $produtoId)->first();
+        $audio = $curso ? null : \App\Models\Audio::where('produto_externo_id', $produtoId)->first();
+
+        if (! $curso && ! $audio) {
+            throw new \RuntimeException("Produto premium nao encontrado: {$produtoId}");
+        }
+
+        \App\Models\Compra::firstOrCreate(
+            ['user_id' => $user->id, 'produto_externo_id' => $produtoId],
+            ['curso_id' => $curso?->id, 'audio_id' => $audio?->id, 'payload' => $dados['payload'] ?? null],
+        );
+
+        app(AnalyticsService::class)->registrar('premium_purchased', $user, ['produto' => $produtoId]);
     }
 }

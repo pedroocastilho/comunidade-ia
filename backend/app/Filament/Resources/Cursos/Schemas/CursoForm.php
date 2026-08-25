@@ -45,6 +45,13 @@ class CursoForm
                     ->required()
                     ->numeric()
                     ->default(0),
+                Toggle::make('premium')
+                    ->label('Premium (venda avulsa)'),
+                TextInput::make('produto_externo_id')
+                    ->label('ID do produto no checkout'),
+                TextInput::make('checkout_url')
+                    ->label('URL do checkout')
+                    ->url(),
             ]);
     }
 }

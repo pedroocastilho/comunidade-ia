@@ -194,6 +194,12 @@ export const messages = {
             erroGenerico: 'Não consegui falar com a Aura agora. Tente novamente.',
             aviso: 'A Aura é uma inteligência artificial e não substitui acompanhamento médico, psicológico ou financeiro.',
         },
+        premium: {
+            selo: 'Premium',
+            bloqueadoTexto: 'Este é um conteúdo avulso, fora da sua assinatura. Adquira uma vez e ele fica seu para sempre — liberado aqui automaticamente após a compra.',
+            cta: 'Quero este conteúdo',
+            indisponivel: 'Em breve disponível para compra.',
+        },
         audios: {
             titulo: 'Áudios',
             buscar: 'Buscar áudios...',
@@ -401,6 +407,12 @@ export const messages = {
             digitando: 'Aura está escribiendo',
             erroGenerico: 'No pude hablar con Aura ahora. Inténtalo de nuevo.',
             aviso: 'Aura es una inteligencia artificial y no sustituye acompañamiento médico, psicológico ni financiero.',
+        },
+        premium: {
+            selo: 'Premium',
+            bloqueadoTexto: 'Este es un contenido individual, fuera de tu suscripción. Cómpralo una vez y es tuyo para siempre — se libera aquí automáticamente tras la compra.',
+            cta: 'Quiero este contenido',
+            indisponivel: 'Muy pronto disponible para compra.',
         },
         audios: {
             titulo: 'Audios',

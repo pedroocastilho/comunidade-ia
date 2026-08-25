@@ -95,4 +95,21 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsToMany(Conquista::class)->withPivot('conquistado_em');
     }
+
+    public function compras()
+    {
+        return $this->hasMany(Compra::class);
+    }
+
+    /**
+     * O usuario comprou este produto premium avulso?
+     */
+    public function comprou(?string $produtoExternoId): bool
+    {
+        if (! $produtoExternoId) {
+            return false;
+        }
+
+        return $this->compras()->where('produto_externo_id', $produtoExternoId)->exists();
+    }
 }

@@ -75,6 +75,12 @@ function filtrar() {
                     <div class="relative aspect-[3/4] overflow-hidden rounded-2xl border border-aura-line bg-aura-surface transition group-hover:border-aura-gold/60">
                         <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+                        <span
+                            v-if="curso.bloqueado"
+                            class="absolute right-2.5 top-2.5 rounded-full border border-aura-gold/50 bg-aura-black/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-aura-gold backdrop-blur"
+                        >
+                            🔒 {{ t('premium.selo') }}
+                        </span>
                         <h3 class="absolute inset-x-0 bottom-0 p-3 font-display text-lg font-semibold leading-tight text-aura-text">{{ curso.titulo }}</h3>
                     </div>
                 </Link>

@@ -55,17 +55,34 @@ class PainelController extends Controller
             $q->whereHas('categoria', fn ($c) => $c->where('slug', $request->query('categoria')));
         }
 
+        $user = $request->user();
+
         return Inertia::render('App/Cursos', [
-            'cursos' => $q->orderBy('ordem')->get(['id', 'titulo', 'slug', 'capa_url', 'descricao']),
+            'cursos' => $q->orderBy('ordem')
+                ->get(['id', 'titulo', 'slug', 'capa_url', 'descricao', 'premium', 'produto_externo_id'])
+                ->map(fn ($c) => [
+                    'id' => $c->id,
+                    'titulo' => $c->titulo,
+                    'slug' => $c->slug,
+                    'capa_url' => $c->capa_url,
+                    'descricao' => $c->descricao,
+                    'bloqueado' => $c->premium && ! $user->comprou($c->produto_externo_id),
+                ]),
             'categorias' => Categoria::orderBy('ordem')->get(['nome', 'slug']),
             'filtros' => $request->only(['busca', 'categoria']),
         ]);
     }
 
-    public function curso(Request $request, string $slug)
+    public function curso(Request $request, string $slug, AnalyticsService $analytics)
     {
         $curso = Curso::where('status', 'publicado')->where('slug', $slug)
             ->with(['instrutor', 'modulos.aulas'])->firstOrFail();
+
+        // Conteudo premium avulso: sem compra, vira pagina de venda (PRD secao 9)
+        $bloqueado = $curso->premium && ! $request->user()->comprou($curso->produto_externo_id);
+        if ($bloqueado) {
+            $analytics->registrar('premium_viewed', $request->user(), ['tipo' => 'curso', 'id' => $curso->id]);
+        }
 
         $concluidas = ProgressoAula::where('user_id', $request->user()->id)
             ->where('concluida', true)
@@ -73,6 +90,8 @@ class PainelController extends Controller
             ->pluck('aula_id')->all();
 
         return Inertia::render('App/Curso', [
+            'premium_bloqueado' => $bloqueado,
+            'checkout_url' => $bloqueado ? $curso->checkout_url : null,
             'curso' => [
                 'titulo' => $curso->titulo,
                 'slug' => $curso->slug,
@@ -94,10 +113,15 @@ class PainelController extends Controller
 
     public function aula(Request $request, Aula $aula, BunnyService $bunny, AnalyticsService $analytics)
     {
-        $analytics->registrar('lesson_started', $request->user(), ['tipo' => 'video', 'id' => $aula->id]);
-
         $aula->load('modulo.curso.modulos.aulas');
         $curso = $aula->modulo->curso;
+
+        // Aula de curso premium sem compra: volta para a pagina de venda do curso
+        if ($curso->premium && ! $request->user()->comprou($curso->produto_externo_id)) {
+            return redirect()->route('curso', $curso->slug);
+        }
+
+        $analytics->registrar('lesson_started', $request->user(), ['tipo' => 'video', 'id' => $aula->id]);
 
         $progresso = ProgressoAula::where('user_id', $request->user()->id)
             ->where('aula_id', $aula->id)->first();
