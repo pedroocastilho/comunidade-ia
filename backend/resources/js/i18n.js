@@ -112,6 +112,7 @@ export const messages = {
             prioridade: 'Seu foco agora',
             atencao: 'Ponto de atenção',
             comecar: 'Começar minha jornada',
+            voltar: 'Voltar ao início',
             dimensoes: {
                 'prosperidade': 'Prosperidade',
                 'relacionamentos': 'Relacionamentos',
@@ -305,6 +306,7 @@ export const messages = {
             prioridade: 'Tu foco ahora',
             atencao: 'Punto de atención',
             comecar: 'Comenzar mi camino',
+            voltar: 'Volver al inicio',
             dimensoes: {
                 'prosperidade': 'Prosperidad',
                 'relacionamentos': 'Relaciones',

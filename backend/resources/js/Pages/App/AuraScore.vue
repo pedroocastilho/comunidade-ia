@@ -9,6 +9,7 @@ const props = defineProps({
     score: Object,
     dimensoes: Array,
     apelido: String,
+    tem_jornada: Boolean,
 });
 
 // Animacao de contagem do score global.
@@ -102,7 +103,7 @@ const barras = computed(() =>
                     :href="route('home')"
                     class="inline-block rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-10 py-4 text-lg font-semibold text-aura-black transition hover:opacity-90"
                 >
-                    {{ t('score.comecar') }}
+                    {{ tem_jornada ? t('score.voltar') : t('score.comecar') }}
                 </Link>
             </div>
         </div>

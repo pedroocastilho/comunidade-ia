@@ -104,6 +104,7 @@ class JornadaWebController extends Controller
                     'concluida' => $dia->acao_concluida,
                 ] : null,
             ] : null,
+            'aura_score' => $user->auraScores()->latest('calculado_em')->value('score_global'),
             'checkin_hoje' => $user->checkins()->whereDate('created_at', today())->first()?->only(['humor', 'texto']),
             'progresso_semana' => collect(range(1, 7))->map(fn ($d) => $checkinsSemana->contains($d))->all(),
             'apelido' => $user->apelido ?? $user->name,

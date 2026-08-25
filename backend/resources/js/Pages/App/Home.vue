@@ -21,6 +21,7 @@ const props = defineProps({
     audios_destaque: Array,
     destaque: Object,
     hero_video: String,
+    aura_score: Number,
 });
 
 function iniciarJornada(objetivo) {
@@ -75,10 +76,21 @@ function enviarCheckin() {
                     <p class="text-sm uppercase tracking-widest text-aura-text/90">
                         {{ saudacao }}, <span class="font-semibold text-aura-text">{{ apelido }}</span>
                     </p>
-                    <div v-if="jornada" class="flex shrink-0 items-center gap-2 rounded-full border border-aura-gold/40 bg-aura-black/50 px-4 py-1.5 backdrop-blur">
-                        <AppIcon name="flame" class="h-4 w-4 text-aura-gold" />
-                        <span class="text-sm font-semibold text-aura-gold">{{ t('dia.diaN') }} {{ jornada.dia }}</span>
-                        <span class="text-xs text-aura-muted">· {{ jornada.etapa }}</span>
+                    <div class="flex shrink-0 items-center gap-2">
+                        <Link
+                            v-if="aura_score !== null"
+                            :href="route('aura-score')"
+                            class="flex items-center gap-2 rounded-full border border-aura-gold/40 bg-aura-black/50 px-4 py-1.5 backdrop-blur transition hover:border-aura-gold"
+                            :title="t('score.mapa')"
+                        >
+                            <AppIcon name="sparkles" class="h-4 w-4 text-aura-gold" />
+                            <span class="text-sm font-semibold text-aura-gold">{{ aura_score }}</span>
+                        </Link>
+                        <div v-if="jornada" class="flex items-center gap-2 rounded-full border border-aura-gold/40 bg-aura-black/50 px-4 py-1.5 backdrop-blur">
+                            <AppIcon name="flame" class="h-4 w-4 text-aura-gold" />
+                            <span class="text-sm font-semibold text-aura-gold">{{ t('dia.diaN') }} {{ jornada.dia }}</span>
+                            <span class="text-xs text-aura-muted">· {{ jornada.etapa }}</span>
+                        </div>
                     </div>
                 </div>
 

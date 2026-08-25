@@ -146,6 +146,7 @@ class OnboardingController extends Controller
             ],
             'dimensoes' => Dimensao::orderBy('ordem')->get(['nome', 'slug']),
             'apelido' => $request->user()->apelido ?? $request->user()->name,
+            'tem_jornada' => $request->user()->jornadaAtiva !== null,
         ]);
     }
 
