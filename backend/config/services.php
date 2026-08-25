@@ -39,6 +39,10 @@ return [
         'key' => env('ANTHROPIC_API_KEY'),
     ],
 
+    'webhook_pagamento' => [
+        'token' => env('WEBHOOK_PAGAMENTO_TOKEN'),
+    ],
+
     'bunny' => [
         'library_id' => env('BUNNY_STREAM_LIBRARY_ID'),
         'token_key' => env('BUNNY_STREAM_TOKEN_KEY'),

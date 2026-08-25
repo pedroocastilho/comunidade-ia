@@ -52,3 +52,7 @@ Route::prefix('v1')->group(function () {
         });
     });
 });
+
+// Webhook de pagamento (assinatura recorrente) — token secreto por header, sem auth de usuario
+Route::post('/webhooks/pagamento/{plataforma}', [\App\Http\Controllers\Api\WebhookPagamentoController::class, 'receber'])
+    ->name('webhooks.pagamento');
