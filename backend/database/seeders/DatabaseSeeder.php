@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             DimensaoSeeder::class,
             QuestionarioSeeder::class,
             IaConfiguracaoSeeder::class,
+            JornadaTemplateSeeder::class,
         ]);
     }
 }

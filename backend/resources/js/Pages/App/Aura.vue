@@ -35,6 +35,12 @@ function novaConversa() {
     erro.value = null;
 }
 
+function abrirConversa(id) {
+    if (id && id !== conversaId.value) {
+        window.location.href = route('aura') + '?conversa=' + id;
+    }
+}
+
 // Exibicao progressiva (typewriter) da resposta da Aura.
 function digitar(mensagem) {
     const completo = mensagem.conteudo;
@@ -103,13 +109,25 @@ async function enviar() {
                         <p class="text-xs text-aura-muted">{{ t('aura.subtitulo') }}</p>
                     </div>
                 </div>
-                <button
-                    type="button"
-                    class="rounded-full border border-aura-line px-4 py-2 text-sm font-semibold text-aura-muted transition hover:border-aura-gold/50 hover:text-aura-gold"
-                    @click="novaConversa"
-                >
-                    {{ t('aura.novaConversa') }}
-                </button>
+                <div class="flex items-center gap-2">
+                    <select
+                        v-if="conversas.length > 1"
+                        class="max-w-44 rounded-full border-aura-line bg-aura-surface py-2 pl-4 pr-8 text-sm text-aura-muted focus:border-aura-gold focus:ring-aura-gold"
+                        :value="conversaId ?? ''"
+                        @change="abrirConversa(Number($event.target.value))"
+                    >
+                        <option v-for="conversa in conversas" :key="conversa.id" :value="conversa.id">
+                            {{ conversa.titulo ?? t('aura.titulo') }}
+                        </option>
+                    </select>
+                    <button
+                        type="button"
+                        class="rounded-full border border-aura-line px-4 py-2 text-sm font-semibold text-aura-muted transition hover:border-aura-gold/50 hover:text-aura-gold"
+                        @click="novaConversa"
+                    >
+                        {{ t('aura.novaConversa') }}
+                    </button>
+                </div>
             </div>
 
             <!-- Mensagens -->

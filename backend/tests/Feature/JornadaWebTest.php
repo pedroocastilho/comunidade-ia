@@ -141,6 +141,65 @@ class JornadaWebTest extends TestCase
         $this->actingAs($user)->post('/checkin', ['humor' => 9])->assertSessionHasErrors();
     }
 
+    public function test_home_apos_concluir_oferece_nova_jornada(): void
+    {
+        [$user, $jornada] = $this->alunoComJornada();
+        $jornada->update(['status' => 'concluida']);
+
+        $this->actingAs($user)->get('/inicio')
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('jornada', null)
+                ->where('jornada_concluida', true)
+                ->has('objetivos', 5));
+    }
+
+    public function test_nova_jornada_com_objetivo_valido(): void
+    {
+        [$user, $jornada] = $this->alunoComJornada();
+        $jornada->update(['status' => 'concluida']);
+
+        // template publicado tambem para relacionamentos
+        $template = JornadaTemplate::factory()->create([
+            'dimensao_id' => Dimensao::where('slug', 'relacionamentos')->value('id'),
+            'duracao_dias' => 2,
+            'status' => 'publicado',
+        ]);
+        JornadaTemplateDia::factory()->create(['template_id' => $template->id, 'dia' => 1]);
+        JornadaTemplateDia::factory()->create(['template_id' => $template->id, 'dia' => 2]);
+
+        $this->actingAs($user)
+            ->post('/jornada/nova', ['objetivo' => 'relacionamentos'])
+            ->assertRedirect();
+
+        $user = $user->fresh();
+        $this->assertSame('relacionamentos', $user->objetivo_principal);
+        $this->assertNotNull($user->jornadaAtiva);
+        $this->assertSame($template->id, $user->jornadaAtiva->template_id);
+        $this->assertSame(2, $user->jornadas()->count());
+        $this->assertSame(1, EventoAnalytics::where('nome', 'journey_created')
+            ->where('user_id', $user->id)->count());
+    }
+
+    public function test_nova_jornada_e_bloqueada_com_jornada_ativa(): void
+    {
+        [$user] = $this->alunoComJornada();
+
+        $this->actingAs($user)->post('/jornada/nova', ['objetivo' => 'prosperidade']);
+
+        $this->assertSame(1, $user->jornadas()->count());
+    }
+
+    public function test_nova_jornada_valida_o_objetivo(): void
+    {
+        [$user, $jornada] = $this->alunoComJornada();
+        $jornada->update(['status' => 'concluida']);
+
+        $this->actingAs($user)
+            ->post('/jornada/nova', ['objetivo' => 'ficar-rico'])
+            ->assertSessionHasErrors();
+    }
+
     public function test_pagina_jornada_lista_os_dias(): void
     {
         [$user] = $this->alunoComJornada();

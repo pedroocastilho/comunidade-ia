@@ -44,6 +44,9 @@ class JornadaWebController extends Controller
             ->unique();
 
         return Inertia::render('App/Home', [
+            // Sem jornada ativa: oferece a escolha da proxima (celebrando se concluiu uma)
+            'jornada_concluida' => ! $jornada && $user->jornadas()->where('status', 'concluida')->exists(),
+            'objetivos' => $jornada ? [] : \App\Models\Dimensao::orderBy('ordem')->get(['nome', 'slug']),
             'jornada' => $jornada ? [
                 'dia' => $jornada->dia_atual,
                 'total_dias' => $jornada->template->duracao_dias,
@@ -72,6 +75,31 @@ class JornadaWebController extends Controller
             'progresso_semana' => collect(range(1, 7))->map(fn ($d) => $checkinsSemana->contains($d))->all(),
             'apelido' => $user->apelido ?? $user->name,
         ]);
+    }
+
+    /**
+     * Inicia uma nova jornada (apos concluir a anterior, ou se nunca houve uma).
+     */
+    public function novaJornada(Request $request)
+    {
+        $request->validate([
+            'objetivo' => 'required|string|exists:dimensoes,slug',
+        ]);
+
+        $user = $request->user();
+
+        if ($user->jornadaAtiva) {
+            return back(); // ja tem jornada em andamento
+        }
+
+        $user->update(['objetivo_principal' => $request->input('objetivo')]);
+
+        $jornada = $this->jornadas->criarParaUsuario($user->fresh());
+        if ($jornada) {
+            $this->analytics->registrar('journey_created', $user, ['template' => $jornada->template_id]);
+        }
+
+        return redirect()->route('home');
     }
 
     public function concluirAtividade(Request $request)

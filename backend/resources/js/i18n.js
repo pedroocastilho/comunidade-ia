@@ -150,7 +150,9 @@ export const messages = {
             semJornadaTitulo: 'Sua jornada ainda não começou',
             semJornadaTexto: 'Enquanto isso, explore a biblioteca de aulas e áudios.',
             irBiblioteca: 'Ir para a biblioteca',
-            jornadaConcluida: 'Você completou sua jornada de 30 dias! ✦',
+            jornadaConcluida: 'Você completou sua jornada! ✦',
+            proximaJornadaTexto: 'Qual área da sua vida você quer transformar agora?',
+            escolhaObjetivoTexto: 'Escolha o objetivo da sua primeira jornada de 30 dias.',
         },
         jornadaPage: {
             titulo: 'Sua Jornada',
@@ -174,6 +176,7 @@ export const messages = {
         },
         audios: {
             titulo: 'Áudios',
+            buscar: 'Buscar áudios...',
             todos: 'Todos',
             frequencia: 'Frequências',
             meditacao: 'Meditações',
@@ -335,7 +338,9 @@ export const messages = {
             semJornadaTitulo: 'Tu camino aún no ha comenzado',
             semJornadaTexto: 'Mientras tanto, explora la biblioteca de clases y audios.',
             irBiblioteca: 'Ir a la biblioteca',
-            jornadaConcluida: '¡Completaste tu camino de 30 días! ✦',
+            jornadaConcluida: '¡Completaste tu camino! ✦',
+            proximaJornadaTexto: '¿Qué área de tu vida quieres transformar ahora?',
+            escolhaObjetivoTexto: 'Elige el objetivo de tu primer camino de 30 días.',
         },
         jornadaPage: {
             titulo: 'Tu Camino',
@@ -359,6 +364,7 @@ export const messages = {
         },
         audios: {
             titulo: 'Audios',
+            buscar: 'Buscar audios...',
             todos: 'Todos',
             frequencia: 'Frecuencias',
             meditacao: 'Meditaciones',

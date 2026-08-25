@@ -68,4 +68,23 @@ class AuraSeedTest extends TestCase
         $this->assertSame(12, QuestionarioPergunta::count());
         $this->assertSame(5, IaConfiguracao::count());
     }
+
+    public function test_seed_cria_as_5_jornadas_oficiais_com_30_dias(): void
+    {
+        $this->seed(\Database\Seeders\JornadaTemplateSeeder::class);
+        $this->seed(\Database\Seeders\JornadaTemplateSeeder::class); // idempotente
+
+        $templates = \App\Models\JornadaTemplate::with('dias')->get();
+        $this->assertCount(5, $templates);
+
+        foreach ($templates as $template) {
+            $this->assertSame('publicado', $template->status);
+            $this->assertCount(30, $template->dias);
+            $this->assertSame(30, $template->dias->pluck('acao_texto')->filter()->count());
+            $this->assertCount(4, $template->dias->pluck('etapa')->unique());
+        }
+
+        // cada dimensao tem exatamente 1 template
+        $this->assertSame(5, $templates->pluck('dimensao_id')->unique()->count());
+    }
 }

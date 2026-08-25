@@ -48,6 +48,23 @@ class AuraChatWebTest extends TestCase
                 ->has('conversas', 1));
     }
 
+    public function test_parametro_conversa_abre_a_conversa_escolhida(): void
+    {
+        $user = $this->aluno();
+        AuraConversa::factory()->for($user)->create(['titulo' => 'Mais recente']);
+        $antiga = AuraConversa::factory()->for($user)->create(['titulo' => 'Antiga', 'updated_at' => now()->subDay()]);
+
+        $this->actingAs($user)->get('/aura?conversa='.$antiga->id)
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where('conversa_ativa', $antiga->id));
+
+        // conversa de outro usuario nao abre: cai na mais recente do proprio usuario
+        $alheia = AuraConversa::factory()->create();
+        $this->actingAs($user)->get('/aura?conversa='.$alheia->id)
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->whereNot('conversa_ativa', $alheia->id));
+    }
+
     public function test_mensagem_cria_conversa_e_retorna_resposta(): void
     {
         $user = $this->aluno();

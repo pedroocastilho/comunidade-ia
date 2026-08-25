@@ -9,11 +9,17 @@ const { t } = useI18n();
 
 const props = defineProps({
     jornada: Object,
+    jornada_concluida: Boolean,
+    objetivos: Array,
     atividades: Object,
     checkin_hoje: Object,
     progresso_semana: Array,
     apelido: String,
 });
+
+function iniciarJornada(objetivo) {
+    router.post(route('jornada.nova'), { objetivo }, { preserveScroll: true });
+}
 
 const saudacao = computed(() => {
     const hora = new Date().getHours();
@@ -68,18 +74,33 @@ function enviarCheckin() {
                 </div>
             </div>
 
-            <!-- Jornada concluida -->
-            <div v-if="jornada && jornada.status === 'concluida'" class="mt-10 rounded-2xl border border-aura-gold/40 bg-aura-surface p-8 text-center">
-                <p class="font-display text-2xl text-aura-gold">{{ t('dia.jornadaConcluida') }}</p>
-            </div>
+            <!-- Sem jornada ativa: celebrar (se concluiu) e escolher a proxima -->
+            <div v-if="!jornada" class="mt-10 rounded-2xl border border-aura-line bg-aura-surface p-8">
+                <template v-if="jornada_concluida">
+                    <p class="text-center font-display text-3xl text-aura-gold">{{ t('dia.jornadaConcluida') }}</p>
+                    <p class="mt-2 text-center text-aura-muted">{{ t('dia.proximaJornadaTexto') }}</p>
+                </template>
+                <template v-else>
+                    <h2 class="text-center font-display text-2xl text-aura-text">{{ t('dia.semJornadaTitulo') }}</h2>
+                    <p class="mt-2 text-center text-aura-muted">{{ t('dia.escolhaObjetivoTexto') }}</p>
+                </template>
 
-            <!-- Sem jornada -->
-            <div v-else-if="!jornada" class="mt-10 rounded-2xl border border-aura-line bg-aura-surface p-8 text-center">
-                <h2 class="font-display text-2xl text-aura-text">{{ t('dia.semJornadaTitulo') }}</h2>
-                <p class="mt-2 text-aura-muted">{{ t('dia.semJornadaTexto') }}</p>
-                <Link :href="route('cursos')" class="mt-6 inline-block rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-7 py-3 font-semibold text-aura-black">
-                    {{ t('dia.irBiblioteca') }}
-                </Link>
+                <div class="mt-6 space-y-3">
+                    <button
+                        v-for="objetivo in objetivos"
+                        :key="objetivo.slug"
+                        type="button"
+                        class="w-full rounded-xl border border-aura-line bg-aura-raised p-4 text-left text-lg text-aura-text transition hover:border-aura-gold/60 hover:text-aura-gold-light"
+                        @click="iniciarJornada(objetivo.slug)"
+                    >
+                        {{ objetivo.nome }}
+                    </button>
+                </div>
+
+                <p class="mt-6 text-center text-sm text-aura-muted">
+                    {{ t('dia.semJornadaTexto') }}
+                    <Link :href="route('cursos')" class="text-aura-gold underline-offset-4 hover:underline">{{ t('dia.irBiblioteca') }}</Link>
+                </p>
             </div>
 
             <!-- Plano do dia -->

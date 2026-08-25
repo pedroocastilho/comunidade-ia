@@ -26,7 +26,11 @@ class AuraChatController extends Controller
         $user = $request->user();
 
         $conversas = $user->auraConversas()->latest('updated_at')->limit(20)->get(['id', 'titulo', 'updated_at']);
-        $ativa = $conversas->first();
+
+        // ?conversa=ID abre uma conversa especifica (sempre do proprio usuario)
+        $ativa = $request->filled('conversa')
+            ? $conversas->firstWhere('id', $request->integer('conversa')) ?? $conversas->first()
+            : $conversas->first();
 
         return Inertia::render('App/Aura', [
             'conversas' => $conversas,

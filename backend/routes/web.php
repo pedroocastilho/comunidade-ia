@@ -47,6 +47,7 @@ Route::middleware(['auth', 'acesso.web', 'onboarding.completo'])->group(function
     // Home diaria do Circulo Aura (o catalogo antigo segue em /cursos)
     Route::get('/inicio', [JornadaWebController::class, 'home'])->name('home');
     Route::get('/jornada', [JornadaWebController::class, 'jornada'])->name('jornada');
+    Route::post('/jornada/nova', [JornadaWebController::class, 'novaJornada'])->name('jornada.nova');
     Route::post('/jornada/atividade', [JornadaWebController::class, 'concluirAtividade'])->name('jornada.atividade');
     Route::post('/checkin', [JornadaWebController::class, 'checkin'])->name('checkin');
     Route::get('/aura', [AuraChatController::class, 'index'])->name('aura');

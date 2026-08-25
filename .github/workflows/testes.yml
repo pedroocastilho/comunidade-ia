@@ -1,0 +1,46 @@
+name: Testes
+
+on:
+  push:
+    branches: [main, circulo-aura-v1]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, intl, sqlite3, pdo_sqlite
+          coverage: none
+
+      - name: Instalar dependencias PHP
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Build do frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Preparar ambiente
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Rodar testes
+        run: php artisan test --compact

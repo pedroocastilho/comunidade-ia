@@ -11,10 +11,20 @@ const props = defineProps({
     filtros: Object,
 });
 
+import { ref } from 'vue';
+
 const tipos = ['frequencia', 'meditacao', 'ritual'];
+const busca = ref(props.filtros.busca ?? '');
 
 function filtrar(tipo) {
-    router.get(route('audios'), tipo ? { tipo } : {}, { preserveState: true });
+    router.get(route('audios'), {
+        ...(tipo ? { tipo } : {}),
+        ...(busca.value ? { busca: busca.value } : {}),
+    }, { preserveState: true });
+}
+
+function buscar() {
+    filtrar(props.filtros.tipo ?? null);
 }
 
 const minutos = (segundos) => Math.max(1, Math.round((segundos ?? 0) / 60));
@@ -35,7 +45,17 @@ const minutos = (segundos) => Math.max(1, Math.round((segundos ?? 0) / 60));
                 </span>
             </div>
 
-            <h1 class="mt-8 font-display text-4xl font-semibold text-aura-text">{{ t('audios.titulo') }}</h1>
+            <div class="mt-8 flex flex-wrap items-end justify-between gap-4">
+                <h1 class="font-display text-4xl font-semibold text-aura-text">{{ t('audios.titulo') }}</h1>
+                <form class="w-full sm:w-72" @submit.prevent="buscar">
+                    <input
+                        v-model="busca"
+                        type="search"
+                        :placeholder="t('audios.buscar')"
+                        class="w-full rounded-full border-aura-line bg-aura-surface text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold"
+                    />
+                </form>
+            </div>
 
             <!-- Filtro por tipo -->
             <div class="mt-5 flex flex-wrap gap-2">

@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap');
-
+/* Fontes carregadas via <link> no app.blade.php (evita @import bloqueante) */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
