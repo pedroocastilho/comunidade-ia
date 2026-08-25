@@ -78,6 +78,7 @@ class AudioWebController extends Controller
         $progresso->save();
 
         if ($concluir && ! $jaEstavaConcluido) {
+            app(\App\Services\GamificacaoService::class)->conceder($user, 'audio');
             $analytics->registrar('lesson_completed', $user, ['tipo' => 'audio', 'id' => $audio->id]);
 
             // Se for o ritual do dia, marca a atividade e tenta avancar.

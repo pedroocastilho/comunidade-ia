@@ -18,9 +18,25 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $user = $request->user();
+        $gamificacao = app(\App\Services\GamificacaoService::class);
+        $conquistadas = $user->conquistas()->get()->keyBy('slug');
+
         return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
+            'evolucao' => [
+                ...$gamificacao->progressoNivel($user->xp ?? 0),
+                'streak' => $gamificacao->streak($user),
+            ],
+            'conquistas' => \App\Models\Conquista::orderBy('ordem')->get()
+                ->map(fn ($c) => [
+                    'slug' => $c->slug,
+                    'nome' => $c->nome,
+                    'descricao' => $c->descricao,
+                    'icone' => $c->icone,
+                    'conquistado_em' => $conquistadas[$c->slug]?->pivot?->conquistado_em ?? null,
+                ]),
         ]);
     }
 

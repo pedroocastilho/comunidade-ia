@@ -52,6 +52,8 @@ class ReavaliacaoController extends Controller
         $resultado = $scoreService->calcular($escalas, $user->objetivo_principal, $user->objetivo_secundario);
         $scoreService->salvar($user, $resultado);
 
+        app(\App\Services\GamificacaoService::class)->conceder($user, 'remedicao');
+
         $analytics->registrar('onboarding_completed', $user, [
             'tipo' => 'reavaliacao',
             'score_global' => $resultado['score_global'],

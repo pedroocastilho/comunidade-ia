@@ -146,10 +146,17 @@ class PainelController extends Controller
     {
         $user = $request->user();
 
+        $jaConcluida = ProgressoAula::where('user_id', $user->id)
+            ->where('aula_id', $aula->id)->where('concluida', true)->exists();
+
         ProgressoAula::updateOrCreate(
             ['user_id' => $user->id, 'aula_id' => $aula->id],
             ['concluida' => true],
         );
+
+        if (! $jaConcluida) {
+            app(\App\Services\GamificacaoService::class)->conceder($user, 'aula');
+        }
 
         $analytics->registrar('lesson_completed', $user, ['tipo' => 'video', 'id' => $aula->id]);
 

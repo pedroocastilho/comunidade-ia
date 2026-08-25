@@ -90,4 +90,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(ProgressoAudio::class);
     }
+
+    public function conquistas()
+    {
+        return $this->belongsToMany(Conquista::class)->withPivot('conquistado_em');
+    }
 }

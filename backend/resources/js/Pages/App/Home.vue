@@ -22,6 +22,7 @@ const props = defineProps({
     destaque: Object,
     hero_video: String,
     aura_score: Number,
+    streak: Number,
 });
 
 function iniciarJornada(objetivo) {
@@ -248,7 +249,10 @@ function enviarCheckin() {
                                 :class="feito ? 'bg-aura-gold' : 'bg-aura-raised'"
                             />
                         </div>
-                        <p class="mt-4 text-sm text-aura-muted">
+                        <p v-if="streak > 0" class="mt-3 text-sm font-semibold text-aura-gold">
+                            🔥 {{ streak }} {{ streak === 1 ? t('dia.diaSeguido') : t('dia.diasSeguidos') }}
+                        </p>
+                        <p class="mt-3 text-sm text-aura-muted">
                             {{ t('dia.proximoMarco') }}: <span class="text-aura-text">{{ t('dia.fimEtapa') }} {{ jornada.etapa }}</span>
                         </p>
                     </div>

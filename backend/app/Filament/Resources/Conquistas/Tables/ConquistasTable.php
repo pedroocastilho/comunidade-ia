@@ -1,30 +1,29 @@
 <?php
 
-namespace App\Filament\Resources\Users\Tables;
+namespace App\Filament\Resources\Conquistas\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class UsersTable
+class ConquistasTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('xp')
-                    ->label('XP')
-                    ->sortable(),
-                TextColumn::make('name')
+                TextColumn::make('slug')
                     ->searchable(),
-                TextColumn::make('email')
-                    ->label('Email address')
+                TextColumn::make('nome')
                     ->searchable(),
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
+                TextColumn::make('descricao')
+                    ->searchable(),
+                TextColumn::make('icone')
+                    ->searchable(),
+                TextColumn::make('ordem')
+                    ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -34,15 +33,6 @@ class UsersTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('phone')
-                    ->searchable(),
-                TextColumn::make('role')
-                    ->searchable(),
-                IconColumn::make('tem_acesso')
-                    ->boolean(),
-                TextColumn::make('acesso_expira_em')
-                    ->date()
-                    ->sortable(),
             ])
             ->filters([
                 //

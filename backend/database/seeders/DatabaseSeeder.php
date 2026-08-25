@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             QuestionarioSeeder::class,
             IaConfiguracaoSeeder::class,
             JornadaTemplateSeeder::class,
+            ConquistaSeeder::class,
         ]);
     }
 }

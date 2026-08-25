@@ -104,12 +104,16 @@ class JornadaService
             return $existente->fresh();
         }
 
-        return Checkin::create([
+        $checkin = Checkin::create([
             'user_id' => $user->id,
             'jornada_dia_id' => $diaAtual?->id,
             'humor' => $humor,
             'texto' => $texto,
         ]);
+
+        app(GamificacaoService::class)->conceder($user, 'checkin');
+
+        return $checkin;
     }
 
     /**
@@ -154,6 +158,12 @@ class JornadaService
             'status' => $ultimoDia ? 'concluida' : 'ativa',
             'ultimo_avanco_em' => today(),
         ]);
+
+        $gamificacao = app(GamificacaoService::class);
+        $gamificacao->conceder($jornada->user, 'dia_completo');
+        if ($ultimoDia) {
+            $gamificacao->conceder($jornada->user, 'jornada_completa');
+        }
 
         return true;
     }

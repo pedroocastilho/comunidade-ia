@@ -105,6 +105,7 @@ class JornadaWebController extends Controller
                 ] : null,
             ] : null,
             'aura_score' => $user->auraScores()->latest('calculado_em')->value('score_global'),
+            'streak' => app(\App\Services\GamificacaoService::class)->streak($user),
             'checkin_hoje' => $user->checkins()->whereDate('created_at', today())->first()?->only(['humor', 'texto']),
             'progresso_semana' => collect(range(1, 7))->map(fn ($d) => $checkinsSemana->contains($d))->all(),
             'apelido' => $user->apelido ?? $user->name,
@@ -157,7 +158,15 @@ class JornadaWebController extends Controller
         $dia = $jornada ? $this->jornadas->diaAtual($jornada) : null;
 
         if ($dia) {
-            $this->jornadas->concluirAtividade($dia, $request->input('tipo'));
+            $tipo = $request->input('tipo');
+            $primeiraVez = ! $dia->{$tipo === 'ritual' ? 'ritual_concluido' : 'acao_concluida'};
+
+            $this->jornadas->concluirAtividade($dia, $tipo);
+
+            if ($primeiraVez) {
+                app(\App\Services\GamificacaoService::class)->conceder($user, $tipo);
+            }
+
             $this->avancar($user, $jornada->fresh());
         }
 
