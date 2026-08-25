@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'role', 'tem_acesso', 'acesso_expira_em'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'role', 'tem_acesso', 'acesso_expira_em', 'apelido', 'objetivo_principal', 'objetivo_secundario', 'tempo_disponivel', 'onboarding_completo_em', 'assinatura_status'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -37,6 +37,7 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
             'tem_acesso' => 'boolean',
             'acesso_expira_em' => 'date',
+            'onboarding_completo_em' => 'datetime',
         ];
     }
 
@@ -48,5 +49,45 @@ class User extends Authenticatable implements FilamentUser
     public function minhaLista()
     {
         return $this->hasMany(MinhaLista::class);
+    }
+
+    public function questionarioRespostas()
+    {
+        return $this->hasMany(QuestionarioResposta::class);
+    }
+
+    public function auraScores()
+    {
+        return $this->hasMany(AuraScore::class);
+    }
+
+    public function jornadas()
+    {
+        return $this->hasMany(Jornada::class);
+    }
+
+    public function jornadaAtiva()
+    {
+        return $this->hasOne(Jornada::class)->where('status', 'ativa')->latest('iniciada_em');
+    }
+
+    public function checkins()
+    {
+        return $this->hasMany(Checkin::class);
+    }
+
+    public function auraConversas()
+    {
+        return $this->hasMany(AuraConversa::class);
+    }
+
+    public function auraMemorias()
+    {
+        return $this->hasMany(AuraMemoria::class);
+    }
+
+    public function progressoAudios()
+    {
+        return $this->hasMany(ProgressoAudio::class);
     }
 }
