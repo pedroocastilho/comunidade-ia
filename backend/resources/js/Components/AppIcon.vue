@@ -50,5 +50,25 @@ defineProps({
             <path d="M19 12H5" />
             <path d="m12 19-7-7 7-7" />
         </template>
+        <template v-else-if="name === 'map'">
+            <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z" />
+            <path d="M9 4v14" />
+            <path d="M15 6v14" />
+        </template>
+        <template v-else-if="name === 'sparkles'">
+            <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+            <path d="m12 8 1.2 2.8L16 12l-2.8 1.2L12 16l-1.2-2.8L8 12l2.8-1.2L12 8Z" fill="currentColor" stroke="none" />
+        </template>
+        <template v-else-if="name === 'headphones'">
+            <path d="M4 14v-3a8 8 0 0 1 16 0v3" />
+            <rect x="3" y="14" width="4" height="6" rx="1.5" />
+            <rect x="17" y="14" width="4" height="6" rx="1.5" />
+        </template>
+        <template v-else-if="name === 'flame'">
+            <path d="M12 3s5 4.5 5 9a5 5 0 0 1-10 0c0-1.8.8-3.5 2-5 0 0 .3 2 1.5 2.5C10.5 8 12 3 12 3Z" />
+        </template>
+        <template v-else-if="name === 'chat'">
+            <path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z" />
+        </template>
     </svg>
 </template>

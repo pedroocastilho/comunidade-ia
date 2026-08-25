@@ -28,11 +28,11 @@ const submit = () => {
     <GuestLayout>
         <Head :title="t('auth.esqueceu')" />
 
-        <div class="mb-4 text-sm text-gray-600">
+        <div class="mb-4 text-sm text-aura-muted">
             {{ t('auth.esqueceuTexto') }}
         </div>
 
-        <div v-if="status" class="mb-4 text-sm font-medium text-emerald-600">
+        <div v-if="status" class="mb-4 text-sm font-medium text-aura-gold">
             {{ status }}
         </div>
 

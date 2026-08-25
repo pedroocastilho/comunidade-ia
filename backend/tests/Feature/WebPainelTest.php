@@ -16,7 +16,8 @@ class WebPainelTest extends TestCase
 
     private function aluno(): User
     {
-        return User::factory()->create(['tem_acesso' => true]);
+        // Painel exige onboarding completo (middleware onboarding.completo).
+        return User::factory()->create(['tem_acesso' => true, 'onboarding_completo_em' => now()]);
     }
 
     public function test_home_web_renderiza_para_quem_tem_acesso(): void

@@ -8,7 +8,9 @@ use App\Models\Aviso;
 use App\Models\Categoria;
 use App\Models\Curso;
 use App\Models\ProgressoAula;
+use App\Services\AnalyticsService;
 use App\Services\BunnyService;
+use App\Services\JornadaService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -90,8 +92,10 @@ class PainelController extends Controller
         ]);
     }
 
-    public function aula(Request $request, Aula $aula, BunnyService $bunny)
+    public function aula(Request $request, Aula $aula, BunnyService $bunny, AnalyticsService $analytics)
     {
+        $analytics->registrar('lesson_started', $request->user(), ['tipo' => 'video', 'id' => $aula->id]);
+
         $aula->load('modulo.curso.modulos.aulas');
         $curso = $aula->modulo->curso;
 
@@ -138,12 +142,22 @@ class PainelController extends Controller
         ]);
     }
 
-    public function concluirAula(Request $request, Aula $aula)
+    public function concluirAula(Request $request, Aula $aula, JornadaService $jornadas, AnalyticsService $analytics)
     {
+        $user = $request->user();
+
         ProgressoAula::updateOrCreate(
-            ['user_id' => $request->user()->id, 'aula_id' => $aula->id],
+            ['user_id' => $user->id, 'aula_id' => $aula->id],
             ['concluida' => true],
         );
+
+        $analytics->registrar('lesson_completed', $user, ['tipo' => 'video', 'id' => $aula->id]);
+
+        // Ponte com a jornada: se for a aula do dia, marca a atividade e tenta avancar.
+        $jornadas->concluirAulaDaJornada($user, $aula->id);
+        if (($jornada = $user->jornadaAtiva) && $jornadas->avancarSeCompleto($jornada)) {
+            $analytics->registrar('journey_day_completed', $user, ['dia' => $jornada->dia_atual]);
+        }
 
         return back();
     }

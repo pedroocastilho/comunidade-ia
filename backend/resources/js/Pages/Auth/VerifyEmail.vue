@@ -28,11 +28,11 @@ const verificationLinkSent = computed(
     <GuestLayout>
         <Head :title="t('auth.reenviar')" />
 
-        <div class="mb-4 text-sm text-gray-600">
+        <div class="mb-4 text-sm text-aura-muted">
             {{ t('auth.verificarTexto') }}
         </div>
 
-        <div class="mb-4 text-sm font-medium text-emerald-600" v-if="verificationLinkSent">
+        <div class="mb-4 text-sm font-medium text-aura-gold" v-if="verificationLinkSent">
             {{ t('auth.verificacaoEnviada') }}
         </div>
 
@@ -46,7 +46,7 @@ const verificationLinkSent = computed(
                     :href="route('logout')"
                     method="post"
                     as="button"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                    class="rounded-md text-sm text-aura-muted underline hover:text-aura-text focus:outline-none focus:ring-2 focus:ring-aura-gold focus:ring-offset-2"
                 >{{ t('conta.sair') }}</Link>
             </div>
         </form>

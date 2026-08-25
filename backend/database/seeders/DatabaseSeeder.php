@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             DemoSeeder::class,
+            DimensaoSeeder::class,
+            QuestionarioSeeder::class,
+            IaConfiguracaoSeeder::class,
         ]);
     }
 }

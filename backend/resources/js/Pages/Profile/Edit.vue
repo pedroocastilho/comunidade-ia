@@ -23,11 +23,11 @@ defineProps({
 
     <PainelLayout>
         <div class="mx-auto max-w-3xl space-y-6 px-5 py-8 lg:px-10 lg:py-12">
-            <h1 class="font-display text-4xl font-extrabold tracking-tight text-gray-900">
+            <h1 class="font-display text-4xl font-extrabold tracking-tight text-aura-text">
                 {{ t('perfil.titulo') }}
             </h1>
 
-            <div class="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
+            <div class="rounded-2xl border border-aura-line bg-aura-surface p-6 sm:p-8">
                 <UpdateProfileInformationForm
                     :must-verify-email="mustVerifyEmail"
                     :status="status"
@@ -35,11 +35,11 @@ defineProps({
                 />
             </div>
 
-            <div class="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
+            <div class="rounded-2xl border border-aura-line bg-aura-surface p-6 sm:p-8">
                 <UpdatePasswordForm class="max-w-xl" />
             </div>
 
-            <div class="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
+            <div class="rounded-2xl border border-aura-line bg-aura-surface p-6 sm:p-8">
                 <DeleteUserForm class="max-w-xl" />
             </div>
         </div>
