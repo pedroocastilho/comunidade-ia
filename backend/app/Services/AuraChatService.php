@@ -263,25 +263,45 @@ TEXTO;
         };
     }
 
+    /** Palavras vazias ignoradas na busca. */
+    private const STOPWORDS = ['de', 'da', 'do', 'das', 'dos', 'para', 'pra', 'em', 'um', 'uma', 'com', 'os', 'as', 'e', 'o', 'a', 'no', 'na', 'nos', 'nas', 'que', 'sobre', 'meu', 'minha', 'como'];
+
     private function buscarConteudo(array $input): array
     {
         $termo = (string) ($input['termo'] ?? '');
         $tipo = $input['tipo'] ?? null;
-        $like = '%'.$termo.'%';
+
+        // Busca por palavra (nao por frase inteira): "IA para iniciantes" acha "Primeiros Passos com IA"
+        $palavras = array_values(array_filter(
+            preg_split('/\s+/', mb_strtolower($termo)) ?: [],
+            fn ($p) => mb_strlen($p) >= 2 && ! in_array($p, self::STOPWORDS, true),
+        ));
+
+        if ($palavras === []) {
+            return ['resultados' => [], 'aviso' => 'termo de busca vazio'];
+        }
+
+        $porPalavra = fn ($query) => $query->where(function ($q) use ($palavras) {
+            foreach ($palavras as $palavra) {
+                $q->orWhere('titulo', 'like', '%'.$palavra.'%')
+                    ->orWhere('descricao', 'like', '%'.$palavra.'%');
+            }
+        });
+
         $resultados = [];
 
         if (! $tipo || $tipo === 'curso') {
-            foreach (Curso::where('status', 'publicado')->where('titulo', 'like', $like)->limit(5)->get() as $curso) {
+            foreach ($porPalavra(Curso::where('status', 'publicado'))->limit(5)->get() as $curso) {
                 $resultados[] = ['tipo' => 'curso', 'id' => $curso->id, 'titulo' => $curso->titulo, 'slug' => $curso->slug];
             }
         }
         if (! $tipo || $tipo === 'aula') {
-            foreach (Aula::where('titulo', 'like', $like)->limit(5)->get() as $aula) {
+            foreach ($porPalavra(Aula::query())->limit(5)->get() as $aula) {
                 $resultados[] = ['tipo' => 'aula', 'id' => $aula->id, 'titulo' => $aula->titulo];
             }
         }
         if (! $tipo || $tipo === 'audio') {
-            foreach (Audio::where('status', 'publicado')->where('titulo', 'like', $like)->limit(5)->get() as $audio) {
+            foreach ($porPalavra(Audio::where('status', 'publicado'))->limit(5)->get() as $audio) {
                 $resultados[] = ['tipo' => 'audio', 'id' => $audio->id, 'titulo' => $audio->titulo, 'categoria' => $audio->tipo];
             }
         }

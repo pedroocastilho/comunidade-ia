@@ -42,17 +42,20 @@ function abrirConversa(id) {
 }
 
 // Exibicao progressiva (typewriter) da resposta da Aura.
+// Avanca por tempo real (imune ao throttle de timers em aba de fundo).
 function digitar(mensagem) {
     const completo = mensagem.conteudo;
-    const alvo = { ...mensagem, conteudo: '' };
-    historico.value.push(alvo);
-    let i = 0;
+    historico.value.push({ ...mensagem, conteudo: '' });
+    // referencia REATIVA (o objeto cru fora do array nao dispara re-render)
+    const alvo = historico.value[historico.value.length - 1];
+    const inicio = Date.now();
+    const porSegundo = 180; // caracteres por segundo
     const intervalo = setInterval(() => {
-        i = Math.min(completo.length, i + 3);
-        alvo.conteudo = completo.slice(0, i);
+        const n = Math.min(completo.length, Math.floor(((Date.now() - inicio) / 1000) * porSegundo));
+        alvo.conteudo = completo.slice(0, n);
         rolarParaFim();
-        if (i >= completo.length) clearInterval(intervalo);
-    }, 16);
+        if (n >= completo.length) clearInterval(intervalo);
+    }, 24);
 }
 
 async function enviar() {
