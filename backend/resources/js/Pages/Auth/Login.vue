@@ -36,7 +36,7 @@ const submit = () => {
     <GuestLayout>
         <Head :title="t('auth.entrar')" />
 
-        <div v-if="status" class="mb-4 text-sm font-medium text-emerald-600">
+        <div v-if="status" class="mb-4 text-sm font-medium text-aura-gold">
             {{ status }}
         </div>
 
@@ -75,7 +75,7 @@ const submit = () => {
             <div class="mt-4 block">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">{{ t('auth.lembrar') }}</span>
+                    <span class="ms-2 text-sm text-aura-muted">{{ t('auth.lembrar') }}</span>
                 </label>
             </div>
 
@@ -83,7 +83,7 @@ const submit = () => {
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                    class="rounded-md text-sm text-aura-muted underline hover:text-aura-text focus:outline-none focus:ring-2 focus:ring-aura-gold focus:ring-offset-2"
                 >
                     {{ t('auth.esqueceu') }}
                 </Link>

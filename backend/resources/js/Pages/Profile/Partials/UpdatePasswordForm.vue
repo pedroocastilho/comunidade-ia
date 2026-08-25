@@ -39,11 +39,11 @@ const updatePassword = () => {
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-semibold text-gray-900">
+            <h2 class="text-lg font-semibold text-aura-text">
                 {{ t('perfil.senhaTitulo') }}
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600">
+            <p class="mt-1 text-sm text-aura-muted">
                 {{ t('perfil.senhaDesc') }}
             </p>
         </header>
@@ -71,7 +71,7 @@ const updatePassword = () => {
                 <PrimaryButton :disabled="form.processing">{{ t('common.salvar') }}</PrimaryButton>
 
                 <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0" leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">{{ t('common.salvo') }}</p>
+                    <p v-if="form.recentlySuccessful" class="text-sm text-aura-muted">{{ t('common.salvo') }}</p>
                 </Transition>
             </div>
         </form>

@@ -2,102 +2,208 @@
 import AppIcon from '@/Components/AppIcon.vue';
 import PainelLayout from '@/Layouts/PainelLayout.vue';
 import { useI18n } from '@/useI18n';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 
 const { t } = useI18n();
 
-defineProps({
-    destaque: Object,
-    continuar: Array,
-    trilhas: Array,
-    avisos: Array,
+const props = defineProps({
+    jornada: Object,
+    atividades: Object,
+    checkin_hoje: Object,
+    progresso_semana: Array,
+    apelido: String,
 });
+
+const saudacao = computed(() => {
+    const hora = new Date().getHours();
+    if (hora < 12) return t('dia.bomDia');
+    if (hora < 18) return t('dia.boaTarde');
+    return t('dia.boaNoite');
+});
+
+const feitas = computed(() => {
+    if (!props.atividades) return 0;
+    return [
+        props.atividades.ritual?.concluido,
+        props.atividades.aula?.concluida,
+        props.atividades.acao?.concluida,
+    ].filter(Boolean).length;
+});
+
+const total = computed(() => {
+    if (!props.atividades) return 0;
+    return [props.atividades.ritual, props.atividades.aula, props.atividades.acao].filter(Boolean).length;
+});
+
+const minutos = (segundos) => Math.max(1, Math.round((segundos ?? 0) / 60));
+
+function concluir(tipo) {
+    router.post(route('jornada.atividade'), { tipo }, { preserveScroll: true });
+}
+
+const humor = ref(props.checkin_hoje?.humor ?? null);
+const nota = ref('');
+const emojis = ['😞', '😐', '🙂', '😍', '🤩'];
+
+function enviarCheckin() {
+    if (!humor.value) return;
+    router.post(route('checkin'), { humor: humor.value, texto: nota.value || null }, { preserveScroll: true });
+}
 </script>
 
 <template>
     <Head :title="t('nav.inicio')" />
 
     <PainelLayout>
-        <!-- Aviso -->
-        <div v-if="avisos.length" class="border-b border-amber-200 bg-amber-50 px-5 py-2.5 text-sm text-amber-900 lg:px-10">
-            <span class="font-semibold">{{ avisos[0].titulo }}</span>
-            <span class="text-amber-800"> — {{ avisos[0].corpo }}</span>
-        </div>
+        <div class="mx-auto max-w-3xl px-5 py-8 lg:py-12">
+            <!-- Saudacao -->
+            <p class="text-sm uppercase tracking-widest text-aura-muted">{{ saudacao }},</p>
+            <div class="mt-1 flex flex-wrap items-baseline justify-between gap-3">
+                <h1 class="font-display text-4xl font-semibold text-aura-text lg:text-5xl">{{ apelido }}</h1>
+                <div v-if="jornada" class="flex items-center gap-2 rounded-full border border-aura-gold/40 bg-aura-surface px-4 py-1.5">
+                    <AppIcon name="flame" class="h-4 w-4 text-aura-gold" />
+                    <span class="text-sm font-semibold text-aura-gold">{{ t('dia.diaN') }} {{ jornada.dia }}</span>
+                    <span class="text-xs text-aura-muted">· {{ jornada.etapa }}</span>
+                </div>
+            </div>
 
-        <div class="mx-auto max-w-7xl px-5 py-8 lg:px-10 lg:py-12">
-            <!-- Hero editorial -->
-            <section v-if="destaque" class="grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
-                <div>
-                    <h1 class="font-display text-5xl font-extrabold leading-[0.95] tracking-tight text-gray-900 lg:text-7xl">
-                        {{ destaque.titulo }}
-                    </h1>
-                    <p v-if="destaque.instrutor" class="mt-5 text-sm font-semibold text-gray-500">
-                        {{ t('common.com') }} {{ destaque.instrutor.nome }}
-                    </p>
-                    <div class="mt-8 flex flex-wrap gap-3">
-                        <Link
-                            :href="route('curso', destaque.slug)"
-                            class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-7 py-3 font-semibold text-white transition hover:bg-emerald-700"
-                        >
-                            <AppIcon name="play" class="h-4 w-4" /> {{ t('common.iniciar') }}
-                        </Link>
-                        <Link
-                            :href="route('curso', destaque.slug)"
-                            class="inline-flex items-center rounded-full border border-gray-300 px-7 py-3 font-semibold text-gray-800 transition hover:border-gray-400 hover:bg-white"
-                        >
-                            {{ t('common.detalhes') }}
-                        </Link>
+            <!-- Jornada concluida -->
+            <div v-if="jornada && jornada.status === 'concluida'" class="mt-10 rounded-2xl border border-aura-gold/40 bg-aura-surface p-8 text-center">
+                <p class="font-display text-2xl text-aura-gold">{{ t('dia.jornadaConcluida') }}</p>
+            </div>
+
+            <!-- Sem jornada -->
+            <div v-else-if="!jornada" class="mt-10 rounded-2xl border border-aura-line bg-aura-surface p-8 text-center">
+                <h2 class="font-display text-2xl text-aura-text">{{ t('dia.semJornadaTitulo') }}</h2>
+                <p class="mt-2 text-aura-muted">{{ t('dia.semJornadaTexto') }}</p>
+                <Link :href="route('cursos')" class="mt-6 inline-block rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-7 py-3 font-semibold text-aura-black">
+                    {{ t('dia.irBiblioteca') }}
+                </Link>
+            </div>
+
+            <!-- Plano do dia -->
+            <template v-else>
+                <section class="mt-10">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-sm font-semibold uppercase tracking-widest text-aura-muted">{{ t('dia.suaJornada') }}</h2>
+                        <span class="text-sm tabular-nums text-aura-muted">{{ feitas }}/{{ total }}</span>
                     </div>
-                </div>
-
-                <div class="hidden aspect-[4/5] overflow-hidden rounded-3xl bg-emerald-700 lg:block">
-                    <img v-if="destaque.capa_url" :src="destaque.capa_url" :alt="destaque.titulo" class="h-full w-full object-cover" />
-                    <div v-else class="flex h-full items-end p-7">
-                        <span class="font-display text-3xl font-bold leading-tight text-white/95">{{ destaque.titulo }}</span>
+                    <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-aura-raised">
+                        <div class="h-full rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light transition-all duration-500" :style="{ width: total ? (feitas / total) * 100 + '%' : '0%' }" />
                     </div>
-                </div>
-            </section>
 
-            <!-- Continue de onde parou -->
-            <section v-if="continuar.length" class="mt-14">
-                <h2 class="font-display text-xl font-bold tracking-tight text-gray-900">{{ t('home.continue') }}</h2>
-                <div class="mt-4 flex gap-4 overflow-x-auto pb-2">
-                    <Link
-                        v-for="curso in continuar"
-                        :key="curso.id"
-                        :href="route('curso', curso.slug)"
-                        class="group relative aspect-video w-80 shrink-0 overflow-hidden rounded-2xl bg-emerald-800"
-                    >
-                        <img v-if="curso.banner_url || curso.capa_url" :src="curso.banner_url || curso.capa_url" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-black/30"></div>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-emerald-700">
-                                <AppIcon name="play" class="h-6 w-6" />
-                            </span>
+                    <div class="mt-5 space-y-3">
+                        <!-- Ritual -->
+                        <div v-if="atividades.ritual" class="flex items-center gap-4 rounded-2xl border border-aura-line bg-aura-surface p-4">
+                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full" :class="atividades.ritual.concluido ? 'bg-aura-gold text-aura-black' : 'border border-aura-gold/50 text-aura-gold'">
+                                <AppIcon :name="atividades.ritual.concluido ? 'check' : 'headphones'" class="h-5 w-5" />
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-xs font-semibold uppercase tracking-widest text-aura-gold">{{ t('dia.ritual') }}</p>
+                                <p class="truncate text-aura-text">{{ atividades.ritual.titulo }}</p>
+                                <p class="text-xs text-aura-muted">{{ minutos(atividades.ritual.duracao) }} {{ t('dia.min') }}</p>
+                            </div>
+                            <Link v-if="!atividades.ritual.concluido" :href="route('audio', atividades.ritual.id)" class="shrink-0 rounded-full border border-aura-gold/60 px-4 py-2 text-sm font-semibold text-aura-gold transition hover:bg-aura-gold hover:text-aura-black">
+                                {{ t('dia.ouvir') }}
+                            </Link>
                         </div>
-                        <h3 class="absolute inset-x-0 bottom-0 p-4 font-display text-lg font-bold text-white">{{ curso.titulo }}</h3>
-                    </Link>
-                </div>
-            </section>
 
-            <!-- Trilhas por categoria -->
-            <section v-for="trilha in trilhas" :key="trilha.slug" class="mt-14">
-                <h2 class="font-display text-xl font-bold tracking-tight text-gray-900">{{ trilha.nome }}</h2>
-                <div class="mt-4 flex gap-4 overflow-x-auto pb-2">
-                    <Link
-                        v-for="curso in trilha.cursos"
-                        :key="curso.id"
-                        :href="route('curso', curso.slug)"
-                        class="group block w-44 shrink-0"
-                    >
-                        <div class="relative aspect-[3/4] overflow-hidden rounded-2xl bg-emerald-700 shadow-sm transition group-hover:shadow-lg">
-                            <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
-                            <h3 class="absolute inset-x-0 bottom-0 p-3 font-display text-base font-bold leading-tight text-white">{{ curso.titulo }}</h3>
+                        <!-- Aula -->
+                        <div v-if="atividades.aula" class="flex items-center gap-4 rounded-2xl border border-aura-line bg-aura-surface p-4">
+                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full" :class="atividades.aula.concluida ? 'bg-aura-gold text-aura-black' : 'border border-aura-gold/50 text-aura-gold'">
+                                <AppIcon :name="atividades.aula.concluida ? 'check' : 'play'" class="h-5 w-5" />
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-xs font-semibold uppercase tracking-widest text-aura-gold">{{ t('dia.aula') }}</p>
+                                <p class="truncate text-aura-text">{{ atividades.aula.titulo }}</p>
+                                <p class="text-xs text-aura-muted">{{ minutos(atividades.aula.duracao) }} {{ t('dia.min') }}</p>
+                            </div>
+                            <Link v-if="!atividades.aula.concluida" :href="route('aula', atividades.aula.id)" class="shrink-0 rounded-full border border-aura-gold/60 px-4 py-2 text-sm font-semibold text-aura-gold transition hover:bg-aura-gold hover:text-aura-black">
+                                {{ t('dia.assistir') }}
+                            </Link>
                         </div>
-                    </Link>
-                </div>
-            </section>
+
+                        <!-- Acao -->
+                        <div v-if="atividades.acao" class="flex items-center gap-4 rounded-2xl border border-aura-line bg-aura-surface p-4">
+                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full" :class="atividades.acao.concluida ? 'bg-aura-gold text-aura-black' : 'border border-aura-gold/50 text-aura-gold'">
+                                <AppIcon :name="atividades.acao.concluida ? 'check' : 'star'" class="h-5 w-5" />
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-xs font-semibold uppercase tracking-widest text-aura-gold">{{ t('dia.acao') }}</p>
+                                <p class="text-aura-text">{{ atividades.acao.texto }}</p>
+                            </div>
+                            <button v-if="!atividades.acao.concluida" type="button" class="shrink-0 rounded-full border border-aura-gold/60 px-4 py-2 text-sm font-semibold text-aura-gold transition hover:bg-aura-gold hover:text-aura-black" @click="concluir('acao')">
+                                {{ t('dia.concluir') }}
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Falar com Aura (habilita na Fase 4) -->
+                <section class="mt-8">
+                    <div class="flex items-center gap-4 rounded-2xl border border-aura-gold/30 bg-gradient-to-r from-aura-surface to-aura-raised p-5" :title="t('nav.emBreve')">
+                        <AppIcon name="sparkles" class="h-7 w-7 text-aura-gold" />
+                        <div class="flex-1">
+                            <p class="font-semibold text-aura-text">{{ t('dia.falarComAura') }}</p>
+                            <p class="text-sm text-aura-muted">{{ t('dia.auraEmBreve') }}</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Progresso semanal + check-in -->
+                <section class="mt-8 grid gap-4 sm:grid-cols-2">
+                    <div class="rounded-2xl border border-aura-line bg-aura-surface p-5">
+                        <p class="text-xs font-semibold uppercase tracking-widest text-aura-muted">{{ t('dia.progressoSemanal') }}</p>
+                        <div class="mt-4 flex items-center gap-2">
+                            <span
+                                v-for="(feito, i) in progresso_semana"
+                                :key="i"
+                                class="h-3.5 w-3.5 rounded-full"
+                                :class="feito ? 'bg-aura-gold' : 'bg-aura-raised'"
+                            />
+                        </div>
+                        <p class="mt-4 text-sm text-aura-muted">
+                            {{ t('dia.proximoMarco') }}: <span class="text-aura-text">{{ t('dia.fimEtapa') }} {{ jornada.etapa }}</span>
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl border border-aura-line bg-aura-surface p-5">
+                        <p class="text-xs font-semibold uppercase tracking-widest text-aura-muted">{{ t('dia.comoFoiSeuDia') }}</p>
+                        <template v-if="!checkin_hoje">
+                            <div class="mt-3 flex gap-2">
+                                <button
+                                    v-for="(emoji, i) in emojis"
+                                    :key="i"
+                                    type="button"
+                                    class="flex h-11 w-11 items-center justify-center rounded-full text-xl transition"
+                                    :class="humor === i + 1 ? 'bg-aura-gold/20 ring-1 ring-aura-gold' : 'bg-aura-raised hover:bg-aura-line'"
+                                    @click="humor = i + 1"
+                                >
+                                    {{ emoji }}
+                                </button>
+                            </div>
+                            <input
+                                v-model="nota"
+                                type="text"
+                                :placeholder="t('dia.notaPlaceholder')"
+                                class="mt-3 w-full rounded-xl border-aura-line bg-aura-raised text-sm text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold"
+                            />
+                            <button
+                                type="button"
+                                class="mt-3 w-full rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light py-2.5 text-sm font-semibold text-aura-black transition hover:opacity-90 disabled:opacity-40"
+                                :disabled="!humor"
+                                @click="enviarCheckin"
+                            >
+                                {{ t('dia.enviarCheckin') }}
+                            </button>
+                        </template>
+                        <p v-else class="mt-4 text-aura-gold">
+                            {{ emojis[checkin_hoje.humor - 1] }} {{ t('dia.checkinFeito') }}
+                        </p>
+                    </div>
+                </section>
+            </template>
         </div>
     </PainelLayout>
 </template>

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\AudioWebController;
+use App\Http\Controllers\Web\JornadaWebController;
 use App\Http\Controllers\Web\OnboardingController;
 use App\Http\Controllers\Web\PainelController;
 use Illuminate\Support\Facades\Route;
@@ -38,7 +40,14 @@ Route::middleware(['auth', 'acesso.web'])->group(function () {
 
 // Area logada com assinatura ativa
 Route::middleware(['auth', 'acesso.web', 'onboarding.completo'])->group(function () {
-    Route::get('/inicio', [PainelController::class, 'home'])->name('home');
+    // Home diaria do Circulo Aura (o catalogo antigo segue em /cursos)
+    Route::get('/inicio', [JornadaWebController::class, 'home'])->name('home');
+    Route::get('/jornada', [JornadaWebController::class, 'jornada'])->name('jornada');
+    Route::post('/jornada/atividade', [JornadaWebController::class, 'concluirAtividade'])->name('jornada.atividade');
+    Route::post('/checkin', [JornadaWebController::class, 'checkin'])->name('checkin');
+    Route::get('/audios', [AudioWebController::class, 'index'])->name('audios');
+    Route::get('/audios/{audio}', [AudioWebController::class, 'player'])->name('audio');
+    Route::post('/audios/{audio}/progresso', [AudioWebController::class, 'progresso'])->name('audio.progresso');
     Route::get('/cursos', [PainelController::class, 'cursos'])->name('cursos');
     Route::get('/cursos/{slug}', [PainelController::class, 'curso'])->name('curso');
     Route::get('/aulas/{aula}', [PainelController::class, 'aula'])->name('aula');

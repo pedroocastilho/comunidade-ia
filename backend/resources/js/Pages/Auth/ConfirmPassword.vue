@@ -24,7 +24,7 @@ const submit = () => {
     <GuestLayout>
         <Head :title="t('auth.confirmar')" />
 
-        <div class="mb-4 text-sm text-gray-600">
+        <div class="mb-4 text-sm text-aura-muted">
             {{ t('auth.confirmarTexto') }}
         </div>
 

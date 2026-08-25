@@ -44,11 +44,11 @@ const closeModal = () => {
 <template>
     <section class="space-y-6">
         <header>
-            <h2 class="text-lg font-semibold text-gray-900">
+            <h2 class="text-lg font-semibold text-aura-text">
                 {{ t('perfil.excluirTitulo') }}
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600">
+            <p class="mt-1 text-sm text-aura-muted">
                 {{ t('perfil.excluirDesc') }}
             </p>
         </header>
@@ -57,11 +57,11 @@ const closeModal = () => {
 
         <Modal :show="confirmingUserDeletion" @close="closeModal">
             <div class="p-6">
-                <h2 class="text-lg font-semibold text-gray-900">
+                <h2 class="text-lg font-semibold text-aura-text">
                     {{ t('perfil.excluirConfirmaTitulo') }}
                 </h2>
 
-                <p class="mt-1 text-sm text-gray-600">
+                <p class="mt-1 text-sm text-aura-muted">
                     {{ t('perfil.excluirConfirmaDesc') }}
                 </p>
 
