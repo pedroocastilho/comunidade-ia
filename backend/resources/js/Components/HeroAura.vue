@@ -1,74 +1,222 @@
 <script setup>
-// Hero vivo da home: banner com Ken Burns (se houver destaque) + aura
-// dourada respirando + particulas de luz em canvas. Respeita
-// prefers-reduced-motion e pausa quando a aba fica oculta.
+// Cena cosmica do hero (referencia NOYA/dribbble, em dourado):
+// nucleo de energia com o anel da marca, planetas orbitando em pseudo-3D,
+// nebulosa, poeira estelar e malha de ondas na base. Canvas 2D puro.
+// Pausa em aba oculta; prefers-reduced-motion => 1 frame estatico.
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-
-defineProps({
-    imagem: { type: String, default: null },
-});
 
 const canvas = ref(null);
 let animacao = null;
 
 onMounted(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
     const el = canvas.value;
     const ctx = el.getContext('2d');
-    let largura, altura;
+    const reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let L, A, cx, cy, R;
 
     function redimensionar() {
-        largura = el.clientWidth;
-        altura = el.clientHeight;
-        el.width = largura * devicePixelRatio;
-        el.height = altura * devicePixelRatio;
+        L = el.clientWidth;
+        A = el.clientHeight;
+        el.width = L * devicePixelRatio;
+        el.height = A * devicePixelRatio;
         ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+        // centro do sistema: direita do hero (texto fica a esquerda)
+        cx = L * (L < 640 ? 0.5 : 0.7);
+        cy = A * 0.44;
+        R = Math.min(A * 0.19, 96);
     }
     redimensionar();
-
-    const observador = new ResizeObserver(redimensionar);
+    const observador = new ResizeObserver(() => { redimensionar(); if (reduzido) quadro(0, true); });
     observador.observe(el);
 
-    // particulas de luz: sobem devagar, cintilando
-    const particulas = Array.from({ length: 34 }, () => ({
-        x: Math.random(),
-        y: Math.random(),
-        raio: 0.6 + Math.random() * 1.6,
-        vel: 0.006 + Math.random() * 0.014,
-        deriva: (Math.random() - 0.5) * 0.02,
-        fase: Math.random() * Math.PI * 2,
-        freq: 0.4 + Math.random() * 1.2,
+    const aleatorio = (a, b) => a + Math.random() * (b - a);
+
+    // estrelas fixas de fundo
+    const estrelas = Array.from({ length: 70 }, () => ({
+        x: Math.random(), y: Math.random(), raio: aleatorio(0.4, 1.1),
+        fase: aleatorio(0, Math.PI * 2), freq: aleatorio(0.2, 0.9),
     }));
 
-    let t = 0;
-    function quadro() {
-        t += 1 / 60;
-        ctx.clearRect(0, 0, largura, altura);
-        for (const p of particulas) {
-            p.y -= p.vel / 60;
-            if (p.y < -0.05) { p.y = 1.05; p.x = Math.random(); }
-            const x = (p.x + Math.sin(t * 0.3 + p.fase) * p.deriva) * largura;
-            const y = p.y * altura;
-            const alfa = 0.28 + 0.32 * Math.sin(t * p.freq + p.fase);
+    // poeira estelar em disco ao redor do nucleo
+    const poeira = Array.from({ length: 130 }, () => ({
+        orbita: aleatorio(0.5, 3.4), ang: aleatorio(0, Math.PI * 2),
+        vel: aleatorio(0.04, 0.16), raio: aleatorio(0.5, 1.4),
+        achata: aleatorio(0.42, 0.62), fase: aleatorio(0, Math.PI * 2),
+    }));
+
+    // planetas: orbitas elipticas, z = profundidade (escala/alpha/ordem)
+    const tons = [
+        ['#F2E3B8', '#C9A24B', '#5C4620'],
+        ['#E8CE8F', '#A8813A', '#4A3819'],
+        ['#D9B563', '#8A6A2C', '#3A2C13'],
+        ['#CDB07A', '#7A6234', '#332916'],
+    ];
+    const planetas = Array.from({ length: 13 }, (_, i) => ({
+        a: aleatorio(1.5, 3.6), b: aleatorio(0.5, 1.1),
+        ang: aleatorio(0, Math.PI * 2), vel: aleatorio(0.05, 0.16) * (Math.random() < 0.5 ? 1 : -1),
+        raio: aleatorio(3, i % 4 === 0 ? 15 : 9), tom: tons[i % tons.length],
+        inclina: aleatorio(-0.35, 0.35),
+    }));
+
+    // nebulosa: blobs de luz orbitando devagar
+    const nebulosa = Array.from({ length: 7 }, () => ({
+        orbita: aleatorio(0.4, 1.9), ang: aleatorio(0, Math.PI * 2),
+        vel: aleatorio(0.02, 0.07), raio: aleatorio(0.8, 1.9),
+        alfa: aleatorio(0.05, 0.12), fase: aleatorio(0, Math.PI * 2),
+    }));
+
+    function esfera(x, y, r, [claro, meio, escuro], alfa) {
+        const g = ctx.createRadialGradient(x - r * 0.35, y - r * 0.35, r * 0.1, x, y, r);
+        g.addColorStop(0, claro);
+        g.addColorStop(0.55, meio);
+        g.addColorStop(1, escuro);
+        ctx.globalAlpha = alfa;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    }
+
+    function brilho(x, y, r, cor, alfa) {
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, cor.replace('ALFA', String(alfa)));
+        g.addColorStop(1, cor.replace('ALFA', '0'));
+        ctx.fillStyle = g;
+        ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+
+    const OURO = 'rgba(201, 162, 75, ALFA)';
+    const OURO_CLARO = 'rgba(232, 206, 143, ALFA)';
+    const BRANCO_QUENTE = 'rgba(255, 246, 224, ALFA)';
+
+    function posPlaneta(p) {
+        const x0 = Math.cos(p.ang) * p.a * R;
+        const y0 = Math.sin(p.ang) * p.b * R;
+        return {
+            x: cx + x0 * Math.cos(p.inclina) - y0 * Math.sin(p.inclina),
+            y: cy + x0 * Math.sin(p.inclina) + y0 * Math.cos(p.inclina),
+            z: Math.sin(p.ang), // -1 (atras) .. 1 (na frente)
+        };
+    }
+
+    let ultimo = 0;
+    function quadro(agora, forcar = false) {
+        const t = agora / 1000;
+        const dt = Math.min(0.05, (agora - ultimo) / 1000 || 0.016);
+        ultimo = agora;
+        ctx.clearRect(0, 0, L, A);
+
+        // estrelas de fundo
+        for (const e of estrelas) {
+            const alfa = 0.14 + 0.2 * Math.abs(Math.sin(t * e.freq + e.fase));
+            ctx.globalAlpha = alfa;
+            ctx.fillStyle = '#E8CE8F';
             ctx.beginPath();
-            ctx.arc(x, y, p.raio, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(222, 186, 110, ${Math.max(0, alfa)})`;
+            ctx.arc(e.x * L, e.y * A, e.raio, 0, Math.PI * 2);
             ctx.fill();
         }
-        animacao = requestAnimationFrame(quadro);
+        ctx.globalAlpha = 1;
+
+        // malha de ondas na base (linhas senoidais finas)
+        ctx.lineWidth = 1;
+        for (let i = 0; i < 11; i++) {
+            ctx.strokeStyle = `rgba(201, 162, 75, ${0.028 + i * 0.006})`;
+            ctx.beginPath();
+            for (let x = 0; x <= L; x += 10) {
+                const y = A * 0.82 + i * 6.5
+                    + Math.sin(x * 0.0075 + t * 0.5 + i * 0.4) * 13
+                    + Math.sin(x * 0.017 - t * 0.32 + i * 0.15) * 5;
+                x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        // nebulosa (aditiva)
+        ctx.globalCompositeOperation = 'lighter';
+        for (const n of nebulosa) {
+            n.ang += n.vel * dt;
+            const x = cx + Math.cos(n.ang) * n.orbita * R * 1.6;
+            const y = cy + Math.sin(n.ang) * n.orbita * R * 0.75;
+            const pulso = n.alfa * (0.75 + 0.25 * Math.sin(t * 0.4 + n.fase));
+            brilho(x, y, n.raio * R, OURO, pulso.toFixed(3));
+        }
+        ctx.globalCompositeOperation = 'source-over';
+
+        // planetas atras do nucleo
+        const ordenados = planetas
+            .map((p) => { p.ang += p.vel * dt; return { p, ...posPlaneta(p) }; })
+            .sort((a, b) => a.z - b.z);
+        for (const { p, x, y, z } of ordenados.filter((o) => o.z < 0)) {
+            esfera(x, y, p.raio * (1 + 0.3 * z), p.tom, 0.5 + 0.3 * z);
+        }
+
+        // poeira estelar
+        for (const g of poeira) {
+            g.ang += g.vel * dt;
+            const x = cx + Math.cos(g.ang) * g.orbita * R;
+            const y = cy + Math.sin(g.ang) * g.orbita * R * g.achata;
+            const alfa = 0.12 + 0.3 * Math.abs(Math.sin(t * 0.8 + g.fase));
+            ctx.globalAlpha = alfa;
+            ctx.fillStyle = '#DEBA6E';
+            ctx.beginPath();
+            ctx.arc(x, y, g.raio, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        // nucleo de energia
+        const pulso = 1 + 0.035 * Math.sin(t * 1.1);
+        ctx.globalCompositeOperation = 'lighter';
+        brilho(cx, cy, R * 3.1 * pulso, OURO, '0.34');
+        brilho(cx, cy, R * 1.7 * pulso, OURO_CLARO, '0.4');
+        brilho(cx, cy, R * 0.85 * pulso, BRANCO_QUENTE, '0.9');
+        ctx.globalCompositeOperation = 'source-over';
+
+        // anel da marca ao redor do nucleo, com a estrela no topo
+        ctx.strokeStyle = 'rgba(232, 206, 143, 0.85)';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.arc(cx, cy, R * 1.12, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const sx = cx, sy = cy - R * 1.12;
+        const sv = R * 0.34 * (1 + 0.18 * Math.sin(t * 1.6));
+        const sh = sv * 0.78;
+        ctx.fillStyle = '#F4E7C2';
+        ctx.beginPath();
+        ctx.moveTo(sx, sy - sv);
+        ctx.quadraticCurveTo(sx + sh * 0.2, sy - sv * 0.2, sx + sh, sy);
+        ctx.quadraticCurveTo(sx + sh * 0.2, sy + sv * 0.2, sx, sy + sv);
+        ctx.quadraticCurveTo(sx - sh * 0.2, sy + sv * 0.2, sx - sh, sy);
+        ctx.quadraticCurveTo(sx - sh * 0.2, sy - sv * 0.2, sx, sy - sv);
+        ctx.fill();
+
+        // planetas na frente do nucleo
+        for (const { p, x, y, z } of ordenados.filter((o) => o.z >= 0)) {
+            esfera(x, y, p.raio * (1 + 0.3 * z), p.tom, 0.6 + 0.35 * z);
+        }
+
+        if (!forcar && !reduzido) {
+            animacao = requestAnimationFrame(quadro);
+        }
     }
 
     function visibilidade() {
         if (document.hidden) {
             cancelAnimationFrame(animacao);
             animacao = null;
-        } else if (!animacao) {
+        } else if (!animacao && !reduzido) {
             animacao = requestAnimationFrame(quadro);
         }
     }
     document.addEventListener('visibilitychange', visibilidade);
-    animacao = requestAnimationFrame(quadro);
+
+    if (reduzido) {
+        quadro(0, true); // um unico frame estatico
+    } else {
+        animacao = requestAnimationFrame(quadro);
+    }
 
     onBeforeUnmount(() => {
         cancelAnimationFrame(animacao);
@@ -80,88 +228,15 @@ onMounted(() => {
 
 <template>
     <div class="relative overflow-hidden rounded-3xl border border-aura-line bg-aura-deep">
-        <!-- banner do destaque com Ken Burns -->
-        <img
-            v-if="imagem"
-            :src="imagem"
-            alt=""
-            class="hero-kenburns absolute inset-0 h-full w-full object-cover opacity-45"
-        />
-
-        <!-- aura respirando (gradientes animados) -->
-        <div class="hero-aura hero-aura-1"></div>
-        <div class="hero-aura hero-aura-2"></div>
-        <div class="hero-aura hero-aura-3"></div>
-
-        <!-- particulas de luz -->
+        <!-- cena cosmica -->
         <canvas ref="canvas" class="absolute inset-0 h-full w-full"></canvas>
 
-        <!-- escurecimento para leitura -->
-        <div class="absolute inset-0 bg-gradient-to-r from-aura-black/85 via-aura-black/45 to-transparent"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-aura-black/70 via-transparent to-transparent"></div>
+        <!-- escurecimento para leitura do texto (esquerda/base) -->
+        <div class="absolute inset-0 bg-gradient-to-r from-aura-black/80 via-aura-black/30 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-aura-black/60 via-transparent to-transparent"></div>
 
         <div class="relative">
             <slot />
         </div>
     </div>
 </template>
-
-<style scoped>
-.hero-kenburns {
-    animation: kenburns 32s ease-in-out infinite alternate;
-    will-change: transform;
-}
-
-@keyframes kenburns {
-    from { transform: scale(1) translate(0, 0); }
-    to { transform: scale(1.14) translate(-2.5%, -2%); }
-}
-
-/* blobs de aura dourada, desfocados, respirando devagar */
-.hero-aura {
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(70px);
-    opacity: 0.16;
-    will-change: transform, opacity;
-}
-
-.hero-aura-1 {
-    width: 34rem;
-    height: 34rem;
-    right: -8rem;
-    top: -14rem;
-    background: radial-gradient(circle, #c9a24b 0%, transparent 70%);
-    animation: respirar 11s ease-in-out infinite;
-}
-
-.hero-aura-2 {
-    width: 26rem;
-    height: 26rem;
-    right: 16rem;
-    bottom: -16rem;
-    background: radial-gradient(circle, #8a6a2c 0%, transparent 70%);
-    animation: respirar 14s ease-in-out 2s infinite;
-}
-
-.hero-aura-3 {
-    width: 18rem;
-    height: 18rem;
-    left: 30%;
-    top: -8rem;
-    background: radial-gradient(circle, #e8ce8f 0%, transparent 70%);
-    animation: respirar 17s ease-in-out 5s infinite;
-}
-
-@keyframes respirar {
-    0%, 100% { transform: scale(1) translateY(0); opacity: 0.12; }
-    50% { transform: scale(1.25) translateY(1.5rem); opacity: 0.26; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .hero-kenburns,
-    .hero-aura {
-        animation: none;
-    }
-}
-</style>

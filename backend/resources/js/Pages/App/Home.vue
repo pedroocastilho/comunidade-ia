@@ -68,9 +68,9 @@ function enviarCheckin() {
 
     <PainelLayout>
         <div class="mx-auto max-w-6xl px-5 py-8 lg:py-10">
-            <!-- Hero vivo: aura respirando + particulas + banner do destaque -->
-            <HeroAura :imagem="destaque?.banner_url">
-                <div class="flex min-h-64 flex-col justify-between gap-6 p-7 lg:min-h-72 lg:p-10">
+            <!-- Hero vivo: cena cosmica dourada (nucleo, planetas, poeira, ondas) -->
+            <HeroAura>
+                <div class="flex min-h-72 flex-col justify-between gap-6 p-7 lg:min-h-96 lg:p-10">
                     <div class="flex items-start justify-between gap-4">
                         <div>
                             <p class="text-sm uppercase tracking-widest text-aura-muted">{{ saudacao }},</p>
