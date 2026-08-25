@@ -55,6 +55,13 @@ Route::middleware(['auth', 'acesso.web', 'onboarding.completo'])->group(function
     Route::get('/aura', [AuraChatController::class, 'index'])->name('aura');
     Route::post('/aura/mensagem', [AuraChatController::class, 'mensagem'])
         ->middleware('throttle:30,10')->name('aura.mensagem');
+    Route::get('/circulo', [\App\Http\Controllers\Web\CirculoController::class, 'index'])->name('circulo');
+    Route::post('/circulo/posts', [\App\Http\Controllers\Web\CirculoController::class, 'publicar'])
+        ->middleware('throttle:10,10')->name('circulo.publicar');
+    Route::post('/circulo/posts/{post}/reagir', [\App\Http\Controllers\Web\CirculoController::class, 'reagir'])->name('circulo.reagir');
+    Route::post('/circulo/posts/{post}/comentar', [\App\Http\Controllers\Web\CirculoController::class, 'comentar'])
+        ->middleware('throttle:20,10')->name('circulo.comentar');
+    Route::post('/circulo/denunciar', [\App\Http\Controllers\Web\CirculoController::class, 'denunciar'])->name('circulo.denunciar');
     Route::get('/audios', [AudioWebController::class, 'index'])->name('audios');
     Route::get('/audios/{audio}', [AudioWebController::class, 'player'])->name('audio');
     Route::post('/audios/{audio}/progresso', [AudioWebController::class, 'progresso'])->name('audio.progresso');

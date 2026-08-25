@@ -70,5 +70,11 @@ defineProps({
         <template v-else-if="name === 'chat'">
             <path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z" />
         </template>
+        <template v-else-if="name === 'users'">
+            <circle cx="9" cy="8" r="3.5" />
+            <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+            <circle cx="17" cy="9" r="2.5" />
+            <path d="M16.5 14.5c2.6.4 4.5 2.5 4.5 5" />
+        </template>
     </svg>
 </template>
