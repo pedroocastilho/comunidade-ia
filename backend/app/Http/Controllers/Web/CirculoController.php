@@ -19,7 +19,11 @@ class CirculoController extends Controller
     {
         $user = $request->user();
 
-        $posts = Post::where('status', 'publicado')
+        // Publicados para todos + pendentes do proprio autor (quando ha moderacao previa)
+        $posts = Post::where(function ($q) use ($user) {
+            $q->where('status', 'publicado')
+                ->orWhere(fn ($qq) => $qq->where('status', 'pendente')->where('user_id', $user->id));
+        })
             ->with(['user:id,name,apelido', 'comentarios.user:id,name,apelido'])
             ->withCount('reacoes')
             ->orderByDesc('fixado')
@@ -39,6 +43,7 @@ class CirculoController extends Controller
                 'meu' => $post->user_id === $user->id,
                 'corpo' => $post->corpo,
                 'fixado' => $post->fixado,
+                'pendente' => $post->status === 'pendente',
                 'reacoes' => $post->reacoes_count,
                 'reagi' => in_array($post->id, $reagidos, true),
                 'quando' => $post->created_at->diffForHumans(),
@@ -57,9 +62,13 @@ class CirculoController extends Controller
     {
         $request->validate(['corpo' => 'required|string|min:2|max:2000']);
 
+        // Interruptor no admin (Configuracoes): 1 = posts aguardam aprovacao
+        $moderacaoPrevia = \App\Models\IaConfiguracao::valor('circulo_moderacao_previa', '0') === '1';
+
         Post::create([
             'user_id' => $request->user()->id,
             'corpo' => $request->input('corpo'),
+            'status' => $moderacaoPrevia ? 'pendente' : 'publicado',
         ]);
 
         return back();

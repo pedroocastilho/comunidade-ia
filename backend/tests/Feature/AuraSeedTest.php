@@ -58,6 +58,7 @@ class AuraSeedTest extends TestCase
         $this->assertNotNull(IaConfiguracao::valor('temperatura'));
         $this->assertNotNull(IaConfiguracao::valor('max_tokens'));
         $this->assertNotNull(IaConfiguracao::valor('teto_diario_tokens'));
+        $this->assertNotNull(IaConfiguracao::valor('circulo_moderacao_previa'));
     }
 
     public function test_seeds_sao_idempotentes(): void
@@ -66,7 +67,7 @@ class AuraSeedTest extends TestCase
 
         $this->assertSame(5, Dimensao::count());
         $this->assertSame(12, QuestionarioPergunta::count());
-        $this->assertSame(5, IaConfiguracao::count());
+        $this->assertSame(6, IaConfiguracao::count());
     }
 
     public function test_seed_cria_as_5_jornadas_oficiais_com_30_dias(): void

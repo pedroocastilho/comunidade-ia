@@ -83,6 +83,38 @@ class CirculoTest extends TestCase
         $this->assertFalse(Denuncia::first()->resolvida);
     }
 
+    public function test_moderacao_previa_segura_o_post_ate_aprovacao(): void
+    {
+        \App\Models\IaConfiguracao::create(['chave' => 'circulo_moderacao_previa', 'valor' => '1']);
+
+        $autor = $this->aluno();
+        $outro = $this->aluno();
+
+        $this->actingAs($autor)->post('/circulo/posts', ['corpo' => 'aguardando aprovacao']);
+
+        $post = \App\Models\Post::first();
+        $this->assertSame('pendente', $post->status);
+
+        // autor ve o proprio post com selo; os outros nao veem
+        $this->actingAs($autor)->get('/circulo')
+            ->assertInertia(fn (Assert $page) => $page->has('posts', 1)->where('posts.0.pendente', true));
+        $this->actingAs($outro)->get('/circulo')
+            ->assertInertia(fn (Assert $page) => $page->has('posts', 0));
+
+        // admin aprova -> visivel para todos
+        $post->update(['status' => 'publicado']);
+        $this->actingAs($outro)->get('/circulo')
+            ->assertInertia(fn (Assert $page) => $page->has('posts', 1));
+    }
+
+    public function test_sem_moderacao_previa_o_post_entra_no_ar(): void
+    {
+        $autor = $this->aluno();
+        $this->actingAs($autor)->post('/circulo/posts', ['corpo' => 'direto no ar']);
+
+        $this->assertSame('publicado', \App\Models\Post::first()->status);
+    }
+
     public function test_denuncia_de_alvo_inexistente_e_404(): void
     {
         $this->actingAs($this->aluno())

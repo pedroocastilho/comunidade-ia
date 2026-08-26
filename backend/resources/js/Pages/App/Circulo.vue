@@ -95,6 +95,9 @@ const iniciais = (nome) => nome.split(' ').filter(Boolean).slice(0, 2).map((p) =
                         <span v-if="post.fixado" class="rounded-full border border-aura-gold/50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-aura-gold">
                             {{ t('circulo.fixado') }}
                         </span>
+                        <span v-else-if="post.pendente" class="rounded-full border border-aura-faint px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-aura-muted">
+                            {{ t('circulo.emAnalise') }}
+                        </span>
                     </div>
 
                     <p class="mt-4 whitespace-pre-wrap leading-relaxed text-aura-text">{{ post.corpo }}</p>

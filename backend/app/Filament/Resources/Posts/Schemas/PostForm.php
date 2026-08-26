@@ -23,7 +23,7 @@ class PostForm
                 Toggle::make('fixado')
                     ->required(),
                 Select::make('status')
-                    ->options(['publicado' => 'Publicado', 'oculto' => 'Oculto (moderado)'])
+                    ->options(['publicado' => 'Publicado', 'pendente' => 'Pendente (aguardando aprovação)', 'oculto' => 'Oculto (moderado)'])
                     ->required()
                     ->default('publicado'),
             ]);

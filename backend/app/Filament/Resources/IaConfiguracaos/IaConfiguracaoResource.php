@@ -16,9 +16,9 @@ use Filament\Tables\Table;
 
 class IaConfiguracaoResource extends Resource
 {
-    protected static ?string $label = 'Configuração da IA';
+    protected static ?string $label = 'configuração';
 
-    protected static ?string $pluralLabel = 'Configurações da IA';
+    protected static ?string $pluralLabel = 'Configurações';
 
     public static function canCreate(): bool
     {
