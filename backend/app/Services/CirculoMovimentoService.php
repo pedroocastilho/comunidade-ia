@@ -17,6 +17,11 @@ use Illuminate\Support\Collection;
  * Tetos por post e meta diaria de posts sao derivados de um hash estavel
  * (id do post / data), entao nao precisam de estado extra: cada execucao
  * so compara "o que ja existe" com "o teto sorteado" e avanca um pouco.
+ *
+ * Coerencia: comentarios especificos (falam de marido, silencio, score...) so
+ * entram em posts FICTICIOS que tratam daquele tema; posts de membros reais
+ * recebem apenas comentarios genericos. Frases no feminino/masculino so saem
+ * de perfis do genero correspondente.
  */
 class CirculoMovimentoService
 {
@@ -84,13 +89,15 @@ class CirculoMovimentoService
             return 0;
         }
 
-        $autor = $this->perfis()->random();
-        $dia = random_int(2, 29);
-        $corpo = $this->variar($this->sortear($this->frases['posts']), ['{dia}' => $dia]);
+        $modelo = $this->sortear($this->frases['posts']);
+        $autor = $this->perfilDoGenero($modelo['g']);
+        if (! $autor) {
+            return 0;
+        }
 
         Post::create([
             'user_id' => $autor->id,
-            'corpo' => $corpo,
+            'corpo' => $this->variar($modelo['t'], ['{dia}' => random_int(2, 29)]),
             'status' => 'publicado',
             'created_at' => $this->instanteNaHora($agora, $agora->copy()->startOfHour()),
         ]);
@@ -147,7 +154,7 @@ class CirculoMovimentoService
         $posts = Post::where('status', 'publicado')
             ->where('created_at', '>=', $agora->copy()->subHours(72))
             ->where('created_at', '<=', $agora)
-            ->with('user:id,name,apelido,perfil_ficticio')
+            ->with('user:id,name,apelido,perfil_ficticio,genero')
             ->get();
 
         foreach ($posts as $post) {
@@ -177,10 +184,15 @@ class CirculoMovimentoService
                 continue;
             }
 
-            $texto = $this->fraseInedita($this->frases['comentarios'], $existentes->pluck('texto'), $this->primeiroNome($post->user));
+            // Temas so para posts ficticios; post real -> lista vazia -> so genericos
+            $temas = $postReal ? [] : $this->temasDoPost($post);
+            $texto = $this->fraseInedita($this->frases['comentarios'], $temas, $autor, $existentes->pluck('texto'), $this->primeiroNome($post->user));
+            if ($texto === null) {
+                continue;
+            }
             $quando = $this->instanteNaHora($agora, $post->created_at);
 
-            $comentario = PostComentario::create([
+            PostComentario::create([
                 'post_id' => $post->id,
                 'user_id' => $autor->id,
                 'texto' => $texto,
@@ -195,11 +207,14 @@ class CirculoMovimentoService
                     ->reject(fn (User $u) => in_array($u->id, [$autor->id, $post->user_id], true))
                     ->shuffle()
                     ->first();
-                if ($respondente) {
+                $resposta = $respondente
+                    ? $this->fraseInedita($this->frases['respostas'], $temas, $respondente, $existentes->pluck('texto')->push($texto), $this->primeiroNome($autor))
+                    : null;
+                if ($resposta !== null) {
                     PostComentario::create([
                         'post_id' => $post->id,
                         'user_id' => $respondente->id,
-                        'texto' => $this->fraseInedita($this->frases['respostas'], $existentes->pluck('texto')->push($texto), $this->primeiroNome($autor)),
+                        'texto' => $resposta,
                         'status' => 'publicado',
                         'created_at' => $quando->copy()->addMinutes(random_int(3, 40))->min($agora),
                     ]);
@@ -215,7 +230,16 @@ class CirculoMovimentoService
 
     private function perfis(): Collection
     {
-        return $this->perfis ??= User::where('perfil_ficticio', true)->get(['id', 'name', 'apelido']);
+        return $this->perfis ??= User::where('perfil_ficticio', true)->get(['id', 'name', 'apelido', 'genero']);
+    }
+
+    /** Perfil aleatorio do genero pedido (qualquer um se a frase nao exigir genero). */
+    private function perfilDoGenero(?string $genero): ?User
+    {
+        return $this->perfis()
+            ->filter(fn (User $u) => $genero === null || $u->genero === $genero)
+            ->shuffle()
+            ->first();
     }
 
     private function primeiroNome(User $user): string
@@ -223,12 +247,43 @@ class CirculoMovimentoService
         return explode(' ', trim($user->apelido ?: $user->name))[0];
     }
 
-    /** Frase que ainda nao apareceu neste post (cai para qualquer uma se esgotar). */
-    private function fraseInedita(array $banco, Collection $usadas, string $nome): string
+    /**
+     * Temas de um post ficticio: reconhece qual modelo do banco originou o texto
+     * (o corpo comeca pelo modelo, variando so no fim) e soma o genero do autor.
+     */
+    private function temasDoPost(Post $post): array
     {
+        $temas = [$post->user->genero === 'm' ? 'autor-m' : 'autora-f'];
+
+        foreach ($this->frases['posts'] as $modelo) {
+            $regex = '/^'.str_replace('\{dia\}', '\d+', preg_quote(rtrim($modelo['t'], '.'), '/')).'/u';
+            if (preg_match($regex, $post->corpo)) {
+                return array_merge($temas, $modelo['temas']);
+            }
+        }
+
+        return $temas;
+    }
+
+    /**
+     * Frase compativel com o post (tema) e com o perfil (genero), que ainda nao
+     * apareceu neste post. Null se nao houver nenhuma possivel.
+     */
+    private function fraseInedita(array $banco, array $temas, User $perfil, Collection $usadas, string $nome): ?string
+    {
+        $compativeis = array_values(array_filter($banco, fn (array $f) => ($f['g'] === null || $f['g'] === $perfil->genero)
+            && ($f['tema'] === null || in_array($f['tema'], $temas, true))));
+        if ($compativeis === []) {
+            return null;
+        }
+
+        // Se o post tem temas, metade das vezes prefere uma frase especifica (mais "viva")
+        $especificas = array_values(array_filter($compativeis, fn (array $f) => $f['tema'] !== null));
+        $lista = ($especificas !== [] && $this->acaso(0.5)) ? $especificas : $compativeis;
+
         $tentativas = 0;
         do {
-            $texto = $this->variar($this->sortear($banco), ['{nome}' => $nome]);
+            $texto = $this->variar($this->sortear($lista)['t'], ['{nome}' => $nome]);
             $tentativas++;
         } while ($usadas->contains($texto) && $tentativas < 12);
 

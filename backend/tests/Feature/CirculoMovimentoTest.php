@@ -80,6 +80,44 @@ class CirculoMovimentoTest extends TestCase
         $this->assertSame(0, PostComentario::where('post_id', $post->id)->count());
     }
 
+    public function test_post_real_so_recebe_comentarios_genericos_e_genero_bate_com_o_perfil(): void
+    {
+        $real = User::factory()->create();
+        $post = Post::factory()->for($real)->create(['corpo' => 'Meu marido comecou a jornada comigo.', 'created_at' => now()->subHours(40)]);
+
+        $this->artisan('circulo:movimentar', ['--simular-horas' => 120])->assertSuccessful();
+
+        $frases = require database_path('data/circulo_frases.php');
+        $especificas = collect(array_merge($frases['comentarios'], $frases['respostas']))
+            ->filter(fn ($f) => $f['tema'] !== null)->pluck('t');
+        $femininas = collect(array_merge($frases['comentarios'], $frases['respostas']))
+            ->filter(fn ($f) => $f['g'] === 'f')->pluck('t');
+        $masculinas = collect(array_merge($frases['comentarios'], $frases['respostas']))
+            ->filter(fn ($f) => $f['g'] === 'm')->pluck('t');
+
+        $comentarios = PostComentario::where('post_id', $post->id)->with('user:id,genero')->get();
+        $this->assertGreaterThan(0, $comentarios->count());
+
+        $comeca = fn ($texto, $modelo) => str_starts_with($texto, rtrim($modelo, '.'));
+        foreach ($comentarios as $comentario) {
+            $this->assertFalse($especificas->contains(fn ($m) => $comeca($comentario->texto, $m)), "Especifica em post real: {$comentario->texto}");
+            if ($comentario->user->genero === 'm') {
+                $this->assertFalse($femininas->contains(fn ($m) => $comeca($comentario->texto, $m)), "Feminina em perfil masculino: {$comentario->texto}");
+            } else {
+                $this->assertFalse($masculinas->contains(fn ($m) => $comeca($comentario->texto, $m)), "Masculina em perfil feminino: {$comentario->texto}");
+            }
+        }
+
+        // Posts ficticios com texto no feminino saem so de perfis femininos
+        $postsF = collect($frases['posts'])->filter(fn ($p) => $p['g'] === 'f')->pluck('t');
+        $ficticios = Post::where('id', '!=', $post->id)->with('user:id,genero')->get();
+        foreach ($ficticios as $p) {
+            if ($postsF->contains(fn ($m) => str_starts_with($p->corpo, mb_substr($m, 0, 40)))) {
+                $this->assertSame('f', $p->user->genero, "Post feminino em perfil masculino: {$p->corpo}");
+            }
+        }
+    }
+
     public function test_sem_perfis_ficticios_nao_faz_nada(): void
     {
         User::where('perfil_ficticio', true)->delete();

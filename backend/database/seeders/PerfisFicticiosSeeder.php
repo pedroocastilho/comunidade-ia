@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
  */
 class PerfisFicticiosSeeder extends Seeder
 {
-    /** [nome completo, apelido exibido (null = usa o nome)] */
+    /** [nome completo, apelido exibido (null = usa o nome)]. Os 10 ultimos sao masculinos. */
     private const PERFIS = [
         ['Mariana Lopes', null],
         ['Carla Menezes', 'Carla'],
@@ -57,11 +57,21 @@ class PerfisFicticiosSeeder extends Seeder
         ['Paulo Henrique', null],
     ];
 
+    private const PRIMEIRO_MASCULINO = 30;
+
     public function run(): void
     {
         foreach (self::PERFIS as $i => [$nome, $apelido]) {
             $email = 'ficticio'.($i + 1).'@circuloaura.local';
-            if (User::where('email', $email)->exists()) {
+            $genero = $i >= self::PRIMEIRO_MASCULINO ? 'm' : 'f';
+
+            $existente = User::where('email', $email)->first();
+            if ($existente) {
+                // Perfil criado antes da coluna genero existir: completa sem duplicar
+                if (! $existente->genero) {
+                    $existente->forceFill(['genero' => $genero])->save();
+                }
+
                 continue;
             }
 
@@ -77,6 +87,7 @@ class PerfisFicticiosSeeder extends Seeder
                 'assinatura_status' => 'manual',
                 'onboarding_completo_em' => $criadoEm->copy()->addMinutes(random_int(10, 90)),
                 'perfil_ficticio' => true,
+                'genero' => $genero,
                 'created_at' => $criadoEm,
                 'updated_at' => $criadoEm,
             ]);

@@ -7,3 +7,31 @@
 body {
     @apply bg-aura-black text-aura-text antialiased;
 }
+
+/* Scrollbar da plataforma: fina, trilho transparente, polegar na cor da linha e dourado no hover.
+   Chromium usa ::-webkit-scrollbar; Firefox usa scrollbar-color (se os dois forem definidos
+   no Chrome, o padrao volta a valer — por isso o @supports). */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #3B3224;
+    border-radius: 999px;
+    border: 3px solid #16120C;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #C9A24B;
+}
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+@supports not selector(::-webkit-scrollbar) {
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: #3B3224 transparent;
+    }
+}
