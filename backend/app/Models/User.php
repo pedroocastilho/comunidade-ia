@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'role', 'tem_acesso', 'acesso_expira_em', 'apelido', 'objetivo_principal', 'objetivo_secundario', 'tempo_disponivel', 'onboarding_completo_em', 'assinatura_status'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'role', 'tem_acesso', 'acesso_expira_em', 'apelido', 'objetivo_principal', 'objetivo_secundario', 'tempo_disponivel', 'onboarding_completo_em', 'assinatura_status', 'perfil_ficticio'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -38,6 +38,7 @@ class User extends Authenticatable implements FilamentUser
             'tem_acesso' => 'boolean',
             'acesso_expira_em' => 'date',
             'onboarding_completo_em' => 'datetime',
+            'perfil_ficticio' => 'boolean',
         ];
     }
 
@@ -94,6 +95,11 @@ class User extends Authenticatable implements FilamentUser
     public function conquistas()
     {
         return $this->belongsToMany(Conquista::class)->withPivot('conquistado_em');
+    }
+
+    public function metas()
+    {
+        return $this->hasMany(Meta::class);
     }
 
     public function compras()

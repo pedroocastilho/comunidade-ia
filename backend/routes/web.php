@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\AudioWebController;
 use App\Http\Controllers\Web\AuraChatController;
 use App\Http\Controllers\Web\JornadaWebController;
+use App\Http\Controllers\Web\MetaController;
 use App\Http\Controllers\Web\OnboardingController;
 use App\Http\Controllers\Web\PainelController;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +63,10 @@ Route::middleware(['auth', 'acesso.web', 'onboarding.completo'])->group(function
     Route::post('/circulo/posts/{post}/comentar', [\App\Http\Controllers\Web\CirculoController::class, 'comentar'])
         ->middleware('throttle:20,10')->name('circulo.comentar');
     Route::post('/circulo/denunciar', [\App\Http\Controllers\Web\CirculoController::class, 'denunciar'])->name('circulo.denunciar');
+    Route::get('/metas', [MetaController::class, 'index'])->name('metas');
+    Route::post('/metas', [MetaController::class, 'store'])->name('metas.store');
+    Route::patch('/metas/{meta}', [MetaController::class, 'update'])->name('metas.update');
+    Route::delete('/metas/{meta}', [MetaController::class, 'destroy'])->name('metas.destroy');
     Route::get('/audios', [AudioWebController::class, 'index'])->name('audios');
     Route::get('/audios/{audio}', [AudioWebController::class, 'player'])->name('audio');
     Route::post('/audios/{audio}/progresso', [AudioWebController::class, 'progresso'])->name('audio.progresso');

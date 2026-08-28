@@ -1,5 +1,5 @@
 <script setup>
-import AppIcon from '@/Components/AppIcon.vue';
+import AvatarNoah from '@/Components/AvatarNoah.vue';
 import PainelLayout from '@/Layouts/PainelLayout.vue';
 import { useI18n } from '@/useI18n';
 import { Head } from '@inertiajs/vue3';
@@ -18,6 +18,8 @@ const conversaId = ref(props.conversa_ativa);
 const historico = ref([...props.mensagens]);
 const texto = ref('');
 const enviando = ref(false);
+// Estado "vivo" do Noah: null | 'pensando' (esperando a API) | 'escrevendo' (typewriter)
+const fase = ref(null);
 const erro = ref(null);
 const areaMensagens = ref(null);
 
@@ -41,21 +43,44 @@ function abrirConversa(id) {
     }
 }
 
-// Exibicao progressiva (typewriter) da resposta da Aura.
-// Avanca por tempo real (imune ao throttle de timers em aba de fundo).
+// Ritmo de digitacao natural: cada caractere tem um atraso proprio (com jitter),
+// pontuacao forte pausa mais, virgula pausa um pouco. Pre-calcula o tempo acumulado
+// de cada posicao e avanca por tempo real (imune ao throttle de timers em aba de fundo).
+function agendaDigitacao(completo) {
+    const tempos = new Array(completo.length);
+    let acumulado = 0;
+    for (let i = 0; i < completo.length; i++) {
+        const c = completo[i];
+        let atraso = 14 + Math.random() * 22; // 14-36ms por caractere
+        if ('.!?'.includes(c)) atraso += 220;
+        else if (',;:'.includes(c)) atraso += 90;
+        else if (c === '\n') atraso += 260;
+        acumulado += atraso;
+        tempos[i] = acumulado;
+    }
+    return tempos;
+}
+
 function digitar(mensagem) {
     const completo = mensagem.conteudo;
     historico.value.push({ ...mensagem, conteudo: '' });
     // referencia REATIVA (o objeto cru fora do array nao dispara re-render)
     const alvo = historico.value[historico.value.length - 1];
+    const tempos = agendaDigitacao(completo);
     const inicio = Date.now();
-    const porSegundo = 180; // caracteres por segundo
+    fase.value = 'escrevendo';
+
     const intervalo = setInterval(() => {
-        const n = Math.min(completo.length, Math.floor(((Date.now() - inicio) / 1000) * porSegundo));
+        const decorrido = Date.now() - inicio;
+        let n = 0;
+        while (n < completo.length && tempos[n] <= decorrido) n++;
         alvo.conteudo = completo.slice(0, n);
         rolarParaFim();
-        if (n >= completo.length) clearInterval(intervalo);
-    }, 24);
+        if (n >= completo.length) {
+            clearInterval(intervalo);
+            fase.value = null;
+        }
+    }, 30);
 }
 
 async function enviar() {
@@ -64,6 +89,7 @@ async function enviar() {
 
     erro.value = null;
     enviando.value = true;
+    fase.value = 'pensando';
     historico.value.push({ id: 'tmp-' + Date.now(), papel: 'user', conteudo });
     texto.value = '';
     rolarParaFim();
@@ -83,6 +109,7 @@ async function enviar() {
 
         if (!resposta.ok) {
             erro.value = dados.erro ?? t('aura.erroGenerico');
+            fase.value = null;
             return;
         }
 
@@ -90,6 +117,7 @@ async function enviar() {
         digitar(dados.mensagem);
     } catch {
         erro.value = t('aura.erroGenerico');
+        fase.value = null;
     } finally {
         enviando.value = false;
     }
@@ -104,12 +132,13 @@ async function enviar() {
             <!-- Cabecalho -->
             <div class="flex items-center justify-between border-b border-aura-line py-5">
                 <div class="flex items-center gap-3">
-                    <span class="flex h-10 w-10 items-center justify-center rounded-full border border-aura-gold/50 bg-aura-gold/10">
-                        <AppIcon name="sparkles" class="h-5 w-5 text-aura-gold" />
-                    </span>
+                    <AvatarNoah tamanho="h-11 w-11" :pulsar="fase !== null" />
                     <div>
-                        <h1 class="font-display text-2xl font-semibold text-aura-text">{{ t('aura.titulo') }}</h1>
-                        <p class="text-xs text-aura-muted">{{ t('aura.subtitulo') }}</p>
+                        <h1 class="font-display text-2xl font-semibold leading-tight text-aura-text">{{ t('aura.titulo') }}</h1>
+                        <p class="flex items-center gap-1.5 text-xs text-aura-muted">
+                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400/90"></span>
+                            {{ fase === 'pensando' ? t('aura.pensando') : fase === 'escrevendo' ? t('aura.digitando') : t('aura.subtitulo') }}
+                        </p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -136,9 +165,7 @@ async function enviar() {
             <!-- Mensagens -->
             <div ref="areaMensagens" class="flex-1 space-y-5 overflow-y-auto py-6">
                 <div v-if="!historico.length" class="flex h-full flex-col items-center justify-center text-center">
-                    <span class="flex h-16 w-16 items-center justify-center rounded-full border border-aura-gold/40 bg-aura-gold/5">
-                        <AppIcon name="sparkles" class="h-7 w-7 text-aura-gold" />
-                    </span>
+                    <AvatarNoah tamanho="h-20 w-20 text-3xl" />
                     <p class="mt-5 font-display text-2xl text-aura-text">{{ t('aura.boasVindas') }} {{ apelido }}.</p>
                     <p class="mt-1 max-w-sm text-sm text-aura-muted">{{ t('aura.boasVindasSub') }}</p>
                 </div>
@@ -146,23 +173,24 @@ async function enviar() {
                 <div
                     v-for="mensagem in historico"
                     :key="mensagem.id"
-                    class="flex"
+                    class="msg flex items-end gap-2.5"
                     :class="mensagem.papel === 'user' ? 'justify-end' : 'justify-start'"
                 >
+                    <AvatarNoah v-if="mensagem.papel === 'assistant'" tamanho="h-8 w-8 text-sm" />
                     <div
                         class="max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-[15px] leading-relaxed"
                         :class="mensagem.papel === 'user'
                             ? 'rounded-br-md bg-aura-raised text-aura-text'
                             : 'rounded-bl-md border border-aura-gold/25 bg-aura-surface text-aura-text'"
-                    >
-                        <span v-if="mensagem.papel === 'assistant'" class="mr-1.5 text-aura-gold">✦</span>{{ mensagem.conteudo }}
-                    </div>
+                    >{{ mensagem.conteudo }}<span v-if="fase === 'escrevendo' && mensagem === historico[historico.length - 1] && mensagem.papel === 'assistant'" class="cursor ml-0.5 inline-block h-[1em] w-[2px] translate-y-[2px] bg-aura-gold"></span></div>
                 </div>
 
-                <div v-if="enviando" class="flex justify-start">
-                    <div class="rounded-2xl rounded-bl-md border border-aura-gold/25 bg-aura-surface px-4 py-3 text-sm text-aura-muted">
-                        <span class="mr-1.5 text-aura-gold">✦</span>{{ t('aura.digitando') }}
-                        <span class="inline-flex w-6 animate-pulse">...</span>
+                <!-- Noah pensando (aguardando a resposta) -->
+                <div v-if="fase === 'pensando'" class="msg flex items-end justify-start gap-2.5">
+                    <AvatarNoah tamanho="h-8 w-8 text-sm" pulsar />
+                    <div class="flex items-center gap-3 rounded-2xl rounded-bl-md border border-aura-gold/25 bg-aura-surface px-4 py-3 text-sm text-aura-muted">
+                        <span class="pontos" aria-hidden="true"><i></i><i></i><i></i></span>
+                        {{ t('aura.pensando') }}
                     </div>
                 </div>
 
@@ -192,3 +220,46 @@ async function enviar() {
         </div>
     </PainelLayout>
 </template>
+
+<style scoped>
+/* Entrada suave de cada balao */
+.msg {
+    animation: msg-entrar 0.28s ease-out both;
+}
+@keyframes msg-entrar {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cursor piscando no fim do texto enquanto o Noah escreve */
+.cursor {
+    animation: cursor-piscar 0.9s steps(2, start) infinite;
+}
+@keyframes cursor-piscar {
+    to { visibility: hidden; }
+}
+
+/* Tres pontos "pensando" */
+.pontos {
+    display: inline-flex;
+    gap: 4px;
+}
+.pontos i {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: #C9A24B;
+    animation: pontos-subir 1.2s ease-in-out infinite;
+}
+.pontos i:nth-child(2) { animation-delay: 0.15s; }
+.pontos i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes pontos-subir {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+    30% { transform: translateY(-4px); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .msg, .cursor, .pontos i { animation: none; }
+}
+</style>

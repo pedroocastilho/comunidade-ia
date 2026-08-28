@@ -24,8 +24,8 @@ class MetricasAura extends StatsOverviewWidget
             ->count('user_id');
 
         return [
-            Stat::make('Assinantes com acesso', User::where('tem_acesso', true)->count()),
-            Stat::make('Onboarding completo', User::whereNotNull('onboarding_completo_em')->count()),
+            Stat::make('Assinantes com acesso', User::where('tem_acesso', true)->where('perfil_ficticio', false)->count()),
+            Stat::make('Onboarding completo', User::whereNotNull('onboarding_completo_em')->where('perfil_ficticio', false)->count()),
             Stat::make('Ativos hoje', $ativosHoje)
                 ->description('abriram o plano do dia'),
             Stat::make('Check-ins hoje', Checkin::whereDate('created_at', today())->count()),

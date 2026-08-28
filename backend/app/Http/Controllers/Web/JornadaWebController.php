@@ -109,6 +109,9 @@ class JornadaWebController extends Controller
             'checkin_hoje' => $user->checkins()->whereDate('created_at', today())->first()?->only(['humor', 'texto']),
             'progresso_semana' => collect(range(1, 7))->map(fn ($d) => $checkinsSemana->contains($d))->all(),
             'apelido' => $user->apelido ?? $user->name,
+            // Calendario de metas: as 3 em andamento mais proximas do prazo
+            'metas_proximas' => $user->metas()->emAndamento()->orderBy('prazo')->orderBy('id')->limit(3)->get()
+                ->map(fn ($meta) => MetaController::formatar($meta))->values(),
             'continuar' => $continuar,
             'em_alta' => $emAlta,
             'audios_destaque' => $audiosDestaque,

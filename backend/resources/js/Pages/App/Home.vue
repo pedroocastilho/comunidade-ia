@@ -22,6 +22,7 @@ const props = defineProps({
     destaque: Object,
     hero_video: String,
     aura_score: Number,
+    metas_proximas: Array,
     streak: Number,
 });
 
@@ -237,6 +238,33 @@ function enviarCheckin() {
                     </Link>
                 </section>
 
+                <!-- Suas metas (calendario de metas) -->
+                <section class="mt-8 rounded-2xl border border-aura-line bg-aura-surface p-5">
+                    <div class="flex items-center justify-between">
+                        <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-aura-muted">
+                            <AppIcon name="target" class="h-4 w-4 text-aura-gold" /> {{ t('metas.homeTitulo') }}
+                        </p>
+                        <Link :href="route('metas')" class="text-sm font-semibold text-aura-gold hover:underline">{{ t('metas.verTodas') }} →</Link>
+                    </div>
+                    <p v-if="!metas_proximas?.length" class="mt-3 text-sm text-aura-muted">{{ t('metas.homeVazio') }}</p>
+                    <ul v-else class="mt-3 divide-y divide-aura-line">
+                        <li v-for="meta in metas_proximas" :key="meta.id" class="flex items-center gap-3 py-2.5">
+                            <span class="h-2 w-2 shrink-0 rounded-full" :class="meta.dias_restantes <= 1 ? 'bg-aura-gold' : 'bg-aura-faint'"></span>
+                            <p class="min-w-0 flex-1 truncate text-aura-text">{{ meta.titulo }}</p>
+                            <span class="shrink-0 text-xs text-aura-muted">
+                                {{ meta.dias_restantes === 0 ? t('metas.hoje') : meta.dias_restantes === 1 ? t('metas.amanha') : `${meta.dias_restantes} ${t('metas.dias')}` }}
+                            </span>
+                            <button
+                                type="button"
+                                class="shrink-0 rounded-full border border-aura-gold/50 px-3 py-1 text-xs font-semibold text-aura-gold transition hover:bg-aura-gold/10"
+                                @click="router.patch(route('metas.update', meta.id), { concluida: true }, { preserveScroll: true })"
+                            >
+                                {{ t('metas.fiz') }}
+                            </button>
+                        </li>
+                    </ul>
+                </section>
+
                 <!-- Progresso semanal + check-in -->
                 <section class="mt-8 grid gap-4 sm:grid-cols-2">
                     <div class="rounded-2xl border border-aura-line bg-aura-surface p-5">
@@ -319,11 +347,16 @@ function enviarCheckin() {
 
             <section v-if="em_alta?.length" class="mt-12">
                 <h2 class="font-display text-2xl font-semibold text-aura-text">{{ t('home.emAlta') }}</h2>
-                <div class="mt-4 flex gap-5 overflow-x-auto pb-3">
+                <!-- Carrossel continuo: a lista e duplicada e desliza em loop; pausa no hover.
+                     Com poucos cursos (< 4) a faixa nao preenche a tela, entao cai no scroll normal. -->
+                <div class="marquee mt-4" :class="{ 'marquee--ativo': em_alta.length >= 4 }">
+                    <div class="marquee__faixa flex gap-5 pb-3">
                     <Link
-                        v-for="curso in em_alta"
-                        :key="curso.id"
+                        v-for="(curso, i) in (em_alta.length >= 4 ? [...em_alta, ...em_alta] : em_alta)"
+                        :key="`${curso.id}-${i}`"
                         :href="route('curso', curso.slug)"
+                        :aria-hidden="i >= em_alta.length ? 'true' : null"
+                        :tabindex="i >= em_alta.length ? -1 : null"
                         class="group w-72 shrink-0 overflow-hidden rounded-2xl border border-aura-line bg-aura-surface transition hover:border-aura-gold/60"
                     >
                         <div class="relative aspect-video bg-gradient-to-br from-aura-raised to-aura-deep">
@@ -336,6 +369,7 @@ function enviarCheckin() {
                         </div>
                         <p v-if="curso.descricao" class="p-4 text-sm leading-relaxed text-aura-muted line-clamp-3">{{ curso.descricao }}</p>
                     </Link>
+                    </div>
                 </div>
             </section>
 
@@ -363,3 +397,38 @@ function enviarCheckin() {
         </div>
     </PainelLayout>
 </template>
+
+<style scoped>
+/* Carrossel "Em alta": faixa duplicada deslizando -50% em loop (metade = uma volta completa). */
+.marquee {
+    overflow-x: auto;
+}
+.marquee--ativo {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+}
+.marquee--ativo .marquee__faixa {
+    width: max-content;
+    animation: marquee-deslizar 48s linear infinite;
+}
+.marquee--ativo:hover .marquee__faixa,
+.marquee--ativo:focus-within .marquee__faixa {
+    animation-play-state: paused;
+}
+@keyframes marquee-deslizar {
+    from { transform: translateX(0); }
+    /* -50% da faixa menos meio gap (1.25rem / 2) para o loop emendar sem pulo */
+    to { transform: translateX(calc(-50% - 0.625rem)); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .marquee--ativo {
+        overflow-x: auto;
+        mask-image: none;
+        -webkit-mask-image: none;
+    }
+    .marquee--ativo .marquee__faixa {
+        animation: none;
+    }
+}
+</style>

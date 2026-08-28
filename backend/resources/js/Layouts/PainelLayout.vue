@@ -30,6 +30,7 @@ const nav = [
     { key: 'nav.biblioteca', icon: 'grid', rota: 'cursos', ativos: ['cursos', 'curso', 'aula', 'audios', 'audio'] },
     { key: 'nav.aura', icon: 'sparkles', rota: 'aura', ativos: ['aura'] },
     { key: 'nav.circulo', icon: 'users', rota: 'circulo', ativos: ['circulo'] },
+    { key: 'nav.metas', icon: 'target', rota: 'metas', ativos: ['metas'] },
     { key: 'nav.config', icon: 'settings', rota: 'profile.edit', ativos: ['profile.edit'] },
 ];
 

@@ -29,7 +29,7 @@ class ExtrairMemorias implements ShouldQueue
 
         $transcricao = $conversa->mensagens()
             ->latest('id')->limit(self::MAX_MENSAGENS)->get()->reverse()
-            ->map(fn ($m) => ($m->papel === 'user' ? 'Usuario: ' : 'Aura: ').$m->conteudo)
+            ->map(fn ($m) => ($m->papel === 'user' ? 'Usuario: ' : 'Noah: ').$m->conteudo)
             ->implode("\n");
 
         $existentes = $user->auraMemorias()->where('ativo', true)->pluck('conteudo')->implode("\n- ");
