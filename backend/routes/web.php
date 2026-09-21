@@ -24,11 +24,12 @@ Route::get('/', function () {
 Route::get('/termos', fn () => Inertia::render('Legal/Termos'))->name('termos');
 Route::get('/privacidade', fn () => Inertia::render('Legal/Privacidade'))->name('privacidade');
 
-// Troca de idioma (pt | es), guardada na sessao.
+// Troca de idioma (pt | es): sessao + conta do usuario (persiste entre dispositivos).
 Route::post('/idioma', function () {
     $locale = request('locale');
     if (in_array($locale, ['pt', 'es'], true)) {
         session(['locale' => $locale]);
+        auth()->user()?->update(['locale' => $locale]);
     }
 
     return back();

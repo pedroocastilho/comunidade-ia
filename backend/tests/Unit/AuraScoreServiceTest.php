@@ -91,6 +91,29 @@ class AuraScoreServiceTest extends TestCase
         $this->assertSame(['base_solida'], $resultado['padroes']);
     }
 
+    public function test_escala_pulada_entra_como_media_das_respondidas_e_nao_como_zero(): void
+    {
+        // p7 (proposito) pulada; as respondidas tem media 8
+        $escalas = ['p4' => 8, 'p5' => 8, 'p6' => 8, 'p7' => null, 'p8' => 8, 'p9' => 8];
+
+        $resultado = $this->service->calcular($escalas, 'prosperidade', null);
+
+        $this->assertSame(80, $resultado['scores_dimensoes']['proposito']);
+        $this->assertSame(80, $resultado['score_global']);
+        // Sem a correcao, proposito seria 0 e dispararia "desequilibrio"
+        $this->assertNotContains('desequilibrio', $resultado['padroes']);
+    }
+
+    public function test_crenca_pulada_nao_dispara_bloqueio_crenca(): void
+    {
+        $escalas = ['p4' => 7, 'p5' => 7, 'p6' => 7, 'p7' => 7, 'p8' => 7, 'p9' => null];
+
+        $resultado = $this->service->calcular($escalas, 'prosperidade', null);
+
+        $this->assertNotContains('bloqueio_crenca', $resultado['padroes']);
+        $this->assertSame(70, $resultado['scores_dimensoes']['mentalidade']);
+    }
+
     public function test_ponto_atencao_e_menor_score_com_desempate_pelo_objetivo(): void
     {
         // prosperidade e relacionamentos empatados como menores

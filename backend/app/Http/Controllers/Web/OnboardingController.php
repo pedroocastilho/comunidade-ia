@@ -73,7 +73,7 @@ class OnboardingController extends Controller
             ?? $respostas[$porOrdem[$ordem]->id]
             ?? null;
 
-        DB::transaction(function () use ($user, $perguntas, $respostas, $porOrdem, $valor, $scoreService, $jornadaService, $analytics) {
+        DB::transaction(function () use ($user, $perguntas, $respostas, $valor, $scoreService, $jornadaService, $analytics) {
             foreach ($perguntas as $pergunta) {
                 $resposta = $respostas[(string) $pergunta->id] ?? $respostas[$pergunta->id] ?? null;
                 if ($resposta === null || $resposta === '') {
@@ -106,9 +106,11 @@ class OnboardingController extends Controller
                 'onboarding_completo_em' => now(),
             ]);
 
+            // Escala pulada (opcional) vai como null: o servico trata para nao contar como 0.
             $escalas = [];
             foreach ([4, 5, 6, 7, 8, 9] as $ordem) {
-                $escalas['p'.$ordem] = (int) $valor($ordem);
+                $v = $valor($ordem);
+                $escalas['p'.$ordem] = ($v === null || $v === '') ? null : (int) $v;
             }
 
             $resultado = $scoreService->calcular($escalas, $valor(2), $valor(3));

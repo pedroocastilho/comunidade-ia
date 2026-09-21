@@ -32,18 +32,24 @@ class AuraScoreService
     private const MAX_PADROES = 2;
 
     /**
-     * @param  array  $escalas  ['p4' => 0-10, ..., 'p9' => 0-10]
+     * @param  array  $escalas  ['p4' => 0-10|null, ..., 'p9' => 0-10|null] — null = pergunta opcional pulada
      * @return array{score_global: int, scores_dimensoes: array<string,int>, dimensao_prioritaria: string, ponto_atencao: string, padroes: string[]}
      */
     public function calcular(array $escalas, string $objetivoPrincipal, ?string $objetivoSecundario): array
     {
+        // Escala pulada nao vale 0: entra como a media das respondidas,
+        // senao a pergunta opcional puxaria o score para baixo injustamente.
+        $respondidas = array_filter($escalas, fn ($v) => $v !== null);
+        $media = $respondidas === [] ? 5.0 : array_sum($respondidas) / count($respondidas);
+        $nota = fn (string $pergunta): float => (float) ($escalas[$pergunta] ?? $media);
+
         $scores = [];
         foreach (self::PERGUNTA_DIMENSAO as $pergunta => $slug) {
-            $scores[$slug] = $escalas[$pergunta] * 10;
+            $scores[$slug] = (int) round($nota($pergunta) * 10);
         }
 
         // Mentalidade = media entre estado da mente (p8) e crenca (p9).
-        $scores['mentalidade'] = (int) round(($escalas['p8'] * 10 + $escalas['p9'] * 10) / 2);
+        $scores['mentalidade'] = (int) round(($nota('p8') * 10 + $nota('p9') * 10) / 2);
 
         $somaPonderada = 0.0;
         $somaPesos = 0.0;
@@ -64,7 +70,7 @@ class AuraScoreService
             'scores_dimensoes' => $scores,
             'dimensao_prioritaria' => $objetivoPrincipal,
             'ponto_atencao' => $this->pontoAtencao($scores, $objetivoPrincipal, $objetivoSecundario),
-            'padroes' => $this->padroes($scoreGlobal, $scores, $escalas['p9']),
+            'padroes' => $this->padroes($scoreGlobal, $scores, (int) round($nota('p9'))),
         ];
     }
 
