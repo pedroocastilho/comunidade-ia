@@ -1,0 +1,297 @@
+/* Tema Circulo Aura: dark quente + dourado (identidade da plataforma) */
+
+body,
+body *:not(html):not(style):not(br):not(tr):not(code) {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    position: relative;
+}
+
+body {
+    -webkit-text-size-adjust: none;
+    background-color: #16120C;
+    color: #CFC4B0;
+    height: 100%;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    width: 100% !important;
+}
+
+p,
+ul,
+ol,
+blockquote {
+    line-height: 1.5;
+    text-align: start;
+}
+
+a {
+    color: #C9A24B;
+}
+
+a img {
+    border: none;
+}
+
+/* Typography */
+
+h1 {
+    color: #F2EBDD;
+    font-size: 19px;
+    font-weight: bold;
+    margin-top: 0;
+    text-align: start;
+}
+
+h2 {
+    color: #F2EBDD;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 0;
+    text-align: start;
+}
+
+h3 {
+    color: #F2EBDD;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 0;
+    text-align: start;
+}
+
+p {
+    color: #CFC4B0;
+    font-size: 16px;
+    line-height: 1.6em;
+    margin-top: 0;
+    text-align: start;
+}
+
+p.sub {
+    font-size: 12px;
+}
+
+img {
+    max-width: 100%;
+}
+
+/* Layout */
+
+.wrapper {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+    background-color: #16120C;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.content {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Header */
+
+.header {
+    padding: 30px 0;
+    text-align: center;
+}
+
+.header a {
+    color: #C9A24B;
+    font-size: 19px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logo {
+    height: 96px;
+    max-height: 96px;
+    width: 96px;
+}
+
+/* Body */
+
+.body {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+    background-color: #16120C;
+    border-bottom: 1px solid #16120C;
+    border-top: 1px solid #16120C;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.inner-body {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 570px;
+    background-color: #211B13;
+    border-color: #3B3224;
+    border-radius: 14px;
+    border-width: 1px;
+    border-style: solid;
+    margin: 0 auto;
+    padding: 0;
+    width: 570px;
+}
+
+/* Subcopy */
+
+.subcopy {
+    border-top: 1px solid #3B3224;
+    margin-top: 25px;
+    padding-top: 25px;
+}
+
+.subcopy p {
+    color: #A89D8C;
+    font-size: 14px;
+}
+
+/* Footer */
+
+.footer {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 570px;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+    width: 570px;
+}
+
+.footer p {
+    color: #6E6456;
+    font-size: 12px;
+    text-align: center;
+}
+
+.footer a {
+    color: #A89D8C;
+    text-decoration: underline;
+}
+
+/* Tables */
+
+.table table {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+    margin: 30px auto;
+    width: 100%;
+}
+
+.table th {
+    border-bottom: 1px solid #3B3224;
+    color: #F2EBDD;
+    margin: 0;
+    padding-bottom: 8px;
+}
+
+.table td {
+    color: #CFC4B0;
+    font-size: 15px;
+    line-height: 18px;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.content-cell {
+    max-width: 100vw;
+    padding: 32px;
+}
+
+/* Buttons */
+
+.action {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+    margin: 30px auto;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.button {
+    -webkit-text-size-adjust: none;
+    border-radius: 999px;
+    color: #16120C;
+    display: inline-block;
+    overflow: hidden;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.button-blue,
+.button-primary {
+    background-color: #C9A24B;
+    border-bottom: 10px solid #C9A24B;
+    border-left: 20px solid #C9A24B;
+    border-right: 20px solid #C9A24B;
+    border-top: 10px solid #C9A24B;
+    color: #16120C;
+}
+
+.button-green,
+.button-success {
+    background-color: #C9A24B;
+    border-bottom: 10px solid #C9A24B;
+    border-left: 20px solid #C9A24B;
+    border-right: 20px solid #C9A24B;
+    border-top: 10px solid #C9A24B;
+    color: #16120C;
+}
+
+.button-red,
+.button-error {
+    background-color: #b3563e;
+    border-bottom: 10px solid #b3563e;
+    border-left: 20px solid #b3563e;
+    border-right: 20px solid #b3563e;
+    border-top: 10px solid #b3563e;
+    color: #ffffff;
+}
+
+/* Panels */
+
+.panel {
+    border-left: #C9A24B solid 4px;
+    margin: 21px 0;
+}
+
+.panel-content {
+    background-color: #2B241A;
+    color: #F2EBDD;
+    padding: 16px;
+}
+
+.panel-content p {
+    color: #F2EBDD;
+}
+
+.panel-item {
+    padding: 0;
+}
+
+.panel-item p:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Utilities */
+
+.break-all {
+    word-break: break-all;
+}

@@ -6,14 +6,15 @@
 
         <title inertia>Círculo Aura</title>
 
-        <meta name="description" content="Sua jornada diária de manifestação: ritual, aula e ação — guiada pela Aura.">
+        <meta name="description" content="Sua jornada diária de manifestação: ritual, aula e ação — guiada pelo Noah.">
         <meta property="og:title" content="Círculo Aura">
-        <meta property="og:description" content="Sua jornada diária de manifestação: ritual, aula e ação — guiada pela Aura.">
+        <meta property="og:description" content="Sua jornada diária de manifestação: ritual, aula e ação — guiada pelo Noah.">
         <meta property="og:image" content="{{ url('/og-image.png') }}">
         <meta property="og:type" content="website">
         <meta name="twitter:card" content="summary_large_image">
 
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="icon" href="/favicon.png" type="image/png">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
         <!-- Fontes da identidade: Bricolage (titulos) + Fraunces (marca) + Instrument Sans (corpo) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
