@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Middleware\SenhaPadraoDefinida;
 use App\Models\Audio;
 use App\Models\Compra;
 use App\Models\Curso;
@@ -9,7 +10,6 @@ use App\Models\User;
 use App\Models\WebhookPagamento;
 use App\Notifications\BoasVindasAssinante;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
 /**
@@ -169,7 +169,8 @@ class ProcessadorWebhookPagamento
                 ['email' => $email],
                 [
                     'name' => $dados['nome'] ?? Str::before($email, '@'),
-                    'password' => Str::random(40), // senha real e criada pelo link do e-mail
+                    // Senha padrao do checkout; o primeiro login obriga a definir a propria
+                    'password' => SenhaPadraoDefinida::SENHA_PADRAO,
                 ],
             );
             $user->update(['tem_acesso' => true, 'assinatura_status' => 'ativa']);
@@ -213,8 +214,7 @@ class ProcessadorWebhookPagamento
     private function enviarBoasVindas(User $user): void
     {
         try {
-            $token = Password::createToken($user);
-            $user->notify(new BoasVindasAssinante($token));
+            $user->notify(new BoasVindasAssinante);
         } catch (\Throwable $e) {
             Log::warning('Falha ao enviar boas-vindas', [
                 'user_id' => $user->id,

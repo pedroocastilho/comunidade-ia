@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\JornadaWebController;
 use App\Http\Controllers\Web\MetaController;
 use App\Http\Controllers\Web\OnboardingController;
 use App\Http\Controllers\Web\PainelController;
+use App\Http\Controllers\Web\PrimeiroAcessoController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -74,6 +75,12 @@ Route::middleware(['auth', 'acesso.web', 'onboarding.completo'])->group(function
     Route::get('/cursos/{slug}', [PainelController::class, 'curso'])->name('curso');
     Route::get('/aulas/{aula}', [PainelController::class, 'aula'])->name('aula');
     Route::post('/aulas/{aula}/concluir', [PainelController::class, 'concluirAula'])->name('aula.concluir');
+});
+
+// Primeiro acesso: definir senha propria (quem veio do checkout com senha padrao)
+Route::middleware('auth')->group(function () {
+    Route::get('/primeiro-acesso/senha', [PrimeiroAcessoController::class, 'formulario'])->name('senha.definir');
+    Route::post('/primeiro-acesso/senha', [PrimeiroAcessoController::class, 'salvar'])->middleware('throttle:10,1')->name('senha.salvar');
 });
 
 // Perfil (Breeze)
