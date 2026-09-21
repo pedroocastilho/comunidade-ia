@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        abort_unless(config('circulo.cadastro_aberto'), 403);
+
         $dados = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
@@ -49,7 +52,7 @@ class AuthController extends Controller
 
         // currentAccessToken() e um TransientToken quando nao ha token real
         // (ex.: sessao web ou actingAs em testes) - so revoga token persistido.
-        if ($token instanceof \Laravel\Sanctum\PersonalAccessToken) {
+        if ($token instanceof PersonalAccessToken) {
             $token->delete();
         }
 

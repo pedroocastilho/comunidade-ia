@@ -2,8 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\Audio;
+use App\Models\Compra;
+use App\Models\Curso;
 use App\Models\User;
 use App\Models\WebhookPagamento;
+use App\Notifications\BoasVindasAssinante;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
 /**
@@ -20,6 +26,8 @@ class ProcessadorWebhookPagamento
         'pagamento_atrasado',
         'pagamento_regularizado',
         'compra_aprovada', // conteudo premium avulso (PRD secao 9)
+        'compra_revogada', // reembolso/chargeback de compra avulsa
+        'ignorar', // evento recebido e valido, mas sem efeito na plataforma
     ];
 
     /**
@@ -53,7 +61,8 @@ class ProcessadorWebhookPagamento
     private function adaptar(string $plataforma, array $payload): array
     {
         return match ($plataforma) {
-            // Kiwify/Hotmart/Hubla: mapear aqui quando a plataforma for definida.
+            'kiwify' => $this->adaptarKiwify($payload),
+            'hotmart' => $this->adaptarHotmart($payload),
             default => [
                 'evento' => $payload['evento'] ?? null,
                 'email' => $payload['email'] ?? null,
@@ -64,14 +73,93 @@ class ProcessadorWebhookPagamento
         };
     }
 
+    /**
+     * Kiwify: evento vem em webhook_event_type; comprador em Customer;
+     * produto em Product.product_id. product_type "membership" = assinatura,
+     * qualquer outro = compra avulsa.
+     */
+    private function adaptarKiwify(array $payload): array
+    {
+        $tipo = $payload['webhook_event_type'] ?? null;
+        $assinatura = ($payload['product_type'] ?? null) === 'membership'
+            || isset($payload['Subscription']);
+
+        $evento = match ($tipo) {
+            'order_approved', 'subscription_renewed' => $assinatura ? 'assinatura_ativa' : 'compra_aprovada',
+            'subscription_late' => 'pagamento_atrasado',
+            'subscription_canceled' => 'assinatura_cancelada',
+            'order_refunded', 'refunded', 'chargeback' => $assinatura ? 'assinatura_cancelada' : 'compra_revogada',
+            // Boleto/pix gerados e compras recusadas nao mudam acesso
+            'billet_created', 'pix_created', 'order_rejected' => 'ignorar',
+            default => null,
+        };
+
+        // Reforco: alguns eventos chegam com status final no order_status
+        if ($evento === null && in_array($payload['order_status'] ?? null, ['refunded', 'chargedback'], true)) {
+            $evento = $assinatura ? 'assinatura_cancelada' : 'compra_revogada';
+        }
+
+        return [
+            'evento' => $evento,
+            'email' => $payload['Customer']['email'] ?? null,
+            'nome' => $payload['Customer']['full_name'] ?? $payload['Customer']['first_name'] ?? null,
+            'produto_externo_id' => $payload['Product']['product_id'] ?? null,
+            'payload' => $payload,
+        ];
+    }
+
+    /**
+     * Hotmart (webhook 2.0): evento em event; comprador em data.buyer ou
+     * data.subscriber; produto em data.product.id. Presenca de subscription
+     * no payload = assinatura, ausencia = compra avulsa.
+     */
+    private function adaptarHotmart(array $payload): array
+    {
+        $dados = $payload['data'] ?? [];
+        $assinatura = isset($dados['subscription']);
+
+        $evento = match ($payload['event'] ?? null) {
+            'PURCHASE_APPROVED', 'PURCHASE_COMPLETE' => $assinatura ? 'assinatura_ativa' : 'compra_aprovada',
+            'PURCHASE_DELAYED' => 'pagamento_atrasado',
+            'SUBSCRIPTION_CANCELLATION' => 'assinatura_cancelada',
+            'PURCHASE_CANCELED', 'PURCHASE_REFUNDED', 'PURCHASE_CHARGEBACK' => $assinatura ? 'assinatura_cancelada' : 'compra_revogada',
+            // Disputa aberta ainda nao e estorno: mantem acesso, marca atraso
+            'PURCHASE_PROTEST' => 'pagamento_atrasado',
+            // Sem efeito no acesso
+            'PURCHASE_BILLET_PRINTED', 'PURCHASE_EXPIRED', 'PURCHASE_OUT_OF_SHOPPING_CART',
+            'UPDATE_SUBSCRIPTION_CHARGE_DATE', 'SWITCH_PLAN', 'CLUB_FIRST_ACCESS', 'CLUB_MODULE_COMPLETED' => 'ignorar',
+            default => null,
+        };
+
+        $email = $dados['buyer']['email']
+            ?? $dados['subscriber']['email']
+            ?? $dados['subscription']['user']['email']
+            ?? null;
+
+        $produto = $dados['product']['id'] ?? null;
+
+        return [
+            'evento' => $evento,
+            'email' => $email,
+            'nome' => $dados['buyer']['name'] ?? $dados['subscriber']['name'] ?? null,
+            'produto_externo_id' => $produto !== null ? (string) $produto : null,
+            'payload' => $payload,
+        ];
+    }
+
     private function aplicar(array $dados): void
     {
         $evento = $dados['evento'];
         $email = $dados['email'];
 
         if (! in_array($evento, self::EVENTOS, true)) {
-            throw new \InvalidArgumentException("Evento desconhecido: ".($evento ?? 'nenhum'));
+            throw new \InvalidArgumentException('Evento desconhecido: '.($evento ?? 'nenhum'));
         }
+
+        if ($evento === 'ignorar') {
+            return;
+        }
+
         if (! $email) {
             throw new \InvalidArgumentException('Payload sem e-mail.');
         }
@@ -81,10 +169,14 @@ class ProcessadorWebhookPagamento
                 ['email' => $email],
                 [
                     'name' => $dados['nome'] ?? Str::before($email, '@'),
-                    'password' => Str::random(40), // acesso via "esqueci minha senha"
+                    'password' => Str::random(40), // senha real e criada pelo link do e-mail
                 ],
             );
             $user->update(['tem_acesso' => true, 'assinatura_status' => 'ativa']);
+
+            if ($user->wasRecentlyCreated) {
+                $this->enviarBoasVindas($user);
+            }
 
             return;
         }
@@ -100,11 +192,35 @@ class ProcessadorWebhookPagamento
             return;
         }
 
+        if ($evento === 'compra_revogada') {
+            $this->revogarCompra($user, $dados);
+
+            return;
+        }
+
         match ($evento) {
             'assinatura_cancelada' => $user->update(['tem_acesso' => false, 'assinatura_status' => 'cancelada']),
             'pagamento_atrasado' => $user->update(['assinatura_status' => 'atrasada']), // carencia: mantem acesso
             'pagamento_regularizado' => $user->update(['tem_acesso' => true, 'assinatura_status' => 'ativa']),
         };
+    }
+
+    /**
+     * E-mail de boas-vindas com link para o comprador criar a senha.
+     * Falha de SMTP nao derruba o webhook: o acesso ja foi liberado e o
+     * membro ainda consegue entrar pelo "esqueci minha senha".
+     */
+    private function enviarBoasVindas(User $user): void
+    {
+        try {
+            $token = Password::createToken($user);
+            $user->notify(new BoasVindasAssinante($token));
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao enviar boas-vindas', [
+                'user_id' => $user->id,
+                'erro' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -117,18 +233,34 @@ class ProcessadorWebhookPagamento
             throw new \InvalidArgumentException('Compra sem produto_externo_id.');
         }
 
-        $curso = \App\Models\Curso::where('produto_externo_id', $produtoId)->first();
-        $audio = $curso ? null : \App\Models\Audio::where('produto_externo_id', $produtoId)->first();
+        $curso = Curso::where('produto_externo_id', $produtoId)->first();
+        $audio = $curso ? null : Audio::where('produto_externo_id', $produtoId)->first();
 
         if (! $curso && ! $audio) {
             throw new \RuntimeException("Produto premium nao encontrado: {$produtoId}");
         }
 
-        \App\Models\Compra::firstOrCreate(
+        Compra::firstOrCreate(
             ['user_id' => $user->id, 'produto_externo_id' => $produtoId],
             ['curso_id' => $curso?->id, 'audio_id' => $audio?->id, 'payload' => $dados['payload'] ?? null],
         );
 
         app(AnalyticsService::class)->registrar('premium_purchased', $user, ['produto' => $produtoId]);
+    }
+
+    /**
+     * Reembolso/chargeback de compra avulsa: remove a liberacao do conteudo.
+     * Idempotente: sem compra correspondente, nao ha o que revogar.
+     */
+    private function revogarCompra(User $user, array $dados): void
+    {
+        $produtoId = $dados['produto_externo_id'] ?? null;
+        if (! $produtoId) {
+            throw new \InvalidArgumentException('Revogacao sem produto_externo_id.');
+        }
+
+        Compra::where('user_id', $user->id)
+            ->where('produto_externo_id', $produtoId)
+            ->delete();
     }
 }

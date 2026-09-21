@@ -29,7 +29,7 @@ Route::post('/idioma', function () {
 Route::get('/sem-acesso', function () {
     app(\App\Services\AnalyticsService::class)->registrar('subscription_blocked_view', auth()->user());
 
-    return Inertia::render('App/SemAcesso');
+    return Inertia::render('App/SemAcesso', ['checkout_url' => config('circulo.checkout_url')]);
 })->middleware('auth')->name('sem-acesso');
 
 // Compatibilidade: Breeze referencia a rota "dashboard"; mandamos para a home.

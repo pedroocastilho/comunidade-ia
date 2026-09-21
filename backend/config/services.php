@@ -43,6 +43,15 @@ return [
         'token' => env('WEBHOOK_PAGAMENTO_TOKEN'),
     ],
 
+    // Segredos dos webhooks por plataforma de checkout
+    'kiwify' => [
+        'webhook_token' => env('KIWIFY_WEBHOOK_TOKEN'),
+    ],
+
+    'hotmart' => [
+        'hottok' => env('HOTMART_HOTTOK'),
+    ],
+
     'bunny' => [
         'library_id' => env('BUNNY_STREAM_LIBRARY_ID'),
         'token_key' => env('BUNNY_STREAM_TOKEN_KEY'),

@@ -53,6 +53,7 @@ export const messages = {
         semAcesso: {
             titulo: 'Sua assinatura ainda não está ativa',
             texto: 'Assim que sua assinatura for confirmada, todo o conteúdo é liberado automaticamente aqui. Já assinou e continua vendo esta tela? Fale com o suporte.',
+            cta: 'Ativar minha assinatura',
         },
         conta: {
             perfil: 'Perfil',
@@ -310,6 +311,7 @@ export const messages = {
         semAcesso: {
             titulo: 'Tu suscripción aún no está activa',
             texto: 'En cuanto se confirme tu suscripción, todo el contenido se libera automáticamente aquí. ¿Ya te suscribiste y sigues viendo esta pantalla? Contacta con soporte.',
+            cta: 'Activar mi suscripción',
         },
         conta: {
             perfil: 'Perfil',

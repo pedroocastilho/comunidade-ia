@@ -4,6 +4,10 @@ import { useI18n } from '@/useI18n';
 import { Head } from '@inertiajs/vue3';
 
 const { t } = useI18n();
+
+defineProps({
+    checkout_url: String,
+});
 </script>
 
 <template>
@@ -17,6 +21,13 @@ const { t } = useI18n();
             <p class="mt-5 max-w-md text-aura-muted">
                 {{ t('semAcesso.texto') }}
             </p>
+            <a
+                v-if="checkout_url"
+                :href="checkout_url"
+                class="mt-8 rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-8 py-3 font-semibold text-aura-black transition hover:opacity-90"
+            >
+                {{ t('semAcesso.cta') }}
+            </a>
         </div>
     </PainelLayout>
 </template>

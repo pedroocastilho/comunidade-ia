@@ -9,6 +9,13 @@ class RegisterTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // Estes testes cobrem o fluxo de cadastro em si; a flag fica fechada em producao
+        config(['circulo.cadastro_aberto' => true]);
+    }
+
     public function test_cadastro_cria_usuario_sem_acesso_e_retorna_token(): void
     {
         $resp = $this->postJson('/api/v1/auth/register', [

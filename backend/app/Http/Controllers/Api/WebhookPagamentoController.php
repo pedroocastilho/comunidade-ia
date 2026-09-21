@@ -10,9 +10,7 @@ class WebhookPagamentoController extends Controller
 {
     public function receber(Request $request, string $plataforma, ProcessadorWebhookPagamento $processador)
     {
-        $tokenEsperado = config('services.webhook_pagamento.token');
-
-        if (! $tokenEsperado || ! hash_equals($tokenEsperado, (string) $request->header('X-Webhook-Token'))) {
+        if (! $this->autorizado($request, $plataforma)) {
             return response()->json(['message' => 'Nao autorizado'], 401);
         }
 
@@ -20,5 +18,36 @@ class WebhookPagamentoController extends Controller
 
         // Sempre 200 para eventos recebidos: falhas ficam em webhooks_pagamento.erro
         return response()->json(['recebido' => true]);
+    }
+
+    /**
+     * Autenticacao por plataforma:
+     * - kiwify: ?signature= na URL = HMAC-SHA1 do corpo cru com o token da Kiwify
+     * - hotmart: header X-HOTMART-HOTTOK igual ao hottok configurado
+     * - qualquer plataforma: header X-Webhook-Token (contrato generico interno)
+     * Cada verificacao so vale se o segredo correspondente estiver configurado.
+     */
+    private function autorizado(Request $request, string $plataforma): bool
+    {
+        $tokenGenerico = config('services.webhook_pagamento.token');
+        if ($tokenGenerico && hash_equals($tokenGenerico, (string) $request->header('X-Webhook-Token'))) {
+            return true;
+        }
+
+        if ($plataforma === 'kiwify') {
+            $segredo = config('services.kiwify.webhook_token');
+            $assinatura = (string) $request->query('signature');
+
+            return $segredo && $assinatura !== ''
+                && hash_equals(hash_hmac('sha1', $request->getContent(), $segredo), $assinatura);
+        }
+
+        if ($plataforma === 'hotmart') {
+            $hottok = config('services.hotmart.hottok');
+
+            return $hottok && hash_equals($hottok, (string) $request->header('X-HOTMART-HOTTOK'));
+        }
+
+        return false;
     }
 }
