@@ -71,6 +71,7 @@ function enviar() {
     router.post(route('onboarding.salvar'), { respostas: respostas.value }, {
         onError: () => {
             enviando.value = false;
+            erro.value = true;
         },
     });
 }
@@ -102,6 +103,8 @@ function enviar() {
                 <div class="mx-auto mb-6 h-16 w-16 animate-pulse rounded-full border border-aura-gold bg-aura-gold/10" />
                 <p class="text-lg text-aura-muted">{{ t('onboarding.enviando') }}</p>
             </div>
+
+            <p v-else-if="!atual" class="text-aura-muted">{{ t('onboarding.enviando') }}</p>
 
             <Transition v-else name="pergunta" mode="out-in">
                 <div :key="atual.id" class="w-full max-w-xl">

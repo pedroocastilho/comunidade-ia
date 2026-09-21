@@ -1,9 +1,17 @@
 <?php
 
+use App\Http\Middleware\AcessoAtivo;
+use App\Http\Middleware\AcessoAtivoWeb;
+use App\Http\Middleware\CabecalhosSeguranca;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\OnboardingCompleto;
+use App\Http\Middleware\SenhaPadraoDefinida;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -15,17 +23,18 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
-            \App\Http\Middleware\SetLocale::class,
-            \App\Http\Middleware\HandleInertiaRequests::class,
+            CabecalhosSeguranca::class,
+            SetLocale::class,
+            HandleInertiaRequests::class,
             // Comprador do checkout entra com senha padrao e define a sua antes de navegar
-            \App\Http\Middleware\SenhaPadraoDefinida::class,
-            \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            SenhaPadraoDefinida::class,
+            AddLinkHeadersForPreloadedAssets::class,
         ]);
 
         $middleware->alias([
-            'acesso.ativo' => \App\Http\Middleware\AcessoAtivo::class,
-            'acesso.web' => \App\Http\Middleware\AcessoAtivoWeb::class,
-            'onboarding.completo' => \App\Http\Middleware\OnboardingCompleto::class,
+            'acesso.ativo' => AcessoAtivo::class,
+            'acesso.web' => AcessoAtivoWeb::class,
+            'onboarding.completo' => OnboardingCompleto::class,
         ]);
 
         // Em rotas de API nao ha redirect para "login" (que nao existe):

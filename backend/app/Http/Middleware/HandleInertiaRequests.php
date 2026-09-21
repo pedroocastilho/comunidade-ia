@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Aviso;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -34,14 +35,15 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'locale' => app()->getLocale(),
             'auth' => [
-                'user' => $request->user(),
+                // Somente o necessario para a interface (nao expor colunas internas)
+                'user' => $request->user()?->only(['id', 'name', 'apelido', 'email']),
             ],
             'categorias' => fn () => $request->user()
                 ? Categoria::orderBy('ordem')->get(['nome', 'slug'])
                 : [],
             // Barrinha de aviso no topo (estilo MeuFluxo): ultimo aviso publicado
             'aviso_topo' => fn () => $request->user()
-                ? \App\Models\Aviso::whereNotNull('publicado_em')
+                ? Aviso::whereNotNull('publicado_em')
                     ->where('publicado_em', '<=', now())
                     ->latest('publicado_em')
                     ->value('titulo')

@@ -128,7 +128,7 @@ async function enviar() {
     <Head :title="t('aura.titulo')" />
 
     <PainelLayout>
-        <div class="mx-auto flex h-[calc(100vh-4rem)] max-w-4xl flex-col px-5">
+        <div class="mx-auto flex h-[calc(100dvh-8.5rem)] max-w-4xl flex-col px-5 md:h-[calc(100vh-4rem)]">
             <!-- Cabecalho -->
             <div class="flex items-center justify-between border-b border-aura-line py-5">
                 <div class="flex items-center gap-3">

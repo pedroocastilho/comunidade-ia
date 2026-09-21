@@ -20,6 +20,8 @@ class MinhaListaController extends Controller
 
     public function store(Request $request, Curso $curso)
     {
+        abort_unless($curso->status === 'publicado', 404);
+
         MinhaLista::firstOrCreate([
             'user_id' => $request->user()->id,
             'curso_id' => $curso->id,

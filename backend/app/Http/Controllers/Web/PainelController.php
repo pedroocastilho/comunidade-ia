@@ -10,6 +10,7 @@ use App\Models\Curso;
 use App\Models\ProgressoAula;
 use App\Services\AnalyticsService;
 use App\Services\BunnyService;
+use App\Services\GamificacaoService;
 use App\Services\JornadaService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -49,7 +50,7 @@ class PainelController extends Controller
         $q = Curso::where('status', 'publicado')->with('instrutor');
 
         if ($request->filled('busca')) {
-            $q->where('titulo', 'like', '%'.$request->query('busca').'%');
+            $q->where('titulo', 'like', '%'.addcslashes((string) $request->query('busca'), '%_\\').'%');
         }
         if ($request->filled('categoria')) {
             $q->whereHas('categoria', fn ($c) => $c->where('slug', $request->query('categoria')));
@@ -116,6 +117,9 @@ class PainelController extends Controller
         $aula->load('modulo.curso.modulos.aulas');
         $curso = $aula->modulo->curso;
 
+        // Conteudo em rascunho nao e acessivel por ID
+        abort_unless($curso->status === 'publicado', 404);
+
         // Aula de curso premium sem compra: volta para a pagina de venda do curso
         if ($curso->premium && ! $request->user()->comprou($curso->produto_externo_id)) {
             return redirect()->route('curso', $curso->slug);
@@ -179,7 +183,7 @@ class PainelController extends Controller
         );
 
         if (! $jaConcluida) {
-            app(\App\Services\GamificacaoService::class)->conceder($user, 'aula');
+            app(GamificacaoService::class)->conceder($user, 'aula');
         }
 
         $analytics->registrar('lesson_completed', $user, ['tipo' => 'video', 'id' => $aula->id]);

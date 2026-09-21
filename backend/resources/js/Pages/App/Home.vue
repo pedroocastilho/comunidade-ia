@@ -178,7 +178,7 @@ function enviarCheckin() {
 
                     <div class="mt-5 space-y-3">
                         <!-- Ritual -->
-                        <div v-if="atividades.ritual" class="flex items-center gap-4 rounded-2xl border border-aura-line bg-aura-surface p-4">
+                        <div v-if="atividades?.ritual" class="flex items-center gap-4 rounded-2xl border border-aura-line bg-aura-surface p-4">
                             <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full" :class="atividades.ritual.concluido ? 'bg-aura-gold text-aura-black' : 'border border-aura-gold/50 text-aura-gold'">
                                 <AppIcon :name="atividades.ritual.concluido ? 'check' : 'headphones'" class="h-5 w-5" />
                             </div>
@@ -193,7 +193,7 @@ function enviarCheckin() {
                         </div>
 
                         <!-- Aula -->
-                        <div v-if="atividades.aula" class="flex items-center gap-4 rounded-2xl border border-aura-line bg-aura-surface p-4">
+                        <div v-if="atividades?.aula" class="flex items-center gap-4 rounded-2xl border border-aura-line bg-aura-surface p-4">
                             <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full" :class="atividades.aula.concluida ? 'bg-aura-gold text-aura-black' : 'border border-aura-gold/50 text-aura-gold'">
                                 <AppIcon :name="atividades.aula.concluida ? 'check' : 'play'" class="h-5 w-5" />
                             </div>
@@ -208,7 +208,7 @@ function enviarCheckin() {
                         </div>
 
                         <!-- Acao -->
-                        <div v-if="atividades.acao" class="flex items-center gap-4 rounded-2xl border border-aura-line bg-aura-surface p-4">
+                        <div v-if="atividades?.acao" class="flex items-center gap-4 rounded-2xl border border-aura-line bg-aura-surface p-4">
                             <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full" :class="atividades.acao.concluida ? 'bg-aura-gold text-aura-black' : 'border border-aura-gold/50 text-aura-gold'">
                                 <AppIcon :name="atividades.acao.concluida ? 'check' : 'star'" class="h-5 w-5" />
                             </div>

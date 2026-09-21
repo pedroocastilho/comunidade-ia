@@ -14,6 +14,11 @@ class WebhookPagamentoController extends Controller
             return response()->json(['message' => 'Nao autorizado'], 401);
         }
 
+        // Payloads reais das plataformas tem poucos KB; corta abuso de armazenamento
+        if (strlen($request->getContent()) > 100 * 1024) {
+            return response()->json(['message' => 'Payload muito grande'], 413);
+        }
+
         $processador->processar($plataforma, $request->all());
 
         // Sempre 200 para eventos recebidos: falhas ficam em webhooks_pagamento.erro
@@ -29,8 +34,11 @@ class WebhookPagamentoController extends Controller
      */
     private function autorizado(Request $request, string $plataforma): bool
     {
+        // O token generico NAO vale para plataformas com autenticacao propria:
+        // se ele vazasse, permitiria forjar eventos "kiwify"/"hotmart"
         $tokenGenerico = config('services.webhook_pagamento.token');
-        if ($tokenGenerico && hash_equals($tokenGenerico, (string) $request->header('X-Webhook-Token'))) {
+        if (! in_array($plataforma, ['kiwify', 'hotmart'], true)
+            && $tokenGenerico && hash_equals($tokenGenerico, (string) $request->header('X-Webhook-Token'))) {
             return true;
         }
 

@@ -7,6 +7,7 @@ use App\Models\Audio;
 use App\Models\ProgressoAudio;
 use App\Services\AnalyticsService;
 use App\Services\BunnyService;
+use App\Services\GamificacaoService;
 use App\Services\JornadaService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -24,7 +25,7 @@ class AudioWebController extends Controller
             $q->where('tipo', $request->query('tipo'));
         }
         if ($request->filled('busca')) {
-            $q->where('titulo', 'like', '%'.$request->query('busca').'%');
+            $q->where('titulo', 'like', '%'.addcslashes((string) $request->query('busca'), '%_\\').'%');
         }
 
         $concluidos = $request->user()->progressoAudios()
@@ -88,7 +89,7 @@ class AudioWebController extends Controller
         $progresso->save();
 
         if ($concluir && ! $jaEstavaConcluido) {
-            app(\App\Services\GamificacaoService::class)->conceder($user, 'audio');
+            app(GamificacaoService::class)->conceder($user, 'audio');
             $analytics->registrar('lesson_completed', $user, ['tipo' => 'audio', 'id' => $audio->id]);
 
             // Se for o ritual do dia, marca a atividade e tenta avancar.

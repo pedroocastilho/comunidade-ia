@@ -53,11 +53,16 @@ class PerfilTest extends TestCase
         ])->assertStatus(422);
     }
 
-    public function test_excluir_conta_remove_o_usuario(): void
+    public function test_excluir_conta_exige_senha_e_remove_o_usuario(): void
     {
         $user = User::factory()->create();
 
-        $this->actingAs($user)->deleteJson('/api/v1/me')->assertNoContent();
+        // Sem senha (ou senha errada) nao exclui
+        $this->actingAs($user)->deleteJson('/api/v1/me')->assertStatus(422);
+        $this->actingAs($user)->deleteJson('/api/v1/me', ['password' => 'errada'])->assertStatus(422);
+        $this->assertDatabaseHas('users', ['id' => $user->id]);
+
+        $this->actingAs($user)->deleteJson('/api/v1/me', ['password' => 'password'])->assertNoContent();
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 }

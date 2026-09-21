@@ -20,5 +20,11 @@ import { Link } from '@inertiajs/vue3';
         <div class="mt-8 w-full overflow-hidden border border-aura-line bg-aura-surface px-6 py-8 sm:max-w-md sm:rounded-2xl">
             <slot />
         </div>
+
+        <p class="mt-6 pb-8 text-center text-xs text-aura-faint">
+            <Link :href="route('termos')" class="hover:text-aura-muted underline">Termos de Uso</Link>
+            <span class="mx-2">·</span>
+            <Link :href="route('privacidade')" class="hover:text-aura-muted underline">Privacidade</Link>
+        </p>
     </div>
 </template>

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CursoController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\MinhaListaController;
 use App\Http\Controllers\Api\PerfilController;
+use App\Http\Controllers\Api\WebhookPagamentoController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -54,5 +55,7 @@ Route::prefix('v1')->group(function () {
 });
 
 // Webhook de pagamento (assinatura recorrente) — token secreto por header, sem auth de usuario
-Route::post('/webhooks/pagamento/{plataforma}', [\App\Http\Controllers\Api\WebhookPagamentoController::class, 'receber'])
+Route::post('/webhooks/pagamento/{plataforma}', [WebhookPagamentoController::class, 'receber'])
+    ->middleware('throttle:120,1')
+    ->whereIn('plataforma', ['kiwify', 'hotmart', 'generico'])
     ->name('webhooks.pagamento');

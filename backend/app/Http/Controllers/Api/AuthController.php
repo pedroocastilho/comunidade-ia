@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\SenhaPadraoDefinida;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -24,7 +25,10 @@ class AuthController extends Controller
         $user = User::create($dados);
         $token = $user->createToken('app')->plainTextToken;
 
-        return response()->json(['user' => $user, 'token' => $token], 201);
+        return response()->json([
+            'user' => $user->only(['id', 'name', 'apelido', 'email', 'phone']),
+            'token' => $token,
+        ], 201);
     }
 
     public function login(Request $request)
@@ -40,8 +44,17 @@ class AuthController extends Controller
             return response()->json(['message' => 'Credenciais invalidas'], 401);
         }
 
+        // Comprador ainda com a senha padrao do checkout: obriga a definir a
+        // senha propria pelo site antes de liberar token de API (evita tomada
+        // de conta por quem conhece o e-mail do comprador).
+        if (Hash::check(SenhaPadraoDefinida::SENHA_PADRAO, $user->password)) {
+            return response()->json([
+                'message' => 'Defina sua senha pessoal acessando '.config('app.url').' antes de usar o aplicativo.',
+            ], 403);
+        }
+
         return response()->json([
-            'user' => $user,
+            'user' => $user->only(['id', 'name', 'apelido', 'email', 'phone']),
             'token' => $user->createToken('app')->plainTextToken,
         ]);
     }

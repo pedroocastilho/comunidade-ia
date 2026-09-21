@@ -3,11 +3,14 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\AudioWebController;
 use App\Http\Controllers\Web\AuraChatController;
+use App\Http\Controllers\Web\CirculoController;
 use App\Http\Controllers\Web\JornadaWebController;
 use App\Http\Controllers\Web\MetaController;
 use App\Http\Controllers\Web\OnboardingController;
 use App\Http\Controllers\Web\PainelController;
 use App\Http\Controllers\Web\PrimeiroAcessoController;
+use App\Http\Controllers\Web\ReavaliacaoController;
+use App\Services\AnalyticsService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,6 +19,10 @@ Route::get('/', function () {
         ? redirect()->route('home')
         : redirect()->route('login');
 });
+
+// Paginas legais (publicas)
+Route::get('/termos', fn () => Inertia::render('Legal/Termos'))->name('termos');
+Route::get('/privacidade', fn () => Inertia::render('Legal/Privacidade'))->name('privacidade');
 
 // Troca de idioma (pt | es), guardada na sessao.
 Route::post('/idioma', function () {
@@ -28,7 +35,7 @@ Route::post('/idioma', function () {
 })->name('idioma');
 
 Route::get('/sem-acesso', function () {
-    app(\App\Services\AnalyticsService::class)->registrar('subscription_blocked_view', auth()->user());
+    app(AnalyticsService::class)->registrar('subscription_blocked_view', auth()->user());
 
     return Inertia::render('App/SemAcesso', ['checkout_url' => config('circulo.checkout_url')]);
 })->middleware('auth')->name('sem-acesso');
@@ -50,20 +57,20 @@ Route::middleware(['auth', 'acesso.web', 'onboarding.completo'])->group(function
     Route::get('/inicio', [JornadaWebController::class, 'home'])->name('home');
     Route::get('/jornada', [JornadaWebController::class, 'jornada'])->name('jornada');
     Route::post('/jornada/nova', [JornadaWebController::class, 'novaJornada'])->name('jornada.nova');
-    Route::get('/reavaliacao', [\App\Http\Controllers\Web\ReavaliacaoController::class, 'formulario'])->name('reavaliacao');
-    Route::post('/reavaliacao', [\App\Http\Controllers\Web\ReavaliacaoController::class, 'salvar'])->name('reavaliacao.salvar');
+    Route::get('/reavaliacao', [ReavaliacaoController::class, 'formulario'])->name('reavaliacao');
+    Route::post('/reavaliacao', [ReavaliacaoController::class, 'salvar'])->name('reavaliacao.salvar');
     Route::post('/jornada/atividade', [JornadaWebController::class, 'concluirAtividade'])->name('jornada.atividade');
     Route::post('/checkin', [JornadaWebController::class, 'checkin'])->name('checkin');
     Route::get('/aura', [AuraChatController::class, 'index'])->name('aura');
     Route::post('/aura/mensagem', [AuraChatController::class, 'mensagem'])
         ->middleware('throttle:30,10')->name('aura.mensagem');
-    Route::get('/circulo', [\App\Http\Controllers\Web\CirculoController::class, 'index'])->name('circulo');
-    Route::post('/circulo/posts', [\App\Http\Controllers\Web\CirculoController::class, 'publicar'])
+    Route::get('/circulo', [CirculoController::class, 'index'])->name('circulo');
+    Route::post('/circulo/posts', [CirculoController::class, 'publicar'])
         ->middleware('throttle:10,10')->name('circulo.publicar');
-    Route::post('/circulo/posts/{post}/reagir', [\App\Http\Controllers\Web\CirculoController::class, 'reagir'])->name('circulo.reagir');
-    Route::post('/circulo/posts/{post}/comentar', [\App\Http\Controllers\Web\CirculoController::class, 'comentar'])
+    Route::post('/circulo/posts/{post}/reagir', [CirculoController::class, 'reagir'])->name('circulo.reagir');
+    Route::post('/circulo/posts/{post}/comentar', [CirculoController::class, 'comentar'])
         ->middleware('throttle:20,10')->name('circulo.comentar');
-    Route::post('/circulo/denunciar', [\App\Http\Controllers\Web\CirculoController::class, 'denunciar'])->name('circulo.denunciar');
+    Route::post('/circulo/denunciar', [CirculoController::class, 'denunciar'])->name('circulo.denunciar');
     Route::get('/metas', [MetaController::class, 'index'])->name('metas');
     Route::post('/metas', [MetaController::class, 'store'])->name('metas.store');
     Route::patch('/metas/{meta}', [MetaController::class, 'update'])->name('metas.update');

@@ -28,6 +28,12 @@ defineProps({
             >
                 {{ t('semAcesso.cta') }}
             </a>
+            <a
+                href="mailto:noah@circuloaura.com"
+                class="mt-4 text-sm font-semibold text-aura-gold underline hover:text-aura-gold-light"
+            >
+                {{ t('semAcesso.suporte') }}
+            </a>
         </div>
     </PainelLayout>
 </template>

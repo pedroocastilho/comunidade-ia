@@ -144,15 +144,15 @@ function buscar() {
                 <Link
                     v-if="item.rota"
                     :href="route(item.rota)"
-                    class="flex flex-col items-center gap-0.5 px-3 py-1"
+                    class="flex min-w-0 flex-1 flex-col items-center gap-0.5 px-0.5 py-1"
                     :class="ativo(item) ? 'text-aura-gold' : 'text-aura-muted'"
                 >
                     <AppIcon :name="item.icon" class="h-6 w-6" />
-                    <span class="text-[10px] font-semibold">{{ t(item.key) }}</span>
+                    <span class="w-full truncate text-center text-[9px] font-semibold">{{ t(item.key) }}</span>
                 </Link>
-                <span v-else class="flex flex-col items-center gap-0.5 px-3 py-1 text-aura-faint">
+                <span v-else class="flex min-w-0 flex-1 flex-col items-center gap-0.5 px-0.5 py-1 text-aura-faint">
                     <AppIcon :name="item.icon" class="h-6 w-6" />
-                    <span class="text-[10px] font-semibold">{{ t(item.key) }}</span>
+                    <span class="w-full truncate text-center text-[9px] font-semibold">{{ t(item.key) }}</span>
                 </span>
             </template>
         </nav>

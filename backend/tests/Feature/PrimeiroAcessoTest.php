@@ -68,6 +68,18 @@ class PrimeiroAcessoTest extends TestCase
         $this->get('/inicio')->assertOk();
     }
 
+    public function test_api_nao_emite_token_com_senha_padrao(): void
+    {
+        $user = $this->compradorComSenhaPadrao();
+
+        $this->postJson('/api/v1/auth/login', [
+            'email' => $user->email,
+            'password' => SenhaPadraoDefinida::SENHA_PADRAO,
+        ])->assertForbidden();
+
+        $this->assertSame(0, $user->tokens()->count());
+    }
+
     public function test_usuario_com_senha_propria_nao_e_redirecionado(): void
     {
         $user = User::factory()->create(['tem_acesso' => true, 'onboarding_completo_em' => now()]);

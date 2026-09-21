@@ -11,8 +11,23 @@ use Illuminate\Http\Request;
 
 class AulaController extends Controller
 {
+    /**
+     * Mesmo gating da web (PainelController@aula): curso publicado e, se for
+     * premium avulso, somente para quem comprou. A API entregava video e
+     * download sem essas checagens.
+     */
+    private function autorizarAcesso(Request $request, Aula $aula): void
+    {
+        $curso = $aula->modulo?->curso;
+
+        abort_if(! $curso || $curso->status !== 'publicado', 404);
+        abort_if($curso->premium && ! $request->user()->comprou($curso->produto_externo_id), 403, 'Conteudo premium nao adquirido.');
+    }
+
     public function show(Request $request, Aula $aula, BunnyService $bunny)
     {
+        $this->autorizarAcesso($request, $aula);
+
         $progresso = ProgressoAula::where('user_id', $request->user()->id)
             ->where('aula_id', $aula->id)
             ->first();
@@ -27,6 +42,8 @@ class AulaController extends Controller
 
     public function concluir(Request $request, Aula $aula)
     {
+        $this->autorizarAcesso($request, $aula);
+
         ProgressoAula::updateOrCreate(
             ['user_id' => $request->user()->id, 'aula_id' => $aula->id],
             ['concluida' => true],
@@ -37,6 +54,8 @@ class AulaController extends Controller
 
     public function progresso(Request $request, Aula $aula)
     {
+        $this->autorizarAcesso($request, $aula);
+
         $dados = $request->validate([
             'posicao_segundos' => ['required', 'integer', 'min:0'],
         ]);
@@ -49,8 +68,10 @@ class AulaController extends Controller
         return response()->json(['ok' => true]);
     }
 
-    public function download(Aula $aula, BunnyService $bunny)
+    public function download(Request $request, Aula $aula, BunnyService $bunny)
     {
+        $this->autorizarAcesso($request, $aula);
+
         if (! $aula->bunny_video_id) {
             return response()->json(['message' => 'Aula sem video'], 404);
         }
