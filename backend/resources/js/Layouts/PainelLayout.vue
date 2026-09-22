@@ -92,7 +92,7 @@ function buscar() {
         <!-- Coluna principal -->
         <div class="flex min-w-0 flex-1 flex-col">
             <!-- Barrinha de aviso no topo (unico elemento fixo, estilo MeuFluxo) -->
-            <div v-if="avisoTopo" class="flex items-center justify-center gap-2 bg-aura-gold px-4 py-1.5 text-center text-sm font-semibold text-aura-black">
+            <div v-if="avisoTopo" class="aviso-topo flex items-center justify-center gap-2 bg-aura-gold px-4 py-1.5 text-center text-sm font-semibold text-aura-black">
                 {{ avisoTopo }}
             </div>
 

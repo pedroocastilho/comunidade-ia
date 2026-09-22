@@ -29,7 +29,16 @@ function rolarParaFim() {
     });
 }
 
-onMounted(rolarParaFim);
+const chatWrapper = ref(null);
+
+onMounted(() => {
+    rolarParaFim();
+    // A barrinha de aviso do topo empurra o chat; desconta a altura dela do calc
+    const aviso = document.querySelector('.aviso-topo');
+    if (aviso && chatWrapper.value) {
+        chatWrapper.value.style.setProperty('--aviso', `${aviso.offsetHeight}px`);
+    }
+});
 
 function novaConversa() {
     conversaId.value = null;
@@ -128,7 +137,7 @@ async function enviar() {
     <Head :title="t('aura.titulo')" />
 
     <PainelLayout>
-        <div class="mx-auto flex h-[calc(100dvh-10rem-env(safe-area-inset-bottom))] max-w-4xl flex-col px-5 md:h-[calc(100vh-4rem)]">
+        <div ref="chatWrapper" class="mx-auto flex h-[calc(100dvh-10rem-var(--aviso,0px)-env(safe-area-inset-bottom))] max-w-4xl flex-col px-5 md:h-[calc(100vh-4rem-var(--aviso,0px))]">
             <!-- Cabecalho -->
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-aura-line py-4 sm:py-5">
                 <div class="flex min-w-0 items-center gap-3">

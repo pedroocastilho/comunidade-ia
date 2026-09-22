@@ -105,7 +105,7 @@ const iniciais = (nome) => nome.split(' ').filter(Boolean).slice(0, 2).map((p) =
                     <div class="mt-2 flex items-center gap-3 text-sm">
                         <button
                             type="button"
-                            class="flex min-h-11 items-center gap-1.5 px-1 py-2 font-semibold transition"
+                            class="flex min-h-11 min-w-11 items-center justify-center gap-1.5 px-2 py-2 font-semibold transition"
                             :class="post.reagi ? 'text-aura-gold' : 'text-aura-muted hover:text-aura-gold'"
                             @click="reagir(post)"
                         >
@@ -113,7 +113,7 @@ const iniciais = (nome) => nome.split(' ').filter(Boolean).slice(0, 2).map((p) =
                         </button>
                         <button
                             type="button"
-                            class="flex min-h-11 items-center gap-1.5 px-1 py-2 text-aura-muted transition hover:text-aura-text"
+                            class="flex min-h-11 min-w-11 items-center justify-center gap-1.5 px-2 py-2 text-aura-muted transition hover:text-aura-text"
                             @click="comentandoEm = comentandoEm === post.id ? null : post.id"
                         >
                             <AppIcon name="chat" class="h-4 w-4" /> {{ post.comentarios.length }}
