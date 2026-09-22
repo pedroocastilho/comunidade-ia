@@ -36,7 +36,7 @@ class ConteudoLancamentoSeeder extends Seeder
                 'destaque' => true,
                 'views' => 300,
                 'aulas' => [
-                    ['titulo' => 'Boas-vindas e Apresentação', 'video_url' => 'https://circuloaura.com/videos/comece-aqui-1.mp4'],
+                    ['titulo' => 'Boas-vindas e Apresentação', 'video_url' => 'https://circuloaura.com/videos/comece-aqui-1.mp4', 'duracao' => 104],
                 ],
             ],
             [
@@ -47,11 +47,11 @@ class ConteudoLancamentoSeeder extends Seeder
                 'destaque' => false,
                 'views' => 280,
                 'aulas' => [
-                    ['titulo' => 'A pergunta que toda civilização já fez', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-1.mp4'],
-                    ['titulo' => 'Por que orar, meditar e visualizar nunca saíram de moda', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-2.mp4'],
-                    ['titulo' => 'O que os antigos sabiam sobre a mente', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-3.mp4'],
-                    ['titulo' => 'Rituais que atravessaram 5 mil anos e o que eles têm em comum', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-4.mp4'],
-                    ['titulo' => 'A oração e a visualização são a mesma coisa?', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-5.mp4'],
+                    ['titulo' => 'A pergunta que toda civilização já fez', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-1.mp4', 'duracao' => 191],
+                    ['titulo' => 'Por que orar, meditar e visualizar nunca saíram de moda', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-2.mp4', 'duracao' => 186],
+                    ['titulo' => 'O que os antigos sabiam sobre a mente', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-3.mp4', 'duracao' => 188],
+                    ['titulo' => 'Rituais que atravessaram 5 mil anos e o que eles têm em comum', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-4.mp4', 'duracao' => 224],
+                    ['titulo' => 'A oração e a visualização são a mesma coisa?', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-5.mp4', 'duracao' => 159],
                 ],
             ],
             [
@@ -62,11 +62,11 @@ class ConteudoLancamentoSeeder extends Seeder
                 'destaque' => false,
                 'views' => 250,
                 'aulas' => [
-                    ['titulo' => 'Equilíbrio Interior', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-1.mp4'],
-                    ['titulo' => 'Descanso Mental', 'descricao' => 'Para a mente que não para de pensar.', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-2.mp4'],
-                    ['titulo' => 'Expansão da consciência', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-3.mp4'],
-                    ['titulo' => 'Sons de cura emocional e mental', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-4.mp4'],
-                    ['titulo' => 'Técnica tai chi chuan para relaxar e meditar', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-5.mp4'],
+                    ['titulo' => 'Equilíbrio Interior', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-1.mp4', 'duracao' => 600],
+                    ['titulo' => 'Descanso Mental', 'descricao' => 'Para a mente que não para de pensar.', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-2.mp4', 'duracao' => 600],
+                    ['titulo' => 'Expansão da consciência', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-3.mp4', 'duracao' => 600],
+                    ['titulo' => 'Sons de cura emocional e mental', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-4.mp4', 'duracao' => 600],
+                    ['titulo' => 'Técnica tai chi chuan para relaxar e meditar', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-5.mp4', 'duracao' => 600],
                 ],
             ],
             [
@@ -92,10 +92,10 @@ class ConteudoLancamentoSeeder extends Seeder
                 'destaque' => false,
                 'views' => 200,
                 'aulas' => [
-                    ['titulo' => 'A verdade sobre tudo que existe', 'video_url' => 'https://circuloaura.com/videos/prosperidade-1.mp4'],
-                    ['titulo' => '4 formas de praticar e atrair o que você deseja', 'video_url' => 'https://circuloaura.com/videos/prosperidade-2.mp4'],
-                    ['titulo' => 'Canto da Gratidão — um hino para conexão celestial e merecimento', 'video_url' => 'https://circuloaura.com/videos/prosperidade-3.mp4'],
-                    ['titulo' => "Ho'oponopono para receber dinheiro e destravar a prosperidade", 'video_url' => 'https://circuloaura.com/videos/prosperidade-4.mp4'],
+                    ['titulo' => 'A verdade sobre tudo que existe', 'video_url' => 'https://circuloaura.com/videos/prosperidade-1.mp4', 'duracao' => 237],
+                    ['titulo' => '4 formas de praticar e atrair o que você deseja', 'video_url' => 'https://circuloaura.com/videos/prosperidade-2.mp4', 'duracao' => 470],
+                    ['titulo' => 'Canto da Gratidão — um hino para conexão celestial e merecimento', 'video_url' => 'https://circuloaura.com/videos/prosperidade-3.mp4', 'duracao' => 853],
+                    ['titulo' => "Ho'oponopono para receber dinheiro e destravar a prosperidade", 'video_url' => 'https://circuloaura.com/videos/prosperidade-4.mp4', 'duracao' => 985],
                 ],
             ],
         ];
@@ -133,6 +133,7 @@ class ConteudoLancamentoSeeder extends Seeder
                         'descricao' => $aula['descricao'] ?? null,
                         'material_url' => $aula['material_url'] ?? null,
                         'video_url' => $aula['video_url'] ?? null,
+                        'duracao' => $aula['duracao'] ?? 0,
                     ],
                 );
             }

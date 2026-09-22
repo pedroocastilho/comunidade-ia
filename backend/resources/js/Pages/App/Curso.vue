@@ -100,10 +100,16 @@ function formatarDuracao(segundos) {
                                         :class="aula.concluida ? 'bg-aura-gold text-aura-black' : 'bg-aura-gold/10 text-aura-gold'"
                                     >
                                         <span v-if="premium_bloqueado" class="text-xs">🔒</span>
-                                        <AppIcon v-else :name="aula.concluida ? 'check' : 'play'" class="h-4 w-4" />
+                                        <AppIcon v-else :name="aula.concluida ? 'check' : (aula.leitura ? 'book' : 'play')" class="h-4 w-4" />
                                     </span>
                                     <span class="flex-1 font-medium text-aura-text">{{ aula.titulo }}</span>
-                                    <span class="text-sm text-aura-faint">{{ formatarDuracao(aula.duracao) }}</span>
+                                    <span
+                                        v-if="aula.leitura"
+                                        class="rounded-full border border-aura-gold/40 bg-aura-gold/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-aura-gold"
+                                    >
+                                        {{ t('curso.leitura') }}
+                                    </span>
+                                    <span v-else class="text-sm text-aura-faint">{{ formatarDuracao(aula.duracao) }}</span>
                                 </component>
                             </li>
                         </ul>

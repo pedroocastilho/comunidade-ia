@@ -105,6 +105,8 @@ class PainelController extends Controller
                         'id' => $a->id,
                         'titulo' => $a->titulo,
                         'duracao' => $a->duracao,
+                        // Aula sem video e com material: mostra selo "Leitura" em vez de 0:00
+                        'leitura' => ! $a->bunny_video_id && ! $a->video_url && (bool) $a->material_url,
                         'concluida' => in_array($a->id, $concluidas, true),
                     ]),
                 ]),

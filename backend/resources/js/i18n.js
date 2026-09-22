@@ -41,6 +41,7 @@ export const messages = {
         },
         curso: {
             progresso: 'Seu progresso',
+            leitura: 'Leitura',
         },
         player: {
             concluir: 'Marcar como concluída',
@@ -311,6 +312,7 @@ export const messages = {
         },
         curso: {
             progresso: 'Tu progreso',
+            leitura: 'Lectura',
         },
         player: {
             concluir: 'Marcar como completada',

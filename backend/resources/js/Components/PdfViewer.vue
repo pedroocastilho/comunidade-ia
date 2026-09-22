@@ -21,7 +21,8 @@ onMounted(async () => {
         const worker = await import('pdfjs-dist/build/pdf.worker.min.mjs?url');
         pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
 
-        const pdf = await pdfjs.getDocument(props.url).promise;
+        // pdf.js 6 exige URL absoluta no formato objeto ({url}); string relativa falha
+        const pdf = await pdfjs.getDocument({ url: new URL(props.url, window.location.origin).href }).promise;
         carregando.value = false;
 
         const larguraBase = container.value?.clientWidth || 800;
