@@ -331,9 +331,9 @@ function enviarCheckin() {
                         v-for="curso in continuar"
                         :key="curso.id"
                         :href="route('curso', curso.slug)"
-                        class="group w-56 shrink-0"
+                        class="group w-44 shrink-0"
                     >
-                        <div class="relative aspect-video overflow-hidden rounded-xl border border-aura-line bg-aura-surface transition group-hover:border-aura-gold/60">
+                        <div class="relative aspect-[9/16] overflow-hidden rounded-xl border border-aura-line bg-aura-surface transition group-hover:border-aura-gold/60">
                             <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
                             <span class="absolute bottom-2 left-3 right-3 truncate font-display text-sm font-semibold text-aura-text">{{ curso.titulo }}</span>
@@ -357,9 +357,9 @@ function enviarCheckin() {
                         :href="route('curso', curso.slug)"
                         :aria-hidden="i >= em_alta.length ? 'true' : null"
                         :tabindex="i >= em_alta.length ? -1 : null"
-                        class="group w-72 shrink-0 overflow-hidden rounded-2xl border border-aura-line bg-aura-surface transition hover:border-aura-gold/60"
+                        class="group w-56 shrink-0 overflow-hidden rounded-2xl border border-aura-line bg-aura-surface transition hover:border-aura-gold/60"
                     >
-                        <div class="relative aspect-video bg-gradient-to-br from-aura-raised to-aura-deep">
+                        <div class="relative aspect-[9/16] bg-gradient-to-br from-aura-raised to-aura-deep">
                             <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent"></div>
                             <div class="absolute bottom-3 left-4 right-4">

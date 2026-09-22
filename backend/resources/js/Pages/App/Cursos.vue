@@ -72,7 +72,7 @@ function filtrar() {
                     :href="route('curso', curso.slug)"
                     class="group block"
                 >
-                    <div class="relative aspect-[3/4] overflow-hidden rounded-2xl border border-aura-line bg-aura-surface transition group-hover:border-aura-gold/60">
+                    <div class="relative aspect-[9/16] overflow-hidden rounded-2xl border border-aura-line bg-aura-surface transition group-hover:border-aura-gold/60">
                         <img v-if="curso.capa_url" :src="curso.capa_url" :alt="curso.titulo" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
                         <span

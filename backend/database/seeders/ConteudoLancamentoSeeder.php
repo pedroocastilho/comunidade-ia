@@ -13,8 +13,8 @@ use Illuminate\Database\Seeder;
 
 /**
  * Conteudo real do lancamento (documento do Gabriel, 2026-09-21).
- * Remove o conteudo demo de IA e cria os 4 modulos prontos:
- * Comece Aqui, Mente e Corpo, Relacionamento (PDFs) e Prosperidade.
+ * Remove o conteudo demo de IA e cria os 5 modulos prontos: Comece Aqui,
+ * Codigo da Manifestacao, Mente e Corpo, Relacionamento (PDFs) e Prosperidade.
  *
  * Idempotente: pode rodar mais de uma vez sem duplicar nada.
  * Os bunny_video_id ficam vazios ate os videos subirem para o Bunny Stream;
@@ -35,28 +35,43 @@ class ConteudoLancamentoSeeder extends Seeder
                 'destaque' => true,
                 'views' => 300,
                 'aulas' => [
-                    ['titulo' => 'Boas-vindas e Apresentação'],
+                    ['titulo' => 'Boas-vindas e Apresentação', 'video_url' => 'https://circuloaura.com/videos/comece-aqui-1.mp4'],
+                ],
+            ],
+            [
+                'categoria' => 'Código da Manifestação',
+                'slug' => 'codigo-da-manifestacao',
+                'ordem' => 2,
+                'descricao' => 'A jornada pela história, pela ciência e pelas tradições que buscaram o poder da mente.',
+                'destaque' => false,
+                'views' => 280,
+                'aulas' => [
+                    ['titulo' => 'A pergunta que toda civilização já fez', 'video_url' => 'https://agentes.diamondglobal.com.br/api/arquivos/videos/vid_c360bd8538/1790003266917-aura-a1-codigo-da-manifestacao-v3.mp4'],
+                    ['titulo' => 'Por que orar, meditar e visualizar nunca saíram de moda', 'video_url' => 'https://agentes.diamondglobal.com.br/api/arquivos/videos/vid_d9908b2c6d/1790012997609-aura-aula-2---por-que-orar-meditar-e-visualizar-.mp4'],
+                    ['titulo' => 'O que os antigos sabiam sobre a mente', 'video_url' => 'https://agentes.diamondglobal.com.br/api/arquivos/videos/vid_ea499cbfc7/1790011065328-aura-a3---o-que-os-antigos-sabiam-sobre-a-mente.mp4'],
+                    ['titulo' => 'Rituais que atravessaram 5 mil anos e o que eles têm em comum', 'video_url' => 'https://agentes.diamondglobal.com.br/api/arquivos/videos/vid_4b139223a5/1790009260886-aura-aula-4---rituais-5-mil-anos.mp4'],
+                    ['titulo' => 'A oração e a visualização são a mesma coisa?', 'video_url' => 'https://agentes.diamondglobal.com.br/api/arquivos/videos/vid_380c6d3b75/1790007612070-aura-a5---oracao-e-visualizacao.mp4'],
                 ],
             ],
             [
                 'categoria' => 'Mente e Corpo',
                 'slug' => 'mente-e-corpo',
-                'ordem' => 2,
+                'ordem' => 3,
                 'descricao' => 'Práticas guiadas para equilibrar a mente, descansar e expandir a consciência.',
                 'destaque' => false,
                 'views' => 250,
                 'aulas' => [
-                    ['titulo' => 'Equilíbrio Interior'],
-                    ['titulo' => 'Descanso Mental', 'descricao' => 'Para a mente que não para de pensar.'],
-                    ['titulo' => 'Expansão da consciência'],
-                    ['titulo' => 'Sons de cura emocional e mental'],
-                    ['titulo' => 'Técnica tai chi chuan para relaxar e meditar'],
+                    ['titulo' => 'Equilíbrio Interior', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-1.mp4'],
+                    ['titulo' => 'Descanso Mental', 'descricao' => 'Para a mente que não para de pensar.', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-2.mp4'],
+                    ['titulo' => 'Expansão da consciência', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-3.mp4'],
+                    ['titulo' => 'Sons de cura emocional e mental', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-4.mp4'],
+                    ['titulo' => 'Técnica tai chi chuan para relaxar e meditar', 'video_url' => 'https://circuloaura.com/videos/mente-e-corpo-5.mp4'],
                 ],
             ],
             [
                 'categoria' => 'Relacionamento',
                 'slug' => 'relacionamento',
-                'ordem' => 3,
+                'ordem' => 4,
                 'descricao' => 'Como você ama, por que ama assim e o amor que você está construindo.',
                 'destaque' => false,
                 'views' => 150,
@@ -71,15 +86,15 @@ class ConteudoLancamentoSeeder extends Seeder
             [
                 'categoria' => 'Prosperidade',
                 'slug' => 'prosperidade',
-                'ordem' => 4,
+                'ordem' => 5,
                 'descricao' => 'Práticas de gratidão, merecimento e abertura para receber prosperidade.',
                 'destaque' => false,
                 'views' => 200,
                 'aulas' => [
-                    ['titulo' => 'A verdade sobre tudo que existe'],
-                    ['titulo' => '4 formas de praticar e atrair o que você deseja'],
-                    ['titulo' => 'Canto da Gratidão — um hino para conexão celestial e merecimento'],
-                    ['titulo' => "Ho'oponopono para receber dinheiro e destravar a prosperidade"],
+                    ['titulo' => 'A verdade sobre tudo que existe', 'video_url' => 'https://circuloaura.com/videos/prosperidade-1.mp4'],
+                    ['titulo' => '4 formas de praticar e atrair o que você deseja', 'video_url' => 'https://circuloaura.com/videos/prosperidade-2.mp4'],
+                    ['titulo' => 'Canto da Gratidão — um hino para conexão celestial e merecimento', 'video_url' => 'https://circuloaura.com/videos/prosperidade-3.mp4'],
+                    ['titulo' => "Ho'oponopono para receber dinheiro e destravar a prosperidade", 'video_url' => 'https://circuloaura.com/videos/prosperidade-4.mp4'],
                 ],
             ],
         ];
@@ -116,6 +131,7 @@ class ConteudoLancamentoSeeder extends Seeder
                         'titulo' => $aula['titulo'],
                         'descricao' => $aula['descricao'] ?? null,
                         'material_url' => $aula['material_url'] ?? null,
+                        'video_url' => $aula['video_url'] ?? null,
                     ],
                 );
             }
