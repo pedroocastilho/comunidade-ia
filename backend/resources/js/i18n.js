@@ -53,6 +53,8 @@ export const messages = {
             aulaLeitura: 'Aula em material de leitura',
             carregandoMaterial: 'Carregando material…',
             erroMaterial: 'Não foi possível carregar o material. Recarregue a página.',
+            ampliar: 'Clique para ampliar',
+            fechar: 'Fechar',
         },
         semAcesso: {
             titulo: 'Sua assinatura ainda não está ativa',
@@ -324,6 +326,8 @@ export const messages = {
             aulaLeitura: 'Clase en material de lectura',
             carregandoMaterial: 'Cargando material…',
             erroMaterial: 'No se pudo cargar el material. Recarga la página.',
+            ampliar: 'Haz clic para ampliar',
+            fechar: 'Cerrar',
         },
         semAcesso: {
             titulo: 'Tu suscripción aún no está activa',
