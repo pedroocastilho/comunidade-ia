@@ -49,8 +49,9 @@ export const messages = {
             proxima: 'Próxima aula',
             material: 'Baixar material da aula',
             indisponivel: 'Vídeo indisponível',
-            aulaLeitura: 'Esta aula é em material de leitura',
-            abrirMaterial: 'Abrir material',
+            aulaLeitura: 'Aula em material de leitura',
+            carregandoMaterial: 'Carregando material…',
+            erroMaterial: 'Não foi possível carregar o material. Recarregue a página.',
         },
         semAcesso: {
             titulo: 'Sua assinatura ainda não está ativa',
@@ -318,8 +319,9 @@ export const messages = {
             proxima: 'Siguiente clase',
             material: 'Descargar material de la clase',
             indisponivel: 'Video no disponible',
-            aulaLeitura: 'Esta clase es en material de lectura',
-            abrirMaterial: 'Abrir material',
+            aulaLeitura: 'Clase en material de lectura',
+            carregandoMaterial: 'Cargando material…',
+            erroMaterial: 'No se pudo cargar el material. Recarga la página.',
         },
         semAcesso: {
             titulo: 'Tu suscripción aún no está activa',

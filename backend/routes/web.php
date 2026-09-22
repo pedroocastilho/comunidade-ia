@@ -24,6 +24,20 @@ Route::get('/', function () {
 Route::get('/termos', fn () => Inertia::render('Legal/Termos'))->name('termos');
 Route::get('/privacidade', fn () => Inertia::render('Legal/Privacidade'))->name('privacidade');
 
+// Materiais das aulas (PDFs): fora do public/, so para assinante logado.
+// URL sem extensao de proposito, para o nginx nao tentar servir como arquivo estatico.
+Route::get('/materiais/{arquivo}', function (string $arquivo) {
+    $caminho = storage_path('app/materiais/'.$arquivo.'.pdf');
+    abort_unless(is_file($caminho), 404);
+
+    return response()->file($caminho, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="'.$arquivo.'.pdf"',
+        'Cache-Control' => 'private, max-age=3600',
+        'X-Robots-Tag' => 'noindex',
+    ]);
+})->where('arquivo', '[a-z0-9-]+')->middleware(['auth', 'acesso.web'])->name('material');
+
 // Troca de idioma (pt | es): sessao + conta do usuario (persiste entre dispositivos).
 Route::post('/idioma', function () {
     $locale = request('locale');

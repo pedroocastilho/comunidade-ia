@@ -3,6 +3,10 @@ import AppIcon from '@/Components/AppIcon.vue';
 import PainelLayout from '@/Layouts/PainelLayout.vue';
 import { useI18n } from '@/useI18n';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { defineAsyncComponent } from 'vue';
+
+// Carregado sob demanda: o pdf.js so entra no bundle de quem abre aula em PDF
+const PdfViewer = defineAsyncComponent(() => import('@/Components/PdfViewer.vue'));
 
 const { t } = useI18n();
 
@@ -29,7 +33,7 @@ function concluir() {
                     <AppIcon name="arrow-left" class="h-4 w-4" /> {{ curso.titulo }}
                 </Link>
 
-                <div class="mt-4 overflow-hidden rounded-2xl bg-black shadow-sm">
+                <div v-if="aula.video_embed_url || aula.video_file_url" class="mt-4 overflow-hidden rounded-2xl bg-black shadow-sm">
                     <div class="aspect-video">
                         <iframe
                             v-if="aula.video_embed_url"
@@ -39,32 +43,28 @@ function concluir() {
                             allowfullscreen
                         ></iframe>
                         <video
-                            v-else-if="aula.video_file_url"
+                            v-else
                             :src="aula.video_file_url"
                             class="h-full w-full"
                             controls
                             controlslist="nodownload"
                             playsinline
                         ></video>
-                        <div
-                            v-else-if="aula.material_url"
-                            class="flex h-full flex-col items-center justify-center gap-4 bg-aura-surface px-6 text-center"
-                        >
-                            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-aura-gold/15">
-                                <AppIcon name="book" class="h-6 w-6 text-aura-gold" />
-                            </span>
-                            <p class="font-display text-lg font-bold text-aura-text">{{ t('player.aulaLeitura') }}</p>
-                            <a
-                                :href="aula.material_url"
-                                target="_blank"
-                                class="inline-flex items-center gap-2 rounded-full bg-aura-gold px-6 py-3 font-semibold text-aura-black transition hover:bg-aura-gold-light"
-                            >
-                                {{ t('player.abrirMaterial') }}
-                            </a>
-                        </div>
-                        <div v-else class="flex h-full items-center justify-center text-aura-muted">
-                            {{ t('player.indisponivel') }}
-                        </div>
+                    </div>
+                </div>
+
+                <!-- Aula em material de leitura: PDF renderizado dentro da plataforma -->
+                <div v-else-if="aula.material_url" class="mt-4 rounded-2xl border border-aura-line bg-aura-surface p-3 sm:p-5">
+                    <div class="mb-3 flex items-center gap-2 text-sm font-semibold text-aura-gold">
+                        <AppIcon name="book" class="h-4 w-4" />
+                        {{ t('player.aulaLeitura') }}
+                    </div>
+                    <PdfViewer :url="aula.material_url" />
+                </div>
+
+                <div v-else class="mt-4 overflow-hidden rounded-2xl bg-black shadow-sm">
+                    <div class="aspect-video flex items-center justify-center text-aura-muted">
+                        {{ t('player.indisponivel') }}
                     </div>
                 </div>
 

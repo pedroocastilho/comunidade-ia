@@ -17,8 +17,9 @@ use Illuminate\Database\Seeder;
  * Codigo da Manifestacao, Mente e Corpo, Relacionamento (PDFs) e Prosperidade.
  *
  * Idempotente: pode rodar mais de uma vez sem duplicar nada.
- * Os bunny_video_id ficam vazios ate os videos subirem para o Bunny Stream;
- * as capas e PDFs sao enviados para public/capas e public/materiais no deploy.
+ * Capas ficam em public/capas; videos em public/videos ou no servidor da
+ * Diamond; PDFs em storage/app/materiais (servidos pela rota autenticada
+ * "material", por isso o material_url nao tem extensao .pdf).
  */
 class ConteudoLancamentoSeeder extends Seeder
 {
@@ -76,11 +77,11 @@ class ConteudoLancamentoSeeder extends Seeder
                 'destaque' => false,
                 'views' => 150,
                 'aulas' => [
-                    ['titulo' => 'O casal que se apaixonou respondendo 36 perguntas', 'material_url' => '/materiais/relacionamento-aula-1.pdf'],
-                    ['titulo' => 'O jeito como você ama pode ter nascido antes de você aprender a falar', 'material_url' => '/materiais/relacionamento-aula-2.pdf'],
-                    ['titulo' => 'Nem todo mundo sente amor da mesma forma', 'material_url' => '/materiais/relacionamento-aula-3.pdf'],
-                    ['titulo' => 'Você só aceita o amor que acredita merecer', 'material_url' => '/materiais/relacionamento-aula-4.pdf'],
-                    ['titulo' => 'O amor que você está construindo já começou', 'material_url' => '/materiais/relacionamento-aula-5.pdf'],
+                    ['titulo' => 'O casal que se apaixonou respondendo 36 perguntas', 'material_url' => '/materiais/relacionamento-aula-1'],
+                    ['titulo' => 'O jeito como você ama pode ter nascido antes de você aprender a falar', 'material_url' => '/materiais/relacionamento-aula-2'],
+                    ['titulo' => 'Nem todo mundo sente amor da mesma forma', 'material_url' => '/materiais/relacionamento-aula-3'],
+                    ['titulo' => 'Você só aceita o amor que acredita merecer', 'material_url' => '/materiais/relacionamento-aula-4'],
+                    ['titulo' => 'O amor que você está construindo já começou', 'material_url' => '/materiais/relacionamento-aula-5'],
                 ],
             ],
             [
