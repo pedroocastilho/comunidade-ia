@@ -7,6 +7,7 @@ use App\Http\Resources\AulaResource;
 use App\Models\Aula;
 use App\Models\ProgressoAula;
 use App\Services\BunnyService;
+use App\Services\VideoEmbedService;
 use Illuminate\Http\Request;
 
 class AulaController extends Controller
@@ -24,7 +25,7 @@ class AulaController extends Controller
         abort_if($curso->premium && ! $request->user()->comprou($curso->produto_externo_id), 403, 'Conteudo premium nao adquirido.');
     }
 
-    public function show(Request $request, Aula $aula, BunnyService $bunny)
+    public function show(Request $request, Aula $aula, VideoEmbedService $video)
     {
         $this->autorizarAcesso($request, $aula);
 
@@ -32,9 +33,12 @@ class AulaController extends Controller
             ->where('aula_id', $aula->id)
             ->first();
 
+        $videoAula = $video->resolver($aula);
+
         $aula->concluida = $progresso->concluida ?? false;
         $aula->posicao_segundos = $progresso->posicao_segundos ?? 0;
-        $aula->embed_url = $aula->bunny_video_id ? $bunny->embedUrl($aula->bunny_video_id) : null;
+        $aula->embed_url = $videoAula['embed_url'];
+        $aula->video_file_url = $videoAula['video_file_url'];
         $aula->increment('views');
 
         return new AulaResource($aula);

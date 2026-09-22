@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
  * CSP: script-src precisa de 'unsafe-inline' por causa do @routes (Ziggy) e
  * style-src por causa dos estilos inline do Vue. Mesmo assim a politica
  * bloqueia scripts de dominios externos, objetos e embutir o site em iframes
- * de terceiros. frame-src libera o player do Bunny Stream.
+ * de terceiros. frame-src libera os players de video (Bunny, YouTube, Vimeo).
  */
 class CabecalhosSeguranca
 {
@@ -23,7 +23,7 @@ class CabecalhosSeguranca
         ."font-src 'self' https://fonts.gstatic.com; "
         ."img-src 'self' data: https:; "
         ."media-src 'self' https:; "
-        .'frame-src https://iframe.mediadelivery.net; '
+        .'frame-src https://iframe.mediadelivery.net https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; '
         ."connect-src 'self'; "
         ."object-src 'none'; "
         ."base-uri 'self'; "

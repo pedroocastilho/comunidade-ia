@@ -9,9 +9,9 @@ use App\Models\Categoria;
 use App\Models\Curso;
 use App\Models\ProgressoAula;
 use App\Services\AnalyticsService;
-use App\Services\BunnyService;
 use App\Services\GamificacaoService;
 use App\Services\JornadaService;
+use App\Services\VideoEmbedService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -112,7 +112,7 @@ class PainelController extends Controller
         ]);
     }
 
-    public function aula(Request $request, Aula $aula, BunnyService $bunny, AnalyticsService $analytics)
+    public function aula(Request $request, Aula $aula, VideoEmbedService $video, AnalyticsService $analytics)
     {
         $aula->load('modulo.curso.modulos.aulas');
         $curso = $aula->modulo->curso;
@@ -143,6 +143,8 @@ class PainelController extends Controller
         $anterior = $pos > 0 ? $sequencia[$pos - 1] : null;
         $proxima = $pos < $sequencia->count() - 1 ? $sequencia[$pos + 1] : null;
 
+        $videoAula = $video->resolver($aula);
+
         return Inertia::render('App/Player', [
             'aula' => [
                 'id' => $aula->id,
@@ -150,7 +152,8 @@ class PainelController extends Controller
                 'descricao' => $aula->descricao,
                 'material_url' => $aula->material_url,
                 'concluida' => (bool) ($progresso->concluida ?? false),
-                'video_embed_url' => $aula->bunny_video_id ? $bunny->embedUrl($aula->bunny_video_id) : null,
+                'video_embed_url' => $videoAula['embed_url'],
+                'video_file_url' => $videoAula['video_file_url'],
                 'anterior_id' => $anterior,
                 'proxima_id' => $proxima,
             ],

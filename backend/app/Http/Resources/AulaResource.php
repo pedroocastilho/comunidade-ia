@@ -16,6 +16,7 @@ class AulaResource extends JsonResource
             'is_bonus' => (bool) $this->is_bonus,
             'material_url' => $this->material_url,
             'video_embed_url' => $this->embed_url ?? null,
+            'video_file_url' => $this->video_file_url ?? null,
             'concluida' => (bool) ($this->concluida ?? false),
             'posicao_segundos' => (int) ($this->posicao_segundos ?? 0),
         ];

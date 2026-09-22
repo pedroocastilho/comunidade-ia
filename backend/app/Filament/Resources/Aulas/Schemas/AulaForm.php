@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Aulas\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
@@ -20,6 +20,11 @@ class AulaForm
                 TextInput::make('titulo')
                     ->required(),
                 Textarea::make('descricao')
+                    ->columnSpanFull(),
+                TextInput::make('video_url')
+                    ->label('Link do vídeo')
+                    ->url()
+                    ->helperText('YouTube (não listado), Vimeo ou arquivo MP4. Se preencher o Bunny abaixo, o Bunny tem prioridade.')
                     ->columnSpanFull(),
                 TextInput::make('bunny_library_id'),
                 TextInput::make('bunny_video_id'),
