@@ -47,11 +47,11 @@ class ConteudoLancamentoSeeder extends Seeder
                 'destaque' => false,
                 'views' => 280,
                 'aulas' => [
-                    ['titulo' => 'A pergunta que toda civilização já fez', 'video_url' => 'https://agentes.diamondglobal.com.br/api/arquivos/videos/vid_c360bd8538/1790003266917-aura-a1-codigo-da-manifestacao-v3.mp4'],
-                    ['titulo' => 'Por que orar, meditar e visualizar nunca saíram de moda', 'video_url' => 'https://agentes.diamondglobal.com.br/api/arquivos/videos/vid_d9908b2c6d/1790012997609-aura-aula-2---por-que-orar-meditar-e-visualizar-.mp4'],
-                    ['titulo' => 'O que os antigos sabiam sobre a mente', 'video_url' => 'https://agentes.diamondglobal.com.br/api/arquivos/videos/vid_ea499cbfc7/1790011065328-aura-a3---o-que-os-antigos-sabiam-sobre-a-mente.mp4'],
-                    ['titulo' => 'Rituais que atravessaram 5 mil anos e o que eles têm em comum', 'video_url' => 'https://agentes.diamondglobal.com.br/api/arquivos/videos/vid_4b139223a5/1790009260886-aura-aula-4---rituais-5-mil-anos.mp4'],
-                    ['titulo' => 'A oração e a visualização são a mesma coisa?', 'video_url' => 'https://agentes.diamondglobal.com.br/api/arquivos/videos/vid_380c6d3b75/1790007612070-aura-a5---oracao-e-visualizacao.mp4'],
+                    ['titulo' => 'A pergunta que toda civilização já fez', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-1.mp4'],
+                    ['titulo' => 'Por que orar, meditar e visualizar nunca saíram de moda', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-2.mp4'],
+                    ['titulo' => 'O que os antigos sabiam sobre a mente', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-3.mp4'],
+                    ['titulo' => 'Rituais que atravessaram 5 mil anos e o que eles têm em comum', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-4.mp4'],
+                    ['titulo' => 'A oração e a visualização são a mesma coisa?', 'video_url' => 'https://circuloaura.com/videos/codigo-da-manifestacao-5.mp4'],
                 ],
             ],
             [
