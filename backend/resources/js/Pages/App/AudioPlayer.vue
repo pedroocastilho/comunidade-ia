@@ -112,7 +112,7 @@ onBeforeUnmount(() => {
                         <button
                             v-if="!audio.concluido"
                             type="button"
-                            class="rounded-full border border-aura-gold/60 px-5 py-2 text-sm font-semibold text-aura-gold transition hover:bg-aura-gold hover:text-aura-black"
+                            class="rounded-full border border-aura-gold/60 px-5 py-3 text-sm font-semibold text-aura-gold transition hover:bg-aura-gold hover:text-aura-black"
                             @click="salvarProgresso(true)"
                         >
                             {{ t('dia.concluir') }}

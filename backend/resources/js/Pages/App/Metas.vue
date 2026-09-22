@@ -121,22 +121,22 @@ function prazoTexto(meta) {
 
             <div class="mt-8 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
                 <!-- Calendario -->
-                <section class="rounded-2xl border border-aura-line bg-aura-surface p-5">
+                <section class="rounded-2xl border border-aura-line bg-aura-surface p-3 sm:p-5">
                     <div class="flex items-center justify-between">
-                        <button type="button" class="rounded-full p-2 text-aura-muted transition hover:bg-aura-raised hover:text-aura-gold" :aria-label="t('metas.mesAnterior')" @click="mudarMes(-1)">
+                        <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full text-aura-muted transition hover:bg-aura-raised hover:text-aura-gold" :aria-label="t('metas.mesAnterior')" @click="mudarMes(-1)">
                             <AppIcon name="arrow-left" class="h-5 w-5" />
                         </button>
                         <h2 class="font-display text-xl font-semibold capitalize text-aura-text">{{ nomeMes }}</h2>
-                        <button type="button" class="rounded-full p-2 text-aura-muted transition hover:bg-aura-raised hover:text-aura-gold" :aria-label="t('metas.mesSeguinte')" @click="mudarMes(1)">
+                        <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full text-aura-muted transition hover:bg-aura-raised hover:text-aura-gold" :aria-label="t('metas.mesSeguinte')" @click="mudarMes(1)">
                             <AppIcon name="arrow-left" class="h-5 w-5 rotate-180" />
                         </button>
                     </div>
 
-                    <div class="mt-4 grid grid-cols-7 gap-1 text-center text-[11px] font-semibold uppercase tracking-wider text-aura-faint">
+                    <div class="mt-4 grid grid-cols-7 gap-0.5 text-center sm:gap-1 text-[11px] font-semibold uppercase tracking-wider text-aura-faint">
                         <span v-for="d in diasSemana" :key="d">{{ d }}</span>
                     </div>
 
-                    <div class="mt-1 grid grid-cols-7 gap-1">
+                    <div class="mt-1 grid grid-cols-7 gap-0.5 sm:gap-1">
                         <template v-for="(celula, i) in celulas" :key="i">
                             <span v-if="!celula" class="aspect-square"></span>
                             <button
@@ -208,10 +208,10 @@ function prazoTexto(meta) {
                                     <p class="truncate font-semibold text-aura-text">{{ meta.titulo }}</p>
                                     <p class="text-xs text-aura-muted">{{ t('metas.prazo') }}: {{ prazoTexto(meta) }}</p>
                                 </div>
-                                <button type="button" class="rounded-full border border-aura-gold/50 px-3.5 py-1.5 text-xs font-semibold text-aura-gold transition hover:bg-aura-gold/10" @click="marcar(meta, true)">
+                                <button type="button" class="rounded-full border border-aura-gold/50 px-3.5 py-2.5 text-xs font-semibold text-aura-gold transition hover:bg-aura-gold/10" @click="marcar(meta, true)">
                                     {{ t('metas.fiz') }}
                                 </button>
-                                <button type="button" class="text-aura-faint transition hover:text-red-400" :aria-label="t('metas.excluir')" @click="excluir(meta)">✕</button>
+                                <button type="button" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-aura-faint transition hover:bg-aura-raised hover:text-red-400" :aria-label="t('metas.excluir')" @click="excluir(meta)">✕</button>
                             </li>
                         </ul>
                     </section>
@@ -227,10 +227,10 @@ function prazoTexto(meta) {
                                     <p class="truncate font-semibold text-aura-muted">{{ meta.titulo }}</p>
                                     <p class="text-xs text-aura-faint">{{ t('metas.venceuEm') }} {{ dataCurta(meta.prazo) }}</p>
                                 </div>
-                                <button type="button" class="rounded-full border border-aura-line px-3.5 py-1.5 text-xs font-semibold text-aura-muted transition hover:border-aura-gold/50 hover:text-aura-gold" @click="marcar(meta, true)">
+                                <button type="button" class="rounded-full border border-aura-line px-3.5 py-2.5 text-xs font-semibold text-aura-muted transition hover:border-aura-gold/50 hover:text-aura-gold" @click="marcar(meta, true)">
                                     {{ t('metas.fizAtrasado') }}
                                 </button>
-                                <button type="button" class="text-aura-faint transition hover:text-red-400" :aria-label="t('metas.excluir')" @click="excluir(meta)">✕</button>
+                                <button type="button" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-aura-faint transition hover:bg-aura-raised hover:text-red-400" :aria-label="t('metas.excluir')" @click="excluir(meta)">✕</button>
                             </li>
                         </ul>
                     </section>
@@ -247,7 +247,7 @@ function prazoTexto(meta) {
                                     <p class="truncate text-aura-text line-through decoration-aura-faint">{{ meta.titulo }}</p>
                                     <p class="text-xs text-aura-faint">{{ dataCurta(meta.prazo) }}</p>
                                 </div>
-                                <button type="button" class="text-xs text-aura-faint transition hover:text-aura-muted" @click="marcar(meta, false)">
+                                <button type="button" class="flex min-h-11 shrink-0 items-center px-2 text-xs text-aura-faint transition hover:text-aura-muted" @click="marcar(meta, false)">
                                     {{ t('metas.naoFiz') }}
                                 </button>
                             </li>

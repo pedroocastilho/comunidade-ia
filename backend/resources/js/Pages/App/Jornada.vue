@@ -60,7 +60,7 @@ const etapas = computed(() => {
                                 {{ t('jornadaPage.dia') }} {{ dia.dia }}
                                 <span v-if="dia.atual" class="ml-2 rounded-full border border-aura-gold/50 px-2 py-0.5 text-[11px] uppercase tracking-wider text-aura-gold">{{ t('jornadaPage.hoje') }}</span>
                             </p>
-                            <p v-if="dia.atual || dia.concluido" class="mt-0.5 truncate text-sm text-aura-muted">
+                            <p v-if="dia.atual || dia.concluido" class="mt-0.5 line-clamp-2 text-sm text-aura-muted sm:line-clamp-1">
                                 {{ [dia.ritual, dia.aula, dia.acao].filter(Boolean).join(' · ') }}
                             </p>
                             <p v-else class="mt-0.5 text-sm text-aura-faint">{{ t('jornadaPage.bloqueado') }}</p>

@@ -73,7 +73,7 @@ const closeModal = () => {
                         ref="passwordInput"
                         v-model="form.password"
                         type="password"
-                        class="mt-1 block w-3/4"
+                        class="mt-1 block w-full"
                         :placeholder="t('auth.senha')"
                         @keyup.enter="deleteUser"
                     />
@@ -81,13 +81,12 @@ const closeModal = () => {
                     <InputError :message="form.errors.password" class="mt-2" />
                 </div>
 
-                <div class="mt-6 flex justify-end">
+                <div class="mt-6 flex flex-wrap justify-end gap-3">
                     <SecondaryButton @click="closeModal">
                         {{ t('common.cancelar') }}
                     </SecondaryButton>
 
                     <DangerButton
-                        class="ms-3"
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                         @click="deleteUser"

@@ -97,46 +97,49 @@ onBeforeUnmount(() => {
             {{ t('player.carregandoMaterial') }}
         </div>
         <p v-if="erro" class="py-16 text-center text-aura-muted">{{ t('player.erroMaterial') }}</p>
+        <p v-if="!carregando && !erro" class="mb-3 text-center text-xs text-aura-faint">{{ t('player.ampliar') }}</p>
         <div ref="container" class="mx-auto max-w-2xl space-y-6"></div>
 
         <!-- Pagina em tela cheia -->
         <Teleport to="body">
             <div
                 v-if="zoomSrc"
-                class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-3 pb-20"
                 @contextmenu.prevent
                 @click.self="fecharZoom"
             >
-                <img :src="zoomSrc" class="max-h-[92vh] max-w-[96vw] rounded-lg object-contain" :alt="t('player.aulaLeitura')" />
+                <img :src="zoomSrc" class="max-h-full max-w-full rounded-lg object-contain" :alt="t('player.aulaLeitura')" />
 
                 <button
-                    class="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-aura-black/80 text-xl text-aura-text transition hover:bg-aura-gold hover:text-aura-black"
+                    class="absolute right-3 top-[max(0.75rem,env(safe-area-inset-top))] flex h-11 w-11 items-center justify-center rounded-full bg-aura-black/80 text-xl text-aura-text transition hover:bg-aura-gold hover:text-aura-black"
                     :aria-label="t('player.fechar')"
                     @click="fecharZoom"
                 >
                     ✕
                 </button>
 
-                <button
-                    v-if="zoomIndex > 0"
-                    class="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-aura-black/80 text-xl text-aura-text transition hover:bg-aura-gold hover:text-aura-black"
-                    aria-label="←"
-                    @click.stop="navegarZoom(-1)"
-                >
-                    ←
-                </button>
-                <button
-                    v-if="zoomIndex < canvases.length - 1"
-                    class="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-aura-black/80 text-xl text-aura-text transition hover:bg-aura-gold hover:text-aura-black"
-                    aria-label="→"
-                    @click.stop="navegarZoom(1)"
-                >
-                    →
-                </button>
-
-                <span class="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-aura-black/80 px-3 py-1 text-sm text-aura-muted">
-                    {{ zoomIndex + 1 }} / {{ canvases.length }}
-                </span>
+                <!-- Barra de navegacao embaixo: nao cobre a pagina e fica na zona do polegar -->
+                <div class="absolute inset-x-0 bottom-[max(1rem,env(safe-area-inset-bottom))] flex items-center justify-center gap-3">
+                    <button
+                        class="flex h-11 w-11 items-center justify-center rounded-full bg-aura-black/80 text-xl text-aura-text transition hover:bg-aura-gold hover:text-aura-black disabled:opacity-30"
+                        :disabled="zoomIndex === 0"
+                        aria-label="←"
+                        @click.stop="navegarZoom(-1)"
+                    >
+                        ←
+                    </button>
+                    <span class="rounded-full bg-aura-black/80 px-4 py-2 text-sm text-aura-muted">
+                        {{ zoomIndex + 1 }} / {{ canvases.length }}
+                    </span>
+                    <button
+                        class="flex h-11 w-11 items-center justify-center rounded-full bg-aura-black/80 text-xl text-aura-text transition hover:bg-aura-gold hover:text-aura-black disabled:opacity-30"
+                        :disabled="zoomIndex >= canvases.length - 1"
+                        aria-label="→"
+                        @click.stop="navegarZoom(1)"
+                    >
+                        →
+                    </button>
+                </div>
             </div>
         </Teleport>
     </div>

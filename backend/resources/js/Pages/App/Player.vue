@@ -29,7 +29,7 @@ function concluir() {
         <div class="grid lg:grid-cols-[minmax(0,1fr)_360px]">
             <!-- Player -->
             <div class="px-5 py-6 lg:px-10 lg:py-8">
-                <Link :href="route('curso', curso.slug)" class="inline-flex items-center gap-2 text-sm font-semibold text-aura-muted transition hover:text-aura-gold">
+                <Link :href="route('curso', curso.slug)" class="-my-2 inline-flex min-h-11 items-center gap-2 py-2 text-sm font-semibold text-aura-muted transition hover:text-aura-gold">
                     <AppIcon name="arrow-left" class="h-4 w-4" /> {{ curso.titulo }}
                 </Link>
 
@@ -88,7 +88,7 @@ function concluir() {
                     <Link
                         v-if="aula.anterior_id"
                         :href="route('aula', aula.anterior_id)"
-                        class="text-sm font-semibold text-aura-muted transition hover:text-aura-gold"
+                        class="-mx-3 inline-flex min-h-11 items-center rounded-full px-3 py-2 text-sm font-semibold text-aura-muted transition hover:text-aura-gold"
                     >
                         ← {{ t('player.anterior') }}
                     </Link>
@@ -96,7 +96,7 @@ function concluir() {
                     <Link
                         v-if="aula.proxima_id"
                         :href="route('aula', aula.proxima_id)"
-                        class="text-sm font-semibold text-aura-muted transition hover:text-aura-gold"
+                        class="-mx-3 inline-flex min-h-11 items-center rounded-full px-3 py-2 text-sm font-semibold text-aura-muted transition hover:text-aura-gold"
                     >
                         {{ t('player.proxima') }} →
                     </Link>
@@ -125,7 +125,7 @@ function concluir() {
                         v-for="a in modulo.aulas"
                         :key="a.id"
                         :href="route('aula', a.id)"
-                        class="flex items-center gap-3 px-5 py-2.5 transition"
+                        class="flex min-h-12 items-center gap-3 px-5 py-3 transition"
                         :class="a.id === aula.id ? 'bg-aura-gold/10' : 'hover:bg-aura-raised'"
                     >
                         <span
@@ -136,7 +136,7 @@ function concluir() {
                             <AppIcon v-else-if="a.id === aula.id" name="play" class="h-3 w-3" />
                         </span>
                         <span
-                            class="flex-1 text-sm"
+                            class="min-w-0 flex-1 break-words text-sm"
                             :class="a.id === aula.id ? 'font-semibold text-aura-gold' : 'text-aura-text'"
                         >{{ a.titulo }}</span>
                     </Link>

@@ -47,7 +47,7 @@ const barras = computed(() =>
 <template>
     <Head :title="t('score.titulo')" />
 
-    <div class="min-h-screen bg-aura-black px-6 py-12 text-aura-text">
+    <div class="min-h-dvh bg-aura-black px-6 py-12 text-aura-text">
         <div class="mx-auto max-w-2xl">
             <p class="text-center text-sm uppercase tracking-widest text-aura-muted">
                 {{ t('score.saudacao') }} {{ apelido }}

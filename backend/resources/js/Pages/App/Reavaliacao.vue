@@ -45,14 +45,14 @@ function enviar() {
 <template>
     <Head :title="t('reavaliacao.titulo')" />
 
-    <div class="flex min-h-screen flex-col bg-aura-black text-aura-text">
+    <div class="flex min-h-dvh flex-col bg-aura-black text-aura-text">
         <div class="h-1 w-full bg-aura-raised">
             <div class="h-1 bg-gradient-to-r from-aura-gold to-aura-gold-light transition-all duration-500" :style="{ width: progresso + '%' }" />
         </div>
 
-        <header class="flex items-center justify-between px-6 py-5">
-            <span class="font-brand text-lg font-semibold tracking-[0.24em] text-aura-gold">CÍRCULO AURA</span>
-            <span class="text-sm text-aura-muted">{{ indice + 1 }} / {{ perguntas.length }}</span>
+        <header class="flex items-center justify-between gap-3 px-6 py-5">
+            <span class="min-w-0 truncate font-brand text-base font-semibold tracking-[0.18em] text-aura-gold sm:text-lg sm:tracking-[0.24em]">CÍRCULO AURA</span>
+            <span class="shrink-0 text-sm text-aura-muted">{{ indice + 1 }} / {{ perguntas.length }}</span>
         </header>
 
         <main class="flex flex-1 items-center justify-center px-6 pb-16">

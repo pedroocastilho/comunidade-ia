@@ -73,23 +73,22 @@ const submit = () => {
             </div>
 
             <div class="mt-4 block">
-                <label class="flex items-center">
+                <label class="flex items-center py-2">
                     <Checkbox name="remember" v-model:checked="form.remember" />
                     <span class="ms-2 text-sm text-aura-muted">{{ t('auth.lembrar') }}</span>
                 </label>
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <div class="mt-4 flex flex-wrap items-center justify-end gap-3">
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="rounded-md text-sm text-aura-muted underline hover:text-aura-text focus:outline-none focus:ring-2 focus:ring-aura-gold focus:ring-offset-2"
+                    class="inline-flex min-h-11 items-center rounded-md px-1 text-sm text-aura-muted underline hover:text-aura-text focus:outline-none focus:ring-2 focus:ring-aura-gold focus:ring-offset-2"
                 >
                     {{ t('auth.esqueceu') }}
                 </Link>
 
                 <PrimaryButton
-                    class="ms-4"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >

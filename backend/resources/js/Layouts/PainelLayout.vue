@@ -27,7 +27,8 @@ const iniciais = computed(() => {
 const nav = [
     { key: 'nav.inicio', icon: 'home', rota: 'home', ativos: ['home'] },
     { key: 'nav.jornada', icon: 'map', rota: 'jornada', ativos: ['jornada'] },
-    { key: 'nav.biblioteca', icon: 'grid', rota: 'cursos', ativos: ['cursos', 'curso', 'aula', 'audios', 'audio'] },
+    // keyCurta: rotulo compacto para a nav inferior do mobile (7 abas em ~50px cada)
+    { key: 'nav.biblioteca', keyCurta: 'nav.bibliotecaCurta', icon: 'grid', rota: 'cursos', ativos: ['cursos', 'curso', 'aula', 'audios', 'audio'] },
     { key: 'nav.aura', icon: 'sparkles', rota: 'aura', ativos: ['aura'] },
     { key: 'nav.circulo', icon: 'users', rota: 'circulo', ativos: ['circulo'] },
     { key: 'nav.metas', icon: 'target', rota: 'metas', ativos: ['metas'] },
@@ -47,7 +48,7 @@ function buscar() {
 </script>
 
 <template>
-    <div class="flex min-h-screen bg-aura-black text-aura-text">
+    <div class="flex min-h-dvh bg-aura-black text-aura-text">
         <!-- Rail lateral (desktop) -->
         <aside class="sticky top-0 hidden h-screen w-20 shrink-0 flex-col items-center justify-between border-r border-aura-line bg-aura-deep py-6 md:flex">
             <div class="flex flex-col items-center gap-8">
@@ -97,9 +98,9 @@ function buscar() {
 
             <div class="relative flex-1">
                 <!-- Barra transparente flutuando por cima do conteudo/hero -->
-                <header class="absolute inset-x-0 top-0 z-20 flex h-16 items-center justify-between gap-4 px-5 lg:px-10">
-                    <div class="flex items-center gap-8">
-                        <span class="font-brand text-lg font-semibold tracking-[0.25em] text-aura-gold drop-shadow">CÍRCULO AURA</span>
+                <header class="absolute inset-x-0 top-0 z-20 flex h-16 items-center justify-between gap-3 px-4 sm:gap-4 sm:px-5 lg:px-10">
+                    <div class="flex min-w-0 items-center gap-8">
+                        <span class="whitespace-nowrap font-brand text-sm font-semibold tracking-[0.15em] text-aura-gold drop-shadow sm:text-lg sm:tracking-[0.25em]">CÍRCULO AURA</span>
                         <nav class="hidden items-center gap-6 lg:flex">
                             <Link
                                 v-for="cat in categorias"
@@ -119,7 +120,7 @@ function buscar() {
                                 v-model="busca"
                                 type="search"
                                 :placeholder="t('nav.buscar')"
-                                class="w-40 rounded-full border-aura-line/60 bg-aura-black/40 py-2 pl-10 pr-4 text-sm text-aura-text placeholder-aura-faint backdrop-blur focus:border-aura-gold focus:ring-aura-gold lg:w-56"
+                                class="w-40 rounded-full border-aura-line/60 bg-aura-black/40 py-2 pl-10 pr-4 text-base text-aura-text placeholder-aura-faint backdrop-blur focus:border-aura-gold focus:ring-aura-gold lg:w-56"
                             />
                         </form>
                         <LanguageSwitcher />
@@ -132,14 +133,14 @@ function buscar() {
                     </div>
                 </header>
 
-                <main class="min-h-full pb-24 pt-16 md:pb-0">
+                <main class="min-h-full pb-[calc(6rem+env(safe-area-inset-bottom))] pt-16 md:pb-0">
                     <slot />
                 </main>
             </div>
         </div>
 
         <!-- Nav inferior (mobile) -->
-        <nav class="fixed inset-x-0 bottom-0 z-20 flex items-center justify-around border-t border-aura-line bg-aura-deep py-2 md:hidden">
+        <nav class="fixed inset-x-0 bottom-0 z-20 flex items-center justify-around border-t border-aura-line bg-aura-deep pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 md:hidden">
             <template v-for="item in nav" :key="item.key">
                 <Link
                     v-if="item.rota"
@@ -148,11 +149,11 @@ function buscar() {
                     :class="ativo(item) ? 'text-aura-gold' : 'text-aura-muted'"
                 >
                     <AppIcon :name="item.icon" class="h-6 w-6" />
-                    <span class="w-full truncate text-center text-[9px] font-semibold">{{ t(item.key) }}</span>
+                    <span class="w-full truncate text-center text-[9px] font-semibold">{{ t(item.keyCurta ?? item.key) }}</span>
                 </Link>
                 <span v-else class="flex min-w-0 flex-1 flex-col items-center gap-0.5 px-0.5 py-1 text-aura-faint">
                     <AppIcon :name="item.icon" class="h-6 w-6" />
-                    <span class="w-full truncate text-center text-[9px] font-semibold">{{ t(item.key) }}</span>
+                    <span class="w-full truncate text-center text-[9px] font-semibold">{{ t(item.keyCurta ?? item.key) }}</span>
                 </span>
             </template>
         </nav>

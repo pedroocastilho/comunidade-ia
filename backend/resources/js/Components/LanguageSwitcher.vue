@@ -22,7 +22,7 @@ const idiomas = [
             v-for="idioma in idiomas"
             :key="idioma.code"
             type="button"
-            class="rounded-full px-2.5 py-1 transition"
+            class="rounded-full px-3 py-2 transition"
             :class="locale === idioma.code ? 'bg-aura-gold text-aura-black' : 'text-aura-muted hover:text-aura-text'"
             @click="trocar(idioma.code)"
         >

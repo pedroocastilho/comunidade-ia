@@ -80,7 +80,7 @@ function enviar() {
 <template>
     <Head :title="t('onboarding.titulo')" />
 
-    <div class="flex min-h-screen flex-col bg-aura-black text-aura-text">
+    <div class="flex min-h-dvh flex-col bg-aura-black text-aura-text">
         <!-- Barra de progresso -->
         <div class="h-1 w-full bg-aura-raised">
             <div
@@ -89,11 +89,11 @@ function enviar() {
             />
         </div>
 
-        <header class="flex items-center justify-between px-6 py-5">
-            <span class="font-brand text-lg font-semibold tracking-[0.24em] text-aura-gold">
+        <header class="flex items-center justify-between gap-3 px-6 py-5">
+            <span class="min-w-0 truncate font-brand text-base font-semibold tracking-[0.18em] text-aura-gold sm:text-lg sm:tracking-[0.24em]">
                 {{ t('onboarding.titulo').toUpperCase() }}
             </span>
-            <span class="text-sm text-aura-muted">
+            <span class="shrink-0 text-sm text-aura-muted">
                 {{ t('onboarding.passo') }} {{ indice + 1 }} {{ t('onboarding.de') }} {{ perguntas.length }}
             </span>
         </header>
@@ -168,28 +168,28 @@ function enviar() {
 
                     <p v-if="erro" class="mt-4 text-sm text-red-400">{{ t('onboarding.obrigatoria') }}</p>
 
-                    <div class="mt-10 flex items-center justify-between">
+                    <div class="mt-10 flex flex-wrap items-center justify-between gap-3">
                         <button
                             type="button"
-                            class="text-sm text-aura-muted transition hover:text-aura-text disabled:invisible"
+                            class="flex min-h-11 items-center px-1 text-sm text-aura-muted transition hover:text-aura-text disabled:invisible"
                             :disabled="indice === 0"
                             @click="voltar"
                         >
                             ← {{ t('onboarding.voltar') }}
                         </button>
 
-                        <div class="flex items-center gap-4">
+                        <div class="flex flex-wrap items-center justify-end gap-3">
                             <button
                                 v-if="!atual.obrigatoria"
                                 type="button"
-                                class="text-sm text-aura-muted underline-offset-4 transition hover:text-aura-text hover:underline"
+                                class="flex min-h-11 items-center px-1 text-sm text-aura-muted underline-offset-4 transition hover:text-aura-text hover:underline"
                                 @click="pular"
                             >
                                 {{ t('onboarding.pular') }}
                             </button>
                             <button
                                 type="button"
-                                class="rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-8 py-3 font-semibold text-aura-black transition hover:opacity-90"
+                                class="rounded-full bg-gradient-to-r from-aura-gold to-aura-gold-light px-6 py-3 text-center font-semibold text-aura-black transition hover:opacity-90 sm:px-8"
                                 @click="avancar"
                             >
                                 {{ ultima ? t('onboarding.finalizar') : t('onboarding.avancar') }}

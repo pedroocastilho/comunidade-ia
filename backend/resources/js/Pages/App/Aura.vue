@@ -128,13 +128,13 @@ async function enviar() {
     <Head :title="t('aura.titulo')" />
 
     <PainelLayout>
-        <div class="mx-auto flex h-[calc(100dvh-8.5rem)] max-w-4xl flex-col px-5 md:h-[calc(100vh-4rem)]">
+        <div class="mx-auto flex h-[calc(100dvh-10rem-env(safe-area-inset-bottom))] max-w-4xl flex-col px-5 md:h-[calc(100vh-4rem)]">
             <!-- Cabecalho -->
-            <div class="flex items-center justify-between border-b border-aura-line py-5">
-                <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-aura-line py-4 sm:py-5">
+                <div class="flex min-w-0 items-center gap-3">
                     <AvatarNoah tamanho="h-11 w-11" :pulsar="fase !== null" />
-                    <div>
-                        <h1 class="font-display text-2xl font-semibold leading-tight text-aura-text">{{ t('aura.titulo') }}</h1>
+                    <div class="min-w-0">
+                        <h1 class="font-display text-xl font-semibold leading-tight text-aura-text sm:text-2xl">{{ t('aura.titulo') }}</h1>
                         <p class="flex items-center gap-1.5 text-xs text-aura-muted">
                             <span class="h-1.5 w-1.5 rounded-full bg-emerald-400/90"></span>
                             {{ fase === 'pensando' ? t('aura.pensando') : fase === 'escrevendo' ? t('aura.digitando') : t('aura.subtitulo') }}
@@ -144,7 +144,7 @@ async function enviar() {
                 <div class="flex items-center gap-2">
                     <select
                         v-if="conversas.length > 1"
-                        class="max-w-44 rounded-full border-aura-line bg-aura-surface py-2 pl-4 pr-8 text-sm text-aura-muted focus:border-aura-gold focus:ring-aura-gold"
+                        class="max-w-[8.5rem] rounded-full border-aura-line bg-aura-surface py-2 pl-4 pr-8 text-base text-aura-muted focus:border-aura-gold focus:ring-aura-gold sm:max-w-44"
                         :value="conversaId ?? ''"
                         @change="abrirConversa(Number($event.target.value))"
                     >
@@ -178,7 +178,7 @@ async function enviar() {
                 >
                     <AvatarNoah v-if="mensagem.papel === 'assistant'" tamanho="h-8 w-8 text-sm" />
                     <div
-                        class="max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-[15px] leading-relaxed"
+                        class="max-w-[80%] whitespace-pre-wrap break-words rounded-2xl px-4 py-3 text-[15px] leading-relaxed"
                         :class="mensagem.papel === 'user'
                             ? 'rounded-br-md bg-aura-raised text-aura-text'
                             : 'rounded-bl-md border border-aura-gold/25 bg-aura-surface text-aura-text'"
@@ -204,7 +204,7 @@ async function enviar() {
                         v-model="texto"
                         rows="1"
                         :placeholder="t('aura.placeholder')"
-                        class="max-h-32 flex-1 resize-none rounded-2xl border-aura-line bg-aura-surface px-4 py-3 text-[15px] text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold"
+                        class="max-h-32 flex-1 resize-none rounded-2xl border-aura-line bg-aura-surface px-4 py-3 text-base text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold"
                         @keydown.enter.exact.prevent="enviar"
                     />
                     <button

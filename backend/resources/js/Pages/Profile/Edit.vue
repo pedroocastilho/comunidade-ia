@@ -57,15 +57,15 @@ defineProps({
                     <div
                         v-for="conquista in conquistas"
                         :key="conquista.slug"
-                        class="rounded-xl border p-4 text-center transition"
+                        class="rounded-xl border p-3 text-center transition sm:p-4"
                         :class="conquista.conquistado_em ? 'border-aura-gold/50 bg-aura-gold/5' : 'border-aura-line opacity-45'"
                         :title="conquista.descricao"
                     >
                         <div class="text-2xl">{{ conquista.conquistado_em ? conquista.icone : '🔒' }}</div>
-                        <p class="mt-2 text-sm font-semibold" :class="conquista.conquistado_em ? 'text-aura-gold' : 'text-aura-muted'">
+                        <p class="mt-2 break-words text-sm font-semibold" :class="conquista.conquistado_em ? 'text-aura-gold' : 'text-aura-muted'">
                             {{ conquista.nome }}
                         </p>
-                        <p class="mt-0.5 text-[11px] leading-snug text-aura-muted">{{ conquista.descricao }}</p>
+                        <p class="mt-0.5 break-words text-[11px] leading-snug text-aura-muted">{{ conquista.descricao }}</p>
                     </div>
                 </div>
             </div>

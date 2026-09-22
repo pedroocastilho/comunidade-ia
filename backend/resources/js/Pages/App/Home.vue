@@ -8,6 +8,9 @@ import { computed, ref } from 'vue';
 
 const { t } = useI18n();
 
+// Sem hover (celular/tablet) o marquee vira scroll nativo — sem duplicar itens
+const semHover = typeof window !== 'undefined' && window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
 const props = defineProps({
     jornada: Object,
     jornada_concluida: Boolean,
@@ -72,13 +75,13 @@ function enviarCheckin() {
 
     <PainelLayout>
         <!-- Hero em tela cheia (layout MeuFluxo): video/cena cosmica de fundo -->
-        <HeroAura :video="hero_video" class="-mt-16 h-[72vh] min-h-[520px] max-h-[820px] w-full">
+        <HeroAura :video="hero_video" class="-mt-16 h-[72dvh] min-h-[480px] max-h-[820px] w-full">
             <div class="flex h-full flex-col justify-between">
-                <div class="mx-auto flex w-full max-w-6xl items-start justify-between gap-4 px-5 pt-24 lg:px-8">
+                <div class="mx-auto flex w-full max-w-6xl flex-col gap-3 px-5 pt-20 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:pt-24 lg:px-8">
                     <p class="text-sm uppercase tracking-widest text-aura-text/90">
                         {{ saudacao }}, <span class="font-semibold text-aura-text">{{ apelido }}</span>
                     </p>
-                    <div class="flex shrink-0 items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
                         <Link
                             v-if="aura_score !== null"
                             :href="route('aura-score')"
@@ -91,7 +94,7 @@ function enviarCheckin() {
                         <div v-if="jornada" class="flex items-center gap-2 rounded-full border border-aura-gold/40 bg-aura-black/50 px-4 py-1.5 backdrop-blur">
                             <AppIcon name="flame" class="h-4 w-4 text-aura-gold" />
                             <span class="text-sm font-semibold text-aura-gold">{{ t('dia.diaN') }} {{ jornada.dia }}</span>
-                            <span class="text-xs text-aura-muted">· {{ jornada.etapa }}</span>
+                            <span class="hidden text-xs text-aura-muted sm:inline">· {{ jornada.etapa }}</span>
                         </div>
                     </div>
                 </div>
@@ -99,7 +102,7 @@ function enviarCheckin() {
                 <div class="mx-auto w-full max-w-6xl px-5 pb-14 lg:px-8">
                     <template v-if="destaque">
                         <p class="text-xs font-semibold uppercase tracking-[0.28em] text-aura-gold">{{ t('home.destaque') }}</p>
-                        <h1 class="mt-2 max-w-2xl font-display text-4xl font-semibold leading-[1.05] text-aura-text lg:text-6xl">{{ destaque.titulo }}</h1>
+                        <h1 class="mt-2 max-w-2xl break-words font-display text-3xl font-semibold leading-[1.05] text-aura-text sm:text-4xl lg:text-6xl">{{ destaque.titulo }}</h1>
                         <p v-if="destaque.descricao" class="mt-4 hidden max-w-xl leading-relaxed text-aura-text/80 sm:block">{{ destaque.descricao }}</p>
                         <p v-if="destaque.instrutor" class="mt-3 text-sm font-semibold text-aura-muted">{{ t('common.com') }} {{ destaque.instrutor }}</p>
                         <div class="mt-6 flex flex-wrap items-center gap-3">
@@ -129,7 +132,7 @@ function enviarCheckin() {
             <div class="mx-auto max-w-3xl">
 
             <!-- Sem jornada ativa: celebrar (se concluiu) e escolher a proxima -->
-            <div v-if="!jornada" class="mt-10 rounded-2xl border border-aura-line bg-aura-surface p-8">
+            <div v-if="!jornada" class="mt-10 rounded-2xl border border-aura-line bg-aura-surface p-5 sm:p-8">
                 <template v-if="jornada_concluida">
                     <p class="text-center font-display text-3xl text-aura-gold">{{ t('dia.jornadaConcluida') }}</p>
                     <div class="mt-4 text-center">
@@ -214,7 +217,7 @@ function enviarCheckin() {
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="text-xs font-semibold uppercase tracking-widest text-aura-gold">{{ t('dia.acao') }}</p>
-                                <p class="text-aura-text">{{ atividades.acao.texto }}</p>
+                                <p class="break-words text-aura-text">{{ atividades.acao.texto }}</p>
                             </div>
                             <button v-if="!atividades.acao.concluida" type="button" class="shrink-0 rounded-full border border-aura-gold/60 px-4 py-2 text-sm font-semibold text-aura-gold transition hover:bg-aura-gold hover:text-aura-black" @click="concluir('acao')">
                                 {{ t('dia.concluir') }}
@@ -244,7 +247,7 @@ function enviarCheckin() {
                         <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-aura-muted">
                             <AppIcon name="target" class="h-4 w-4 text-aura-gold" /> {{ t('metas.homeTitulo') }}
                         </p>
-                        <Link :href="route('metas')" class="text-sm font-semibold text-aura-gold hover:underline">{{ t('metas.verTodas') }} →</Link>
+                        <Link :href="route('metas')" class="-my-2 inline-flex min-h-11 items-center px-1 text-sm font-semibold text-aura-gold hover:underline">{{ t('metas.verTodas') }} →</Link>
                     </div>
                     <p v-if="!metas_proximas?.length" class="mt-3 text-sm text-aura-muted">{{ t('metas.homeVazio') }}</p>
                     <ul v-else class="mt-3 divide-y divide-aura-line">
@@ -256,7 +259,7 @@ function enviarCheckin() {
                             </span>
                             <button
                                 type="button"
-                                class="shrink-0 rounded-full border border-aura-gold/50 px-3 py-1 text-xs font-semibold text-aura-gold transition hover:bg-aura-gold/10"
+                                class="shrink-0 rounded-full border border-aura-gold/50 px-3.5 py-2 text-xs font-semibold text-aura-gold transition hover:bg-aura-gold/10"
                                 @click="router.patch(route('metas.update', meta.id), { concluida: true }, { preserveScroll: true })"
                             >
                                 {{ t('metas.fiz') }}
@@ -304,7 +307,7 @@ function enviarCheckin() {
                                 v-model="nota"
                                 type="text"
                                 :placeholder="t('dia.notaPlaceholder')"
-                                class="mt-3 w-full rounded-xl border-aura-line bg-aura-raised text-sm text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold"
+                                class="mt-3 w-full rounded-xl border-aura-line bg-aura-raised text-base text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold"
                             />
                             <button
                                 type="button"
@@ -349,10 +352,10 @@ function enviarCheckin() {
                 <h2 class="font-display text-2xl font-semibold text-aura-text">{{ t('home.emAlta') }}</h2>
                 <!-- Carrossel continuo: a lista e duplicada e desliza em loop; pausa no hover.
                      Com poucos cursos (< 4) a faixa nao preenche a tela, entao cai no scroll normal. -->
-                <div class="marquee mt-4" :class="{ 'marquee--ativo': em_alta.length >= 4 }">
+                <div class="marquee mt-4" :class="{ 'marquee--ativo': em_alta.length >= 4 && !semHover }">
                     <div class="marquee__faixa flex gap-5 pb-3">
                     <Link
-                        v-for="(curso, i) in (em_alta.length >= 4 ? [...em_alta, ...em_alta] : em_alta)"
+                        v-for="(curso, i) in (em_alta.length >= 4 && !semHover ? [...em_alta, ...em_alta] : em_alta)"
                         :key="`${curso.id}-${i}`"
                         :href="route('curso', curso.slug)"
                         :aria-hidden="i >= em_alta.length ? 'true' : null"
@@ -428,6 +431,18 @@ function enviarCheckin() {
         -webkit-mask-image: none;
     }
     .marquee--ativo .marquee__faixa {
+        animation: none;
+    }
+}
+/* Toque (sem hover): animacao nao tem como pausar, entao vira scroll nativo. */
+@media (hover: none), (pointer: coarse) {
+    .marquee--ativo {
+        overflow-x: auto;
+        mask-image: none;
+        -webkit-mask-image: none;
+    }
+    .marquee--ativo .marquee__faixa {
+        width: auto;
         animation: none;
     }
 }

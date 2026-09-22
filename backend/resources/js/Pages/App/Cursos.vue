@@ -49,7 +49,7 @@ function filtrar() {
             <div class="mt-6 flex flex-wrap gap-2">
                 <Link
                     :href="route('cursos')"
-                    class="rounded-full px-4 py-1.5 text-sm font-semibold transition"
+                    class="rounded-full px-4 py-2.5 text-sm font-semibold transition"
                     :class="!filtros.categoria ? 'border border-aura-gold bg-aura-gold/10 text-aura-gold' : 'border border-aura-line text-aura-muted hover:text-aura-text'"
                 >
                     {{ t('cursos.todos') }}
@@ -58,7 +58,7 @@ function filtrar() {
                     v-for="cat in categorias"
                     :key="cat.slug"
                     :href="route('cursos', { categoria: cat.slug })"
-                    class="rounded-full px-4 py-1.5 text-sm font-semibold transition"
+                    class="rounded-full px-4 py-2.5 text-sm font-semibold transition"
                     :class="filtros.categoria === cat.slug ? 'border border-aura-gold bg-aura-gold/10 text-aura-gold' : 'border border-aura-line text-aura-muted hover:text-aura-text'"
                 >
                     {{ cat.nome }}
@@ -81,7 +81,7 @@ function filtrar() {
                         >
                             🔒 {{ t('premium.selo') }}
                         </span>
-                        <h3 class="absolute inset-x-0 bottom-0 p-3 font-display text-lg font-semibold leading-tight text-aura-text">{{ curso.titulo }}</h3>
+                        <h3 class="absolute inset-x-0 bottom-0 line-clamp-2 break-words p-3 font-display text-base font-semibold leading-tight text-aura-text sm:text-lg">{{ curso.titulo }}</h3>
                     </div>
                 </Link>
             </div>

@@ -37,7 +37,7 @@ function formatarDuracao(segundos) {
                     <AppIcon name="arrow-left" class="h-4 w-4" /> {{ t('common.voltar') }}
                 </Link>
 
-                <h1 class="mt-8 font-display text-4xl font-extrabold leading-[0.95] tracking-tight lg:text-6xl">
+                <h1 class="mt-8 break-words font-display text-3xl font-extrabold leading-[0.95] tracking-tight sm:text-4xl lg:text-6xl">
                     {{ curso.titulo }}
                 </h1>
                 <p class="mt-5 max-w-md text-gray-300">{{ curso.descricao }}</p>
@@ -92,7 +92,7 @@ function formatarDuracao(segundos) {
                                 <component
                                     :is="premium_bloqueado ? 'div' : Link"
                                     :href="premium_bloqueado ? undefined : route('aula', aula.id)"
-                                    class="flex items-center gap-4 px-5 py-4 transition"
+                                    class="flex items-center gap-3 px-4 py-4 transition sm:gap-4 sm:px-5"
                                     :class="premium_bloqueado ? 'cursor-default opacity-60' : 'hover:bg-aura-raised'"
                                 >
                                     <span
@@ -102,14 +102,14 @@ function formatarDuracao(segundos) {
                                         <span v-if="premium_bloqueado" class="text-xs">🔒</span>
                                         <AppIcon v-else :name="aula.concluida ? 'check' : (aula.leitura ? 'book' : 'play')" class="h-4 w-4" />
                                     </span>
-                                    <span class="flex-1 font-medium text-aura-text">{{ aula.titulo }}</span>
+                                    <span class="min-w-0 flex-1 break-words font-medium text-aura-text">{{ aula.titulo }}</span>
                                     <span
                                         v-if="aula.leitura"
-                                        class="rounded-full border border-aura-gold/40 bg-aura-gold/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-aura-gold"
+                                        class="shrink-0 whitespace-nowrap rounded-full border border-aura-gold/40 bg-aura-gold/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-aura-gold"
                                     >
                                         {{ t('curso.leitura') }}
                                     </span>
-                                    <span v-else class="text-sm text-aura-faint">{{ formatarDuracao(aula.duracao) }}</span>
+                                    <span v-else class="shrink-0 whitespace-nowrap text-sm text-aura-faint">{{ formatarDuracao(aula.duracao) }}</span>
                                 </component>
                             </li>
                         </ul>

@@ -89,7 +89,7 @@ const iniciais = (nome) => nome.split(' ').filter(Boolean).slice(0, 2).map((p) =
                             {{ iniciais(post.autor) }}
                         </span>
                         <div class="min-w-0 flex-1">
-                            <p class="font-semibold text-aura-text">{{ post.autor }}</p>
+                            <p class="truncate font-semibold text-aura-text">{{ post.autor }}</p>
                             <p class="text-xs text-aura-muted">{{ post.quando }}</p>
                         </div>
                         <span v-if="post.fixado" class="rounded-full border border-aura-gold/50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-aura-gold">
@@ -100,12 +100,12 @@ const iniciais = (nome) => nome.split(' ').filter(Boolean).slice(0, 2).map((p) =
                         </span>
                     </div>
 
-                    <p class="mt-4 whitespace-pre-wrap leading-relaxed text-aura-text">{{ post.corpo }}</p>
+                    <p class="mt-4 whitespace-pre-wrap break-words leading-relaxed text-aura-text">{{ post.corpo }}</p>
 
-                    <div class="mt-4 flex items-center gap-5 text-sm">
+                    <div class="mt-2 flex items-center gap-3 text-sm">
                         <button
                             type="button"
-                            class="flex items-center gap-1.5 font-semibold transition"
+                            class="flex min-h-11 items-center gap-1.5 px-1 py-2 font-semibold transition"
                             :class="post.reagi ? 'text-aura-gold' : 'text-aura-muted hover:text-aura-gold'"
                             @click="reagir(post)"
                         >
@@ -113,7 +113,7 @@ const iniciais = (nome) => nome.split(' ').filter(Boolean).slice(0, 2).map((p) =
                         </button>
                         <button
                             type="button"
-                            class="flex items-center gap-1.5 text-aura-muted transition hover:text-aura-text"
+                            class="flex min-h-11 items-center gap-1.5 px-1 py-2 text-aura-muted transition hover:text-aura-text"
                             @click="comentandoEm = comentandoEm === post.id ? null : post.id"
                         >
                             <AppIcon name="chat" class="h-4 w-4" /> {{ post.comentarios.length }}
@@ -121,7 +121,7 @@ const iniciais = (nome) => nome.split(' ').filter(Boolean).slice(0, 2).map((p) =
                         <button
                             v-if="!post.meu"
                             type="button"
-                            class="ml-auto text-xs text-aura-faint transition hover:text-aura-muted"
+                            class="ml-auto flex min-h-11 items-center px-2 py-2 text-xs text-aura-faint transition hover:text-aura-muted"
                             @click="denunciar('post', post.id)"
                         >
                             {{ t('circulo.denunciar') }}
@@ -135,16 +135,17 @@ const iniciais = (nome) => nome.split(' ').filter(Boolean).slice(0, 2).map((p) =
                                 {{ iniciais(comentario.autor) }}
                             </span>
                             <div class="min-w-0 flex-1 rounded-xl bg-aura-raised px-3.5 py-2.5">
-                                <p class="text-xs font-semibold text-aura-text">
+                                <p class="truncate text-xs font-semibold text-aura-text">
                                     {{ comentario.autor }}
                                     <span class="ml-1.5 font-normal text-aura-faint">{{ comentario.quando }}</span>
                                 </p>
-                                <p class="mt-0.5 text-sm text-aura-text">{{ comentario.texto }}</p>
+                                <p class="mt-0.5 break-words text-sm text-aura-text">{{ comentario.texto }}</p>
                             </div>
                             <button
                                 v-if="!comentario.meu"
                                 type="button"
-                                class="mt-1 text-[10px] text-aura-faint hover:text-aura-muted"
+                                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs text-aura-faint hover:text-aura-muted"
+                                :aria-label="t('circulo.denunciar')"
                                 @click="denunciar('comentario', comentario.id)"
                             >
                                 ⚑
@@ -157,9 +158,9 @@ const iniciais = (nome) => nome.split(' ').filter(Boolean).slice(0, 2).map((p) =
                                 type="text"
                                 maxlength="1000"
                                 :placeholder="t('circulo.comentarPlaceholder')"
-                                class="flex-1 rounded-full border-aura-line bg-aura-raised px-4 py-2 text-sm text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold"
+                                class="min-w-0 flex-1 rounded-full border-aura-line bg-aura-raised px-4 py-2.5 text-base text-aura-text placeholder-aura-faint focus:border-aura-gold focus:ring-aura-gold"
                             />
-                            <button type="submit" class="rounded-full border border-aura-gold/50 px-4 py-2 text-sm font-semibold text-aura-gold transition hover:bg-aura-gold/10">
+                            <button type="submit" class="shrink-0 rounded-full border border-aura-gold/50 px-4 py-2.5 text-sm font-semibold text-aura-gold transition hover:bg-aura-gold/10">
                                 {{ t('circulo.comentar') }}
                             </button>
                         </form>

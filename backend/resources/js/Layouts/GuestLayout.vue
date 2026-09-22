@@ -5,7 +5,7 @@ import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <div class="flex min-h-screen flex-col items-center bg-aura-black pt-10 sm:justify-center sm:pt-0">
+    <div class="flex min-h-dvh flex-col items-center bg-aura-black pt-10 sm:justify-center sm:pt-0">
         <div class="absolute right-5 top-5">
             <LanguageSwitcher />
         </div>

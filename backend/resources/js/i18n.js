@@ -6,6 +6,7 @@ export const messages = {
             cursos: 'Cursos',
             jornada: 'Jornada',
             biblioteca: 'Biblioteca',
+            bibliotecaCurta: 'Aulas',
             aura: 'Noah',
             circulo: 'Círculo',
             metas: 'Metas',
@@ -53,7 +54,7 @@ export const messages = {
             aulaLeitura: 'Aula em material de leitura',
             carregandoMaterial: 'Carregando material…',
             erroMaterial: 'Não foi possível carregar o material. Recarregue a página.',
-            ampliar: 'Clique para ampliar',
+            ampliar: 'Toque na página para ampliar',
             fechar: 'Fechar',
         },
         semAcesso: {
@@ -279,6 +280,7 @@ export const messages = {
             cursos: 'Cursos',
             jornada: 'Camino',
             biblioteca: 'Biblioteca',
+            bibliotecaCurta: 'Clases',
             aura: 'Noah',
             circulo: 'Círculo',
             metas: 'Metas',
@@ -326,7 +328,7 @@ export const messages = {
             aulaLeitura: 'Clase en material de lectura',
             carregandoMaterial: 'Cargando material…',
             erroMaterial: 'No se pudo cargar el material. Recarga la página.',
-            ampliar: 'Haz clic para ampliar',
+            ampliar: 'Toca la página para ampliar',
             fechar: 'Cerrar',
         },
         semAcesso: {
